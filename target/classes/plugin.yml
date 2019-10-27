@@ -1,0 +1,16 @@
+name: PixliesFactionSystem
+version: 0.1
+authors: [MickMMars, tylix]
+main: me.mickmmars.factions.Factions
+
+api-version: 1.13
+
+depend:
+  - Vault
+loadbefore:
+  - Vault
+
+commands:
+  factions:
+    aliases:
+      - f
