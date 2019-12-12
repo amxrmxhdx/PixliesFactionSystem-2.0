@@ -2,6 +2,9 @@
 
 __Please keep in mind that this README is not complete and will be more completed in the future.__
 
+## Dependencies
+* Vault
+
 ## Description
 PixliesFactionSystem is a lightweight but rich factionssystem developed by MickMMars and Tylix for the server pixliesearth.eu
 It is specialized to fill all needs for Political-Factions servers.
