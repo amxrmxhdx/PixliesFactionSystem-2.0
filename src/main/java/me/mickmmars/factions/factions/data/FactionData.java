@@ -1,7 +1,8 @@
 package me.mickmmars.factions.factions.data;
 
 import me.mickmmars.factions.chunk.data.ChunkData;
-import me.mickmmars.factions.factions.flags.FactionFlag;
+import me.mickmmars.factions.chunk.location.ChunkLocation;
+import me.mickmmars.factions.factions.perms.FactionPerms;
 
 import java.util.List;
 
@@ -9,28 +10,100 @@ public class FactionData {
 
     private String name;
     private String id;
-    private List<FactionFlag> allowedFlags;
+    private List<String> allowedFlags;
     private List<ChunkData> chunks;
-    private String maxPower;
+    private int maxPower;
     private String description;
+    private List<FactionPerms> perms;
+    private String discordlink;
+    private List<String> allies;
+    private List<String> allyrequests;
+    private List<String> enemies;
+    private ChunkLocation capital;
+    private List<String> adminperms;
+    private List<String> memberperms;
+    private List<String> newbieperms;
+    private List<String> allyperms;
+    private List<String> enemyperms;
     private int money;
 
-    public FactionData(String name, String id, List<FactionFlag> allowedFlags, List<ChunkData> chunks, String maxPower, String description, int money) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, int money) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
         this.chunks = chunks;
         this.maxPower = maxPower;
         this.description = description;
+        this.perms = perms;
+        this.discordlink = discordlink;
+        this.allies = allies;
+        this.allyrequests = allyrequests;
+        this.enemies = enemies;
+        this.capital = capital;
+        this.adminperms = adminperms;
+        this.memberperms = memberperms;
+        this.newbieperms = newbieperms;
+        this.allyperms = allyperms;
+        this.enemyperms = enemyperms;
         this.money = money;
+    }
+
+    public List<String> getAdminperms() { return adminperms; }
+    public List<String> getMemberperms() { return memberperms; }
+    public List<String> getNewbieperms() { return newbieperms; }
+    public List<String> getAllyperms() { return allyperms; }
+    public List<String> getEnemyperms() { return enemyperms; }
+
+    public void setAdminperms(List<String> adminperms) {
+        this.adminperms = adminperms;
+    }
+
+    public void setMemberperms(List<String> memberperms) {
+        this.memberperms = memberperms;
+    }
+
+    public void setNewbieperms(List<String> newbieperms) {
+        this.newbieperms = newbieperms;
+    }
+
+    public void setAllyperms(List<String> allyperms) {
+        this.allyperms = allyperms;
+    }
+
+    public void setEnemyperms(List<String> enemyperms) {
+        this.enemyperms = enemyperms;
     }
 
     public String getName() {
         return name;
     }
 
+    public ChunkLocation getCapitalLocation() { return capital; }
+
+    public void setCapital(ChunkLocation loc) { this.capital = loc; }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDiscordlink() { return discordlink; }
+
+    public void setDiscordlink(String discordlink) { this.discordlink = discordlink; };
+
+    public List<String> getAllies() {
+        return allies;
+    }
+
+    public void setAllyRequests(List<String> allyrequests) {
+        this.allyrequests = allyrequests;
+    }
+
+    public void setAllies(List<String> allies) {
+        this.allies = allies;
+    }
+
+    public List<String> getAllyRequests() {
+        return allyrequests;
     }
 
     public String getId() {
@@ -41,11 +114,11 @@ public class FactionData {
         this.id = id;
     }
 
-    public List<FactionFlag> getAllowedFlags() {
+    public List<String> getAllowedFlags() {
         return allowedFlags;
     }
 
-    public void setAllowedFlags(List<FactionFlag> allowedFlags) {
+    public void setAllowedFlags(List<String> allowedFlags) {
         this.allowedFlags = allowedFlags;
     }
 
@@ -57,11 +130,11 @@ public class FactionData {
         this.chunks = chunks;
     }
 
-    public String getMaxPower() {
+    public int getMaxPower() {
         return maxPower;
     }
 
-    public void setMaxPower(String maxPower) {
+    public void setMaxPower(int maxPower) {
         this.maxPower = maxPower;
     }
 
@@ -73,8 +146,18 @@ public class FactionData {
         this.description = description;
     }
 
+    public List<FactionPerms> getPerms() { return perms; }
+
+    public void setPerms(List<FactionPerms> perms) { this.perms = perms; }
+
     public int getMoney() {
         return money;
+    }
+
+    public List<String> getEnemies() { return enemies; }
+
+    public void setEnemies(List<String> enemies) {
+        this.enemies = enemies;
     }
 
     public void setMoney(int money) {

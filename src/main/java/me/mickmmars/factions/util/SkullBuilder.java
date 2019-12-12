@@ -1,4 +1,4 @@
-package me.mickmmars.factions;
+package me.mickmmars.factions.util;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -27,7 +27,7 @@ public class SkullBuilder {
         this.skullMeta = (SkullMeta) this.skull.getItemMeta();
 
         try {
-            this.skullMetaClass = Class.forName("org.bukkit.craftbukkit.v1_14_R1.inventory.CraftMetaSkull");
+            this.skullMetaClass = Class.forName("org.bukkit.craftbukkit.v1_15_R1.inventory.CraftMetaSkull");
         } catch (ClassNotFoundException var4) {
             var4.printStackTrace();
         }

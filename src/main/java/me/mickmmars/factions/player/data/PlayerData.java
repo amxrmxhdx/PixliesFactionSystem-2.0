@@ -1,6 +1,7 @@
 package me.mickmmars.factions.player.data;
 
 import me.mickmmars.factions.Factions;
+import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.home.data.HomeData;
@@ -14,13 +15,23 @@ public class PlayerData {
     private FactionRank factionRank;
     private List<String> factionInvites;
     private List<HomeData> homes;
+    private List<ChunkData> AccessableChunks;
 
-    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes) {
+    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes, List<ChunkData> AccessableChunks) {
         this.isInFaction = isInFaction;
         this.factionId = factionId;
         this.factionRank = factionRank;
         this.factionInvites = factionInvites;
         this.homes = homes;
+        this.AccessableChunks = AccessableChunks;
+    }
+
+    public List<ChunkData> getAccessableChunks() {
+        return AccessableChunks;
+    }
+
+    public void setAccessableChunks(List<ChunkData> AccessableChunks) {
+        this.AccessableChunks = AccessableChunks;
     }
 
     public boolean isInFaction() {

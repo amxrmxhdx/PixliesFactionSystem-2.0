@@ -1,6 +1,7 @@
 package me.mickmmars.factions.player;
 
 import me.mickmmars.factions.Factions;
+import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.config.JsonConfig;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.rank.FactionRank;
@@ -24,9 +25,10 @@ public class ChunkPlayer {
     private final YamlConfiguration cfg;
 
     private int money = 1000;
+    private boolean isInFactionChunks = false;
+    private boolean title = false;
 
     private PlayerData playerData;
-
     private HomeObject homeObject;
 
     public ChunkPlayer(UUID uuid) {
@@ -52,7 +54,7 @@ public class ChunkPlayer {
     public boolean createIfNotExists() {
         if (exists()) return true;
         new File("plugins/Factions/players").mkdirs();
-        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>());
+        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>(), new ArrayList<ChunkData>());
 
         final JsonConfig jsonConfig = new JsonConfig(this.file);
         jsonConfig.set("userData", playerData);
@@ -132,6 +134,7 @@ public class ChunkPlayer {
         this.playerData = playerData;
     }
 
+
     public PlayerData getPlayerData() {
         return playerData;
     }
@@ -150,5 +153,21 @@ public class ChunkPlayer {
 
     public HomeObject getHomeObject() {
         return homeObject;
+    }
+
+    public boolean isInFactionChunks() {
+        return isInFactionChunks;
+    }
+
+    public void setInFactionChunks(boolean inFactionChunks) {
+        isInFactionChunks = inFactionChunks;
+    }
+
+    public boolean isTitle() {
+        return title;
+    }
+
+    public void setTitle(boolean title) {
+        this.title = title;
     }
 }

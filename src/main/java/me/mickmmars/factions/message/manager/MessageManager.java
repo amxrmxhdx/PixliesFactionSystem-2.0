@@ -2,6 +2,7 @@ package me.mickmmars.factions.message.manager;
 
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.message.Message;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -16,7 +17,9 @@ public class MessageManager {
         System.out.println("Load messages...");
         for (Message value : Message.values())
             value.setMessage(this.cfg.get(value.name().toLowerCase()));
-        System.out.println("All messages (" + Message.values().length + ") loaded.");
+        System.out.println(ChatColor.GRAY + "----" + ChatColor.AQUA + "PixliesFactionSystem" + ChatColor.GRAY + "----");
+        System.out.println(ChatColor.GREEN + "All messages (" + Message.values().length + ") loaded.");
+        System.out.println(ChatColor.GRAY + "----------------------------");
     }
 
     public void reload() {

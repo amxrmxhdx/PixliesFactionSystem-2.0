@@ -1,9 +1,9 @@
 package me.mickmmars.factions.home;
 
-import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.home.data.HomeData;
 import me.mickmmars.factions.player.data.PlayerData;
+import me.mickmmars.factions.Factions;
 import org.bukkit.Location;
 
 import java.util.List;

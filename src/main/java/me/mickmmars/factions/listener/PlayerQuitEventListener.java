@@ -15,6 +15,7 @@ public class PlayerQuitEventListener implements Listener {
         Player player = event.getPlayer();
 
         instance.getPlayers().remove(instance.getChunkPlayer(player));
+        instance.getStaffmode().remove(player.getUniqueId());
     }
 
 }

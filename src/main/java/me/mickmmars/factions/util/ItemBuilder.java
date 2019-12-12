@@ -1,6 +1,7 @@
-package me.mickmmars.factions;
+package me.mickmmars.factions.util;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -93,7 +94,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setSkullOwner(String owner) {
-        ((SkullMeta) meta).setOwner(owner);
+        ((SkullMeta) meta).setOwningPlayer(Bukkit.getPlayer(owner));
         return this;
     }
 
@@ -108,7 +109,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setUnbreakable(boolean value) {
-        meta.spigot().setUnbreakable(value);
+        meta.setUnbreakable(value);
         return this;
     }
 
