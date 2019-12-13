@@ -11,6 +11,8 @@ public enum FactionPerms {
     DEPOSIT("Deposit_money", "Deposit money in the faction treasury.", FactionRank.NONE),
     WITHDRAW("Withdraw_money", "Withdraw money from the faction treasury.", FactionRank.ADMIN),
     DESCRIPTION("Description", "Edit description", FactionRank.ADMIN),
+    CLAIM("Claim", "Claim territory for faction.", FactionRank.MEMBER),
+    UNCLAIM("Unclaim", "Unclaim territory for faction.", FactionRank.ADMIN),
     DISCORD("Discord", "Edit discord link", FactionRank.LEADER),
     MODERATION("Moderation", "Kick people from the faction", FactionRank.ADMIN),
     EDITFLAGS("Edit_flags", "Edit faction-flags.", FactionRank.ADMIN),

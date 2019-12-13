@@ -471,6 +471,8 @@ public class FactionManager {
         perms.add(FactionPerms.INVITE);
         perms.add(FactionPerms.BUILD);
         perms.add(FactionPerms.CONTAINER);
+        perms.add(FactionPerms.CLAIM);
+        perms.add(FactionPerms.UNCLAIM);
         perms.add(FactionPerms.INTERACT);
         perms.add(FactionPerms.DEPOSIT);
         perms.add(FactionPerms.WITHDRAW);
@@ -486,23 +488,48 @@ public class FactionManager {
     public void addPermToGroup(Player player, String groupname, String permission) {
         if (groupname.equalsIgnoreCase("admin")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAdminperms());
-            perms.add(permission);
+            perms.add(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setAdminperms(perms);
         } else if (groupname.equalsIgnoreCase("member")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getMemberperms());
-            perms.add(permission);
+            perms.add(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setMemberperms(perms);
         } else if (groupname.equalsIgnoreCase("newbie")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getNewbieperms());
-            perms.add(permission);
+            perms.add(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setNewbieperms(perms);
         } else if (groupname.equalsIgnoreCase("ally")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAllyperms());
-            perms.add(permission);
+            perms.add(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setAllyperms(perms);
         } else if (groupname.equalsIgnoreCase("enemy")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getEnemyperms());
-            perms.add(permission);
+            perms.add(permission.toUpperCase());
+            instance.getPlayerData(player).getCurrentFactionData().setEnemyperms(perms);
+        }
+        updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
+    }
+
+    public void removePermFromGroup(Player player, String groupname, String permission) {
+        if (groupname.equalsIgnoreCase("admin")) {
+            List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAdminperms());
+            perms.remove(permission);
+            instance.getPlayerData(player).getCurrentFactionData().setAdminperms(perms);
+        } else if (groupname.equalsIgnoreCase("member")) {
+            List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getMemberperms());
+            perms.remove(permission);
+            instance.getPlayerData(player).getCurrentFactionData().setMemberperms(perms);
+        } else if (groupname.equalsIgnoreCase("newbie")) {
+            List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getNewbieperms());
+            perms.remove(permission);
+            instance.getPlayerData(player).getCurrentFactionData().setNewbieperms(perms);
+        } else if (groupname.equalsIgnoreCase("ally")) {
+            List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAllyperms());
+            perms.remove(permission);
+            instance.getPlayerData(player).getCurrentFactionData().setAllyperms(perms);
+        } else if (groupname.equalsIgnoreCase("enemy")) {
+            List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getEnemyperms());
+            perms.remove(permission);
             instance.getPlayerData(player).getCurrentFactionData().setEnemyperms(perms);
         }
         updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
@@ -554,14 +581,38 @@ public class FactionManager {
     }
 
     public FactionPerms getPermissionByName(String name) {
+        FactionPerms permission = null;
         for (FactionPerms perm : this.listPerms()) {
             if (perm.getName().equalsIgnoreCase(name)) {
-                return perm;
-            } else {
-                return null;
+                permission = perm;
             }
         }
-        return null;
+        return permission;
+    }
+
+    public boolean checkIfRankHasPerm(Player player, String rankname, String permname) {
+        if (rankname.equalsIgnoreCase("leader")) {
+            return true;
+        } else if (rankname.equalsIgnoreCase("admin")) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getAdminperms().contains(permname)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (rankname.equalsIgnoreCase("member")) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getMemberperms().contains(permname)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (rankname.equalsIgnoreCase("newbie")) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getNewbieperms().contains(permname)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     public List<FactionRank> getRanks() {
@@ -575,14 +626,19 @@ public class FactionManager {
     }
 
     public FactionRank getRankByName(String name) {
-        for (FactionRank rank : this.getRanks()) {
-            if (rank.getName().equalsIgnoreCase(name)) {
-                return rank;
-            } else {
-                return null;
-            }
+        if (name.equalsIgnoreCase("leader")) {
+            return FactionRank.LEADER;
+        } else if (name.equalsIgnoreCase("admin")) {
+            return FactionRank.ADMIN;
+        } else if (name.equalsIgnoreCase("member")) {
+            return FactionRank.MEMBER;
+        } else if (name.equalsIgnoreCase("newbie")) {
+            return FactionRank.NEWBIE;
+        } else if (name.equalsIgnoreCase("none")){
+            return FactionRank.NONE;
+        } else {
+            return null;
         }
-        return null;
     }
 
     public int getMoneyFromFaction(FactionData data) {

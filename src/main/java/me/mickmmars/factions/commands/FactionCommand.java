@@ -797,6 +797,17 @@ public class FactionCommand implements CommandExecutor {
                     } else {
                         player.sendMessage("§c§lFalse");
                     }
+                } else if (strings[0].equalsIgnoreCase("perms")) {
+                    if (!instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                        return false;
+                    }
+                      if (strings[1].equalsIgnoreCase("list")) {
+                        player.sendMessage("§8-§b+§8---------§7[ §bPermissionList §7]§8---------§b+§8-");
+                        for (FactionPerms perm : instance.getFactionManager().listPerms()) {
+                            player.sendMessage("§c" + perm.getName().toUpperCase());
+                        }
+                    }
                 }
                 break;
             case 3:
@@ -908,7 +919,7 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
                     if (strings[1].equalsIgnoreCase("set")) {
-                        if (instance.getFactionManager().getPermissionByName(strings[2]).equals(null)) {
+                        if (!instance.getFactionManager().listPerms().contains(instance.getFactionManager().getPermissionByName(strings[2]))) {
                             player.sendMessage(Message.PERMISSION_DOES_NOT_EXIST.getMessage());
                             return false;
                         }
@@ -916,9 +927,29 @@ public class FactionCommand implements CommandExecutor {
                             player.sendMessage(Message.RANK_DOES_NOT_EXIST.getMessage());
                             return false;
                         }
+                        if (instance.getFactionManager().checkIfRankHasPerm(player, strings[3], strings[2])) {
+                            player.sendMessage(Message.ALREADY_HAS_PREMISSION.getMessage());
+                            return false;
+                        }
                         instance.getFactionManager().addPermToGroup(player, strings[3], strings[2]);
                         for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_ADDED_PERMISSION_TO_GROUP_FAC.getMessage().replace("%player%", player.getName()).replace("%rank%", instance.getFactionManager().getRankByName(strings[3]).getName()).replace("%perm%", strings[2]));
+                    } else if (strings[0].equalsIgnoreCase("remove")) {
+                        if (!instance.getFactionManager().listPerms().contains(instance.getFactionManager().getPermissionByName(strings[2]))) {
+                            player.sendMessage(Message.PERMISSION_DOES_NOT_EXIST.getMessage());
+                            return false;
+                        }
+                        if (!(strings[3].equalsIgnoreCase("admin") || strings[3].equalsIgnoreCase("member") || strings[3].equalsIgnoreCase("newbie"))) {
+                            player.sendMessage(Message.RANK_DOES_NOT_EXIST.getMessage());
+                            return false;
+                        }
+                        if (!instance.getFactionManager().checkIfRankHasPerm(player, strings[3], strings[2])) {
+                            player.sendMessage(Message.RANK_DOESNT_HAVE_PERMISSION.getMessage());
+                            return false;
+                        }
+                        instance.getFactionManager().removePermFromGroup(player, strings[3], strings[2]);
+                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
+                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_REMOVED_PERMISSION_FROM_GROUP_FAC.getMessage().replace("%player%", player.getName()).replace("%rank%", instance.getFactionManager().getRankByName(strings[3]).getName()).replace("%perm%", strings[2]));
                     }
                 }
                 break;
@@ -949,7 +980,7 @@ public class FactionCommand implements CommandExecutor {
                 player.sendMessage("§7§o/f map");
                 player.sendMessage("§7§o/f demote §c§o<player>");
                 player.sendMessage("§7§o/f promote §c§o<player>");
-                player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c2§7]§8------------------§b+§8-");
+                player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c3§7]§8------------------§b+§8-");
                 break;
             case 2:
                 player.sendMessage("§8-§b+§8------------§7[ §b§lPixlies§3§lFaction§f§lSystem §7]§8----------§b+§8-");
@@ -967,7 +998,12 @@ public class FactionCommand implements CommandExecutor {
                 player.sendMessage("§7§o/f home§8§o/§7§ocapital §c<faction>");
                 player.sendMessage("§7§o/f delhome§8§o/§7§odelcapital §c§o<faction>");
                 player.sendMessage("§7§o/f forcejoin §c§o<faction>");
-                player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c2§7]§8------------------§b+§8-");
+                player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c3§7]§8------------------§b+§8-");
+                break;
+            case 3:
+                player.sendMessage("§8-§b+§8------------§7[ §b§lPixlies§3§lFaction§f§lSystem §7]§8----------§b+§8-");
+                player.sendMessage("§7§o/f perms §c§oset§8§o/§c§oremove§8§o/§c§olist §e§o<permission> §e§o<rank>");
+                player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c3§7]§8------------------§b+§8-");
                 break;
             default:
                 player.sendMessage("§c§othis page doesn't exists!");

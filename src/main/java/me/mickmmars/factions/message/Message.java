@@ -151,6 +151,9 @@ public enum Message {
     NO_PERMISSION_TO_EDIT_PERMISSIONS("§cYour faction does not allow you to edit permissions.", ""),
     RANK_DOES_NOT_EXIST("§7This rank §cdoes not §7exist. Available ranks: §c§lAdmin§8, §a§lMember§8, §3Newbie", ""),
     PLAYER_ADDED_PERMISSION_TO_GROUP_FAC("§6%player% §7added the permission §b%perm% §7to the rank %rank%§7.", ""),
+    PLAYER_REMOVED_PERMISSION_FROM_GROUP_FAC("§6%player% §7removed the permission §b%perm% §7from the rank %rank%§7.", ""),
+    ALREADY_HAS_PREMISSION("§7This group §calready §7has that permission.", ""),
+    RANK_DOESNT_HAVE_PERMISSION("§7This group §cdoes not §7have that permission.", ""),
     DEV_VERSION("§bDEV #176", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "

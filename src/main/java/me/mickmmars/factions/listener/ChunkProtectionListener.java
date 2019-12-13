@@ -1,7 +1,7 @@
 package me.mickmmars.factions.listener;
 
 import me.mickmmars.factions.Factions;
-import me.mickmmars.factions.factions.rank.FactionRank;
+import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.message.Message;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,7 +32,7 @@ public class ChunkProtectionListener implements Listener {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
             return;
         }
-        if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
+        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
             event.setCancelled(true);
             player.closeInventory();
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
@@ -51,13 +51,13 @@ public class ChunkProtectionListener implements Listener {
             event.setCancelled(false);
             return;
         }
-        if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
+        if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
             event.setCancelled(true);
             player.closeInventory();
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
             return;
         }
-        if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
+        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
             event.setCancelled(true);
             player.closeInventory();
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
@@ -83,7 +83,7 @@ public class ChunkProtectionListener implements Listener {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
                 return;
             }
-            if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
+            if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
                 event.setCancelled(true);
                 player.closeInventory();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
@@ -103,7 +103,7 @@ public class ChunkProtectionListener implements Listener {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
                 return;
             }
-            if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
+            if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
                 event.setCancelled(true);
                 player.closeInventory();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
