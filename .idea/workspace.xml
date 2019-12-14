@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="24436896-babc-4eb9-81a9-a5668407f479" name="Default Changelist" comment="" />
+    <list default="true" id="24436896-babc-4eb9-81a9-a5668407f479" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -22,8 +29,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop/PlaceholderAPI-2.10.4.jar!/" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -63,25 +71,25 @@
       <screen x="62" y="0" width="1306" height="912" />
     </state>
     <state x="315" y="118" key="#Plugins/62.0.1306.912@62.0.1306.912" timestamp="1576289689981" />
-    <state x="315" y="118" key="#Project_Structure" timestamp="1576288045450">
+    <state x="315" y="118" key="#Project_Structure" timestamp="1576295085601">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
-    <state x="315" y="118" key="#Project_Structure/62.0.1306.912@62.0.1306.912" timestamp="1576288045450" />
-    <state x="425" y="201" key="FileChooserDialogImpl" timestamp="1576288146639">
+    <state x="315" y="118" key="#Project_Structure/62.0.1306.912@62.0.1306.912" timestamp="1576295085601" />
+    <state x="425" y="201" key="FileChooserDialogImpl" timestamp="1576295171808">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
-    <state x="425" y="201" key="FileChooserDialogImpl/62.0.1306.912@62.0.1306.912" timestamp="1576288146639" />
-    <state x="253" y="114" key="Maven.ArtifactSearchDialog" timestamp="1576287858785">
+    <state x="425" y="201" key="FileChooserDialogImpl/62.0.1306.912@62.0.1306.912" timestamp="1576295171808" />
+    <state x="253" y="114" key="Maven.ArtifactSearchDialog" timestamp="1576295050946">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
-    <state x="253" y="114" key="Maven.ArtifactSearchDialog/62.0.1306.912@62.0.1306.912" timestamp="1576287858785" />
-    <state x="203" y="34" key="SettingsEditor" timestamp="1576288150104">
+    <state x="253" y="114" key="Maven.ArtifactSearchDialog/62.0.1306.912@62.0.1306.912" timestamp="1576295050946" />
+    <state x="203" y="34" key="SettingsEditor" timestamp="1576295173385">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
-    <state x="203" y="34" key="SettingsEditor/62.0.1306.912@62.0.1306.912" timestamp="1576288150104" />
-    <state x="378" y="194" width="672" height="678" key="search.everywhere.popup" timestamp="1576289733924">
+    <state x="203" y="34" key="SettingsEditor/62.0.1306.912@62.0.1306.912" timestamp="1576295173385" />
+    <state x="379" y="195" width="672" height="678" key="search.everywhere.popup" timestamp="1576295307266">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
-    <state x="378" y="194" width="672" height="678" key="search.everywhere.popup/62.0.1306.912@62.0.1306.912" timestamp="1576289733924" />
+    <state x="379" y="195" width="672" height="678" key="search.everywhere.popup/62.0.1306.912@62.0.1306.912" timestamp="1576295307266" />
   </component>
 </project>

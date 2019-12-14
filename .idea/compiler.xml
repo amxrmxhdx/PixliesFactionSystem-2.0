@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="PixliesFactionSystem" />
+        <module name="PixliesFactionSystem-2.0" />
       </profile>
     </annotationProcessing>
   </component>
