@@ -12,13 +12,17 @@ import me.mickmmars.factions.factions.relations.FactionRelations;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
+import me.mickmmars.factions.util.ItemBuilder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.io.File;
 import java.io.IOException;
@@ -447,6 +451,15 @@ public class FactionManager {
             e.printStackTrace();
         }
 
+    }
+
+    public void createRelInv(Player player) {
+        Inventory inventory = Bukkit.createInventory(null, 9 * 5, "§8-= §bYour factions relations §8=-");
+        for (String ids : instance.getPlayerData(player).getCurrentFactionData().getAllies())
+            inventory.addItem(new ItemBuilder(Material.MAGENTA_CONCRETE).addEnchantment(Enchantment.LOYALTY, 1).setDisplayName("§d§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
+        for (String ids : instance.getPlayerData(player).getCurrentFactionData().getEnemies())
+            inventory.addItem(new ItemBuilder(Material.RED_CONCRETE).addEnchantment(Enchantment.SWEEPING_EDGE, 1).setDisplayName("§4§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
+        player.openInventory(inventory);
     }
 
     public void setCapitalLocation(FactionData fac1, ChunkLocation location) {

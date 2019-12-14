@@ -12,6 +12,7 @@ import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.util.FlickerlessScoreboard;
+import me.mickmmars.factions.util.ItemBuilder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -23,7 +24,9 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.DisplaySlot;
 
 import java.io.IOException;
@@ -251,11 +254,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    player.sendMessage(Message.RELATION_LIST_HEADLINE.getDefaultMessage().toString());
-                    for (String ids : instance.getPlayerData(player).getCurrentFactionData().getAllies())
-                        player.sendMessage("§d§l" + instance.getFactionManager().getFactionById(ids).getName());
-                    for (String ids : instance.getPlayerData(player).getCurrentFactionData().getEnemies())
-                        player.sendMessage("§4§l" + instance.getFactionManager().getFactionById(ids).getName());
+                    instance.getFactionManager().createRelInv(player);
                 }
                 break;
             case 2:
