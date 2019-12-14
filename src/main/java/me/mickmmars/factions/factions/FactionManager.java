@@ -231,7 +231,7 @@ public class FactionManager {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
                 return;
             }
-            if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
+            if (this.checkForPlayergroupPermission(player, FactionPerms.CLAIM)) {
                 player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
                 return;
             }

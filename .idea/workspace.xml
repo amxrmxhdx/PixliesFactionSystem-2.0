@@ -59,6 +59,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="315" y="118" key="#Plugins" timestamp="1576289689981">
+      <screen x="62" y="0" width="1306" height="912" />
+    </state>
+    <state x="315" y="118" key="#Plugins/62.0.1306.912@62.0.1306.912" timestamp="1576289689981" />
     <state x="315" y="118" key="#Project_Structure" timestamp="1576288045450">
       <screen x="62" y="0" width="1306" height="912" />
     </state>
@@ -75,5 +79,9 @@
       <screen x="62" y="0" width="1306" height="912" />
     </state>
     <state x="203" y="34" key="SettingsEditor/62.0.1306.912@62.0.1306.912" timestamp="1576288150104" />
+    <state x="378" y="194" width="672" height="678" key="search.everywhere.popup" timestamp="1576289733924">
+      <screen x="62" y="0" width="1306" height="912" />
+    </state>
+    <state x="378" y="194" width="672" height="678" key="search.everywhere.popup/62.0.1306.912@62.0.1306.912" timestamp="1576289733924" />
   </component>
 </project>
