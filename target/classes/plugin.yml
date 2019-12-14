@@ -1,0 +1,30 @@
+name: PixliesFactionSystem
+version: 1.0.1
+authors: [MickMMars, tylix]
+main: me.mickmmars.factions.Factions
+description: Rich faction system.
+
+api-version: 1.15
+
+depend:
+  - Vault
+loadbefore:
+  - Vault
+softdepend:
+  - PlaceholderAPI
+
+permissions:
+  factions.host:
+    default: op
+  factions.staff:
+    default: op
+  factions.seeversion:
+    default: op
+
+commands:
+  factions:
+    aliases:
+      - f
+  home:
+    aliases:
+      - phome

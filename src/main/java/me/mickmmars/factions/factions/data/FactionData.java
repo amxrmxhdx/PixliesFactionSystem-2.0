@@ -1,10 +1,14 @@
 package me.mickmmars.factions.factions.data;
 
+import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.factions.perms.FactionPerms;
+import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FactionData {
 
@@ -25,9 +29,10 @@ public class FactionData {
     private List<String> newbieperms;
     private List<String> allyperms;
     private List<String> enemyperms;
+    private List<String> applications;
     private int money;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, int money) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications,int money) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
@@ -45,6 +50,7 @@ public class FactionData {
         this.newbieperms = newbieperms;
         this.allyperms = allyperms;
         this.enemyperms = enemyperms;
+        this.applications = applications;
         this.money = money;
     }
 
@@ -53,6 +59,22 @@ public class FactionData {
     public List<String> getNewbieperms() { return newbieperms; }
     public List<String> getAllyperms() { return allyperms; }
     public List<String> getEnemyperms() { return enemyperms; }
+
+    public List<String> getApplications() { return applications; }
+
+    public void setApplications(List<String> applications) {
+        this.applications = applications;
+    }
+
+    public List<UUID> getOnlineMembers() {
+        List<UUID> onlinemembers = new ArrayList<UUID>();
+        for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(this)) {
+            if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+                onlinemembers.add(uuid);
+            }
+        }
+        return onlinemembers;
+    }
 
     public void setAdminperms(List<String> adminperms) {
         this.adminperms = adminperms;

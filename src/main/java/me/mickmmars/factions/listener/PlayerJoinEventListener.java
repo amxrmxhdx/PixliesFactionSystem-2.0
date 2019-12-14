@@ -38,7 +38,7 @@ public class PlayerJoinEventListener implements Listener {
         if(!instance.getChunkPlayer(player).getPlayerData().getFactionInvites().isEmpty()) {
             String amount = new DecimalFormat().format(instance.getChunkPlayer(player).getPlayerData().getFactionInvites().size()).replace(",", ".");
 
-            player.sendMessage("§ayou have §b" + amount + " §ainvites open");
+            player.sendMessage("§aYou have §b" + amount + " §ainvites open");
         }
 
         if (instance.getPlayerData(player).isInFaction()) {
