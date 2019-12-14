@@ -56,7 +56,7 @@ public class ConstructTabCompleter implements TabCompleter {
             List<String> namelist = new ArrayList<>();
             namelist.add("§c<name>");
         }
-        if (command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("ally") && strings.length == 2 || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("enemy") && strings.length == 2 || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("neutral") && strings.length == 2 || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("home") && strings.length == 2 || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("delhome") && strings.length == 2 || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("sethome") && strings.length == 2 ) {
+        if (command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("ally") || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("enemy") || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("neutral") || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("home") || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("delhome") || command.getName().equalsIgnoreCase("factions") && strings[1].equalsIgnoreCase("sethome")) {
             List<String> facnames = new ArrayList<>();
             for (FactionData factions : instance.getFactionManager().getFactions())
                 facnames.add(factions.getName());
