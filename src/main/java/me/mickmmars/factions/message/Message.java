@@ -154,6 +154,7 @@ public enum Message {
     PLAYER_REMOVED_PERMISSION_FROM_GROUP_FAC("§6%player% §7removed the permission §b%perm% §7from the rank %rank%§7.", ""),
     ALREADY_HAS_PREMISSION("§7This group §calready §7has that permission.", ""),
     RANK_DOESNT_HAVE_PERMISSION("§7This group §cdoes not §7have that permission.", ""),
+    NO_PERMISSION_TO_DELETE_CAPITAL("§cYour faction does not allow you to delete the capital.", ""),
     DEV_VERSION("§bDEV #176", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "

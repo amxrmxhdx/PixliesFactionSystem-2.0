@@ -472,6 +472,7 @@ public class FactionManager {
         perms.add(FactionPerms.BUILD);
         perms.add(FactionPerms.CONTAINER);
         perms.add(FactionPerms.CLAIM);
+        perms.add(FactionPerms.RENAME);
         perms.add(FactionPerms.UNCLAIM);
         perms.add(FactionPerms.INTERACT);
         perms.add(FactionPerms.DEPOSIT);
@@ -480,7 +481,8 @@ public class FactionManager {
         perms.add(FactionPerms.DISCORD);
         perms.add(FactionPerms.MODERATION);
         perms.add(FactionPerms.EDITFLAGS);
-        perms.add(FactionPerms.SETCAPITAL);
+        perms.add(FactionPerms.EDITCAPITAL);
+        perms.add(FactionPerms.RELATION);
         perms.add(FactionPerms.EDITPERMS);
         return perms;
     }

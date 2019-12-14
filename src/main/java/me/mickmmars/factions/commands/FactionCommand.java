@@ -204,7 +204,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3 && !instance.getStaffmode().contains(player.getUniqueId())) {
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITCAPITAL)) {
                         player.sendMessage(Message.NO_PERMISSION_TO_SETHOME.getMessage());
                         return false;
                     }
@@ -212,7 +212,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.HOME_ALREADY_EXISTS.getMessage());
                         return false;
                     }
-                    if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().contains(player.getLocation().getChunk())) {
+                    if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().contains(instance.getChunkManager().getChunkDataByChunk(player.getLocation().getChunk()))) {
                         player.sendMessage(Message.HOME_MUST_BE_WITHIN_FAC_TERRITORY.getMessage());
                         return false;
                     }
@@ -235,8 +235,8 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3 && !instance.getStaffmode().contains(player.getUniqueId())) {
-                        player.sendMessage(Message.NO_PERMISSION_TO_SETHOME.getMessage());
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITCAPITAL)) {
+                        player.sendMessage(Message.NO_PERMISSION_TO_DELETE_CAPITAL.getMessage());
                         return false;
                     }
                     if (instance.getPlayerData(player).getCurrentFactionData().getCapitalLocation() == null) {
@@ -264,7 +264,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3) {
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.RENAME)) {
                         player.sendMessage(Message.NO_PERM_CHANGENAME.getMessage());
                         return false;
                     }
@@ -278,7 +278,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3) {
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.DISCORD)) {
                         player.sendMessage(Message.NO_PERM_CHANGEDISCORD.getMessage());
                         return false;
                     }
@@ -322,8 +322,8 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 3) {
-                        player.sendMessage(Factions.col(Message.NO_INVITE_PERM.getMessage()));
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INVITE)) {
+                        player.sendMessage(Message.NO_INVITE_PERM.getMessage());
                         return false;
                     }
                     String targetName = strings[1];
@@ -389,8 +389,8 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 3) {
-                        player.sendMessage(Factions.col(Message.NOPERM_KICK.getMessage()));
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.MODERATION)) {
+                        player.sendMessage(Message.NOPERM_KICK.getMessage());
                         return false;
                     }
                     String targetName = strings[1];
@@ -439,6 +439,14 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage("§8» §7§oPlease specify a page number. ");
                     }
                 } else if (strings[0].equalsIgnoreCase("claim")) {
+                    if (!instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                        return false;
+                    }
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.CLAIM) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                        player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
+                        return false;
+                    }
                     if (strings[1].equalsIgnoreCase("one")) {
                         if (instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null) {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
@@ -446,14 +454,6 @@ public class FactionCommand implements CommandExecutor {
                         }
                         if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                             player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
-                            return false;
-                        }
-                        if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
-                            player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
-                            return false;
-                        }
-                        if (!instance.getPlayerData(player).isInFaction()) {
-                            player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                             return false;
                         }
                         FactionData factionData = instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId());
@@ -474,10 +474,6 @@ public class FactionCommand implements CommandExecutor {
 
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk claimed")));
                     } else if (strings[1].equalsIgnoreCase("auto")) {
-                        if (!instance.getPlayerData(player).isInFaction()) {
-                            player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
-                            return false;
-                        }
                         if (instance.getAutoClaim().contains(player.getUniqueId())) {
                             instance.getAutoClaim().remove(player.getUniqueId());
                             player.sendMessage(Message.AUTOCLAIM_DISABLED.getMessage());
@@ -559,6 +555,14 @@ public class FactionCommand implements CommandExecutor {
                     }
 
                 } else if (strings[0].equalsIgnoreCase("unclaim")) {
+                    if (!instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                        return false;
+                    }
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.UNCLAIM) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                        player.sendMessage(Message.NO_UNCLAIM_PERM.getMessage());
+                        return false;
+                    }
                     if (strings[1].equalsIgnoreCase("one")) {
                         Chunk chunk = player.getLocation().getChunk();
                         if (instance.getChunkManager().getFactionDataByChunk(chunk).equals(null) || !instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getChunkManager().isFree(chunk) && !instance.getStaffmode().contains(player.getUniqueId())) {
@@ -577,14 +581,6 @@ public class FactionCommand implements CommandExecutor {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk unclaimed")));
                             return false;
                         }
-                        if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
-                            player.sendMessage(Message.NO_UNCLAIM_PERM.getMessage());
-                            return false;
-                        }
-                        if (!instance.getPlayerData(player).isInFaction()) {
-                            player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
-                            return false;
-                        }
                         instance.getFactionManager().unclaimChunk(player, player.getLocation().getChunk(), instance.getChunkPlayer(player).getPlayerData().getFactionId());
                         System.out.println("Chunk unclaimed at " + player.getLocation().toString() + " from faction " + instance.getPlayerData(player).getCurrentFactionData().getName());
                         int x = player.getLocation().getChunk().getX();
@@ -596,14 +592,6 @@ public class FactionCommand implements CommandExecutor {
                         EconomyResponse r = Factions.econ.depositPlayer(player, result);
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk unclaimed")));
                     } else if (strings[1].equalsIgnoreCase("auto")) {
-                        if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
-                            player.sendMessage(Message.NO_UNCLAIM_PERM.getMessage());
-                            return false;
-                        }
-                        if (!instance.getPlayerData(player).isInFaction()) {
-                            player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
-                            return false;
-                        }
                         if (instance.getAutoUnclaim().contains(player.getUniqueId())) {
                             instance.getAutoUnclaim().remove(player.getUniqueId());
                             player.sendMessage(Message.AUTOUNCLAIM_DISABLED.getMessage());
@@ -934,7 +922,7 @@ public class FactionCommand implements CommandExecutor {
                         instance.getFactionManager().addPermToGroup(player, strings[3], strings[2]);
                         for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_ADDED_PERMISSION_TO_GROUP_FAC.getMessage().replace("%player%", player.getName()).replace("%rank%", instance.getFactionManager().getRankByName(strings[3]).getName()).replace("%perm%", strings[2]));
-                    } else if (strings[0].equalsIgnoreCase("remove")) {
+                    } else if (strings[1].equalsIgnoreCase("remove")) {
                         if (!instance.getFactionManager().listPerms().contains(instance.getFactionManager().getPermissionByName(strings[2]))) {
                             player.sendMessage(Message.PERMISSION_DOES_NOT_EXIST.getMessage());
                             return false;

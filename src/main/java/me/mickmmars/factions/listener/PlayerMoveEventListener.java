@@ -47,16 +47,8 @@ public class PlayerMoveEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
                         return;
                     }
-                    if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
-                        player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
-                        return;
-                    }
                     if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                         player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
-                        return;
-                    }
-                    if (!instance.getPlayerData(player).isInFaction()) {
-                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return;
                     }
                     FactionData factionData = instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId());
@@ -99,14 +91,6 @@ public class PlayerMoveEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CHUNK_IS_NOT_YOURS.getMessage()));
                         return;
                     }
-                    if (FactionRank.getRankId(instance.getChunkPlayer(player).getPlayerData().getFactionRank()) < 2) {
-                        player.sendMessage(Message.NO_UNCLAIM_PERM.getMessage());
-                        return;
-                    }
-                    if (!instance.getPlayerData(player).isInFaction()) {
-                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
-                        return;
-                    }
                     instance.getFactionManager().unclaimChunk(player, player.getLocation().getChunk(), instance.getChunkPlayer(player).getPlayerData().getFactionId());
                     System.out.println("Chunk unclaimed at " + player.getLocation().toString() + " from faction " + instance.getPlayerData(player).getCurrentFactionData().getName());
                     int x = player.getLocation().getChunk().getX();
@@ -147,7 +131,7 @@ public class PlayerMoveEventListener implements Listener {
             FactionData data = instance.getChunkManager().getFactionDataByChunk(chunk);
 
             if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null) {
-                if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks()) {
+                if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
                     if (data.getName() == instance.getPlayerData(player).getCurrentFactionData().getName()) {
                         player.sendTitle("§b" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
                         instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);

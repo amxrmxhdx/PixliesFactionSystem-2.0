@@ -42,6 +42,10 @@ public class ConstructTabCompleter implements TabCompleter {
                 list.add("forcedisband");
                 list.add("staff");
                 list.add("override");
+                list.add("perms");
+                list.add("capital");
+                list.add("delcapital");
+                list.add("setcapital");
                 list.add("ally");
                 list.add("neutral");
                 list.add("enemy");
