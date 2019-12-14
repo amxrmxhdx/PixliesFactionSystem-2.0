@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="24436896-babc-4eb9-81a9-a5668407f479" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/commands/FactionCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/commands/FactionCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/factions/FactionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/factions/FactionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/commands/ConstructTabCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/commands/ConstructTabCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/mickmmars/factions/config/ConfigInventory.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +34,7 @@
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -67,9 +68,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="315" y="118" key="#Plugins" timestamp="1576289689981">
-      <screen x="62" y="0" width="1306" height="912" />
+    <state x="265" y="113" key="#Plugins" timestamp="1576296207973">
+      <screen x="0" y="0" width="1368" height="872" />
     </state>
+    <state x="265" y="113" key="#Plugins/0.0.1368.872@0.0.1368.872" timestamp="1576296207973" />
     <state x="315" y="118" key="#Plugins/62.0.1306.912@62.0.1306.912" timestamp="1576289689981" />
     <state x="315" y="118" key="#Project_Structure" timestamp="1576295085601">
       <screen x="62" y="0" width="1306" height="912" />
@@ -83,13 +85,15 @@
       <screen x="62" y="0" width="1306" height="912" />
     </state>
     <state x="253" y="114" key="Maven.ArtifactSearchDialog/62.0.1306.912@62.0.1306.912" timestamp="1576295050946" />
-    <state x="203" y="34" key="SettingsEditor" timestamp="1576295173385">
-      <screen x="62" y="0" width="1306" height="912" />
+    <state x="148" y="33" key="SettingsEditor" timestamp="1576296112488">
+      <screen x="0" y="0" width="1368" height="872" />
     </state>
+    <state x="148" y="33" key="SettingsEditor/0.0.1368.872@0.0.1368.872" timestamp="1576296112488" />
     <state x="203" y="34" key="SettingsEditor/62.0.1306.912@62.0.1306.912" timestamp="1576295173385" />
-    <state x="379" y="195" width="672" height="678" key="search.everywhere.popup" timestamp="1576295307266">
-      <screen x="62" y="0" width="1306" height="912" />
+    <state x="337" y="191" width="704" height="649" key="search.everywhere.popup" timestamp="1576296244939">
+      <screen x="0" y="0" width="1368" height="872" />
     </state>
+    <state x="337" y="191" width="704" height="649" key="search.everywhere.popup/0.0.1368.872@0.0.1368.872" timestamp="1576296244939" />
     <state x="379" y="195" width="672" height="678" key="search.everywhere.popup/62.0.1306.912@62.0.1306.912" timestamp="1576295307266" />
   </component>
 </project>
