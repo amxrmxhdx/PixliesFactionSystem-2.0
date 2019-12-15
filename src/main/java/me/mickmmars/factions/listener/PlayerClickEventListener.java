@@ -30,10 +30,8 @@ public class PlayerClickEventListener implements Listener {
         if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§d§oFaction Discord")) {
             player.sendMessage("");
         }
-        if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§aCreate")) {
-            player.closeInventory();
-            instance.getCreatefactiongui().add(player.getUniqueId());
-            player.sendTitle("§bType a name", "§7For your brand new faction!", 20, 20 * 5, 20);
+        if (event.getView().getTitle().equals("§8-= §bYour factions relations §8=-")) {
+            event.setCancelled(true);
         }
 
         for (FactionInventory.GUIPage value : FactionInventory.GUIPage.values()) {

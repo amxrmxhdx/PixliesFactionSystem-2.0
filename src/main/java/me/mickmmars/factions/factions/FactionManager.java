@@ -287,7 +287,7 @@ public class FactionManager {
     }
 
     public void Neutralize(String faction1Id, String faction2Id, FactionData faction1Data, FactionData faction2Data) {
-        if (faction1Data.getAllies().contains(faction2Id)) {
+        if (faction1Data.getAllies().contains(faction2Id) ) {
             List<String> allies1 = faction1Data.getAllies();
             List<String> allies2 = faction2Data.getAllies();
             allies1.remove(faction2Id);
@@ -296,7 +296,7 @@ public class FactionManager {
             faction2Data.setAllies(allies2);
             updateFactionData(faction1Data);
             updateFactionData(faction2Data);
-        } else if (faction1Data.getEnemies().contains(faction2Id)) {
+        } else if (faction1Data.getEnemies().contains(faction2Id) || faction2Data.getEnemies().contains(faction1Id)) {
             List<String> enemies1 = faction1Data.getAllies();
             List<String> enemies2 = faction2Data.getAllies();
             enemies1.remove(faction2Id);
@@ -574,19 +574,19 @@ public class FactionManager {
         if (instance.getPlayerData(player).getFactionRank().equals(FactionRank.LEADER)) {
             return true;
         } else if (instance.getPlayerData(player).getFactionRank().equals(FactionRank.ADMIN)) {
-            if (instance.getPlayerData(player).getCurrentFactionData().getAdminperms().contains(permission.getName())) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getAdminperms().contains(permission.getName().toUpperCase())) {
                 return true;
             } else {
                 return false;
             }
         } else if (pdata.getFactionRank().equals(FactionRank.MEMBER)) {
-            if (data.getMemberperms().contains(permission.getName())) {
+            if (data.getMemberperms().contains(permission.getName().toUpperCase())) {
                 return true;
             } else {
                 return false;
             }
         } else if (pdata.getFactionRank().equals(FactionRank.NEWBIE)) {
-            if (data.getNewbieperms().contains(permission.getName())) {
+            if (data.getNewbieperms().contains(permission.getName().toUpperCase())) {
                 return true;
             } else {
                 return false;
@@ -627,35 +627,25 @@ public class FactionManager {
         if (rankname.equalsIgnoreCase("leader")) {
             return true;
         } else if (rankname.equalsIgnoreCase("admin")) {
-            if (instance.getPlayerData(player).getCurrentFactionData().getAdminperms().contains(permname)) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getAdminperms().contains(permname.toUpperCase())) {
                 return true;
             } else {
                 return false;
             }
         } else if (rankname.equalsIgnoreCase("member")) {
-            if (instance.getPlayerData(player).getCurrentFactionData().getMemberperms().contains(permname)) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getMemberperms().contains(permname.toUpperCase())) {
                 return true;
             } else {
                 return false;
             }
         } else if (rankname.equalsIgnoreCase("newbie")) {
-            if (instance.getPlayerData(player).getCurrentFactionData().getNewbieperms().contains(permname)) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getNewbieperms().contains(permname.toUpperCase())) {
                 return true;
             } else {
                 return false;
             }
         }
         return false;
-    }
-
-    public List<FactionRank> getRanks() {
-        List<FactionRank> ranks = new ArrayList<FactionRank>();
-        ranks.add(FactionRank.LEADER);
-        ranks.add(FactionRank.ADMIN);
-        ranks.add(FactionRank.MEMBER);
-        ranks.add(FactionRank.NEWBIE);
-        ranks.add(FactionRank.NONE);
-        return ranks;
     }
 
     public FactionRank getRankByName(String name) {

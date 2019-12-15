@@ -750,11 +750,11 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NO_PERMISSIONS.getMessage());
                         return false;
                     }
+                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionByName(strings[1])))
+                        instance.getChunkPlayer(uuid).removeFromFaction();
                     instance.getFactionManager().removeFaction(instance.getFactionManager().getFactionByName(strings[1]));
                     for (UUID uuid : instance.getStaffmode())
                         Bukkit.getPlayer(uuid).sendMessage(Message.FACTION_FORCEDISBANDED.getMessage().replace("%player%", player.getName()).replace("%faction%", strings[1]));
-                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionByName(strings[1])))
-                        instance.getChunkPlayer(uuid).removeFromFaction();
                 } else if (strings[0].equalsIgnoreCase("forcejoin")) {
                     if (!instance.getStaffmode().contains(player.getUniqueId())) {
                         player.sendMessage(Message.NO_PERMISSIONS.getMessage());
@@ -822,7 +822,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.PLAYER_DOESNT_EXIST.getMessage());
                         return false;
                     }
-                    if (!instance.getPlayerData(player).getCurrentFactionData().getApplications().contains(Bukkit.getPlayer(strings[1]).getUniqueId().toString())) {
+                    if (!instance.getPlayerData(player).getCurrentFactionData().getApplications().contains(Objects.requireNonNull(Bukkit.getPlayer(strings[1])).getUniqueId().toString())) {
                         player.sendMessage(Message.APPLICATION_DOESNT_EXIST.getMessage());
                         return false;
                     }

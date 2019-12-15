@@ -100,7 +100,7 @@ public class FactionInventory {
                 }
                 break;
             case FMAP:
-                new FMapInventory(player.getUniqueId()).load();
+                new FMapInventory(player.getUniqueId()).setChunks().load();
                 break;
             case APPLICATIONS:
                 for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {

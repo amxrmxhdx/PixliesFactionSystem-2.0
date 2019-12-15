@@ -1,12 +1,13 @@
 <component name="libraryTable">
   <library name="MickMSpigot">
     <CLASSES>
-      <root url="jar://E:/PixliesEarth/lobby/replacement plugins/MickMSpigot.jar!/" />
-      <root url="jar://E:/PixliesEarth/lobby/replacement plugins/PlaceholderAPI-2.10.3.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/MickMSpigot.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Vault (2).jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/PlaceholderAPI-2.10.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://E:/PixliesEarth/lobby/replacement plugins/MickMSpigot.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/MickMSpigot.jar!/" />
     </SOURCES>
   </library>
 </component>
