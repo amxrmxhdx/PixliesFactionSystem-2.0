@@ -80,8 +80,6 @@ public class FactionCommand implements CommandExecutor {
                     new FactionInventory(player.getUniqueId()).setItems().load();
                 } else if (strings[0].equalsIgnoreCase("list")) {
                     new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.LIST).removeBackItem().load();
-                } else if (strings[0].equalsIgnoreCase("homes")) {
-                    new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.HOMES).removeBackItem().load();
                 } else if (strings[0].equalsIgnoreCase("money")) {
                     player.sendMessage("§8» §7Usage: §7/f money §cbal§8, §7/f money §cdeposit §a<amount>§8, §7/f money §cwithdraw §a<amount>");
                 } else if (strings[0].equalsIgnoreCase("delete") || strings[0].equalsIgnoreCase("d")) {
@@ -178,7 +176,7 @@ public class FactionCommand implements CommandExecutor {
                     if (player.hasPermission("factions.staff")) {
                         if (instance.getFactionManager().getFactionByName("SafeZone") == null) {
                             boolean success = true;
-                            final FactionData data = new FactionData("SafeZone", "safezone", new ArrayList<String>(), new ArrayList<ChunkData>(), 999999999, "Dont worry, you are safe here.", new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), 9999);
+                            final FactionData data = new FactionData("SafeZone", "safezone", new ArrayList<String>(), new ArrayList<ChunkData>(), 999999999, "Dont worry, you are safe here.", new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),9999);
                             try {
                                 instance.getFactionManager().createNewFaction(data);
                             } catch (IOException e) {
@@ -298,7 +296,7 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
                     boolean success = true;
-                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() , null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
+                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() , null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
                     if (instance.getFactionManager().getFactionById(data.getId()) != null) {
                         player.sendMessage(Message.UNKNOWN_ERROR.getMessage());
                         return false;
@@ -794,6 +792,49 @@ public class FactionCommand implements CommandExecutor {
                         for (FactionPerms perm : instance.getFactionManager().listPerms()) {
                             player.sendMessage("§c" + perm.getName().toUpperCase());
                         }
+                    }
+                } else if (strings[0].equalsIgnoreCase("apply")) {
+                    if (instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.ALREADY_IN_FAC.getMessage());
+                        return false;
+                    }
+                    if (instance.getFactionManager().getFactionByName(strings[1]).equals(null)) {
+                        player.sendMessage(Message.FACTION_DOESNT_EXIST.getMessage());
+                        return false;
+                    }
+                    instance.getFactionManager().addPlayerApplication(player, instance.getFactionManager().getFactionByName(strings[1]));
+                    player.sendMessage(Message.APPLICATION_SUCCESSFULLY_SENT.getMessage().replace("%faction%", strings[1]));
+                    if (instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers().size() >= 1) {
+                        for (UUID uuid : instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers()) {
+                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_SENT_APPLICATION.getMessage().replace("%player%", player.getName()));
+                        }
+                    }
+                } else if (strings[0].equalsIgnoreCase("accept")) {
+                    if (!instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                        return false;
+                    }
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INVITE)) {
+                        player.sendMessage(Message.NO_INVITE_PERM.getMessage());
+                        return false;
+                    }
+                    if (Bukkit.getPlayer(strings[1]).equals(null)) {
+                        player.sendMessage(Message.PLAYER_DOESNT_EXIST.getMessage());
+                        return false;
+                    }
+                    if (!instance.getPlayerData(player).getCurrentFactionData().getApplications().contains(Bukkit.getPlayer(strings[1]).getUniqueId().toString())) {
+                        player.sendMessage(Message.APPLICATION_DOESNT_EXIST.getMessage());
+                        return false;
+                    }
+                    instance.getFactionManager().removePlayerApplication(Bukkit.getPlayer(strings[1]), instance.getPlayerData(player).getCurrentFactionData());
+                    instance.getChunkPlayer(Bukkit.getPlayer(strings[1]).getUniqueId()).addToFaction(instance.getPlayerData(player).getCurrentFactionData(), FactionRank.NEWBIE);
+                    if (instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers().size() >= 1) {
+                        for (UUID uuid : instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers()) {
+                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_JOINED_YOUR_FACTION.getMessage().replace("%player%", strings[1]));
+                        }
+                    }
+                    if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(strings[1]))) {
+                        Bukkit.getPlayer(strings[1]).sendMessage(Message.SUCCESSFULLY_JOINED_FACTION.getMessage().replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()));
                     }
                 }
                 break;

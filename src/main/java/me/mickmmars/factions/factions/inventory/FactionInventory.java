@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class FactionInventory {
@@ -98,14 +99,13 @@ public class FactionInventory {
                     inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(member.getName()).setDisplayName(member.getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(member).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
                 }
                 break;
-            case PERMISSIONS:
-                for (FactionPerms perms : FactionPerms.values()) {
-                    inventory.addItem(new ItemBuilder(Material.WRITABLE_BOOK).setDisplayName("§b§l" + perms.getName()).addLoreArray(new String[]{"§9§oDescription: " + perms.getDescription(), "§7Rank: " + perms.getStartrank().getName(), " ", "§8§l(§7§l!§8§l) §7§oClick to edit for ranks"}).build());
-                }
+            case FMAP:
+                new FMapInventory(player.getUniqueId()).load();
                 break;
-            case HOMES:
-                for (HomeData homes : instance.getPlayerData(player).getHomes()) {
-                    inventory.addItem(new ItemBuilder(Material.CAMPFIRE).setDisplayName("§b" + homes.getName()).addLoreArray(new String[]{"§7Location: §e" + Math.floor(homes.getLocation().getX()) + "§8, §e" + Math.floor(homes.getLocation().getY()) + "§8, §e" + Math.floor(homes.getLocation().getZ()), " ", "§8§l(§7§l!§8§l) §7§oLeft-click to teleport", "§8§l(§7§l!§8§l) §7§oRight-click to remove"}).build());
+            case APPLICATIONS:
+                for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {
+                    UUID uuid = UUID.fromString(uuids);
+                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName()).setDisplayName(Bukkit.getPlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
                 }
                 break;
             case FINANCE:
@@ -157,9 +157,9 @@ public class FactionInventory {
     public enum GUIPage {
         LIST("§a§oList", Material.PLAYER_HEAD, "{display:{Name:\\\"Papers\\\"},SkullOwner:{Id:\\\"08a21c84-663b-4638-a31e-2f0423a3853f\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0="),
         MEMBERS("§a§oMembers", Material.PLAYER_HEAD),
-        PERMISSIONS("§a§oPermissions", Material.PLAYER_HEAD, "{display:{Name:\\\"Winrar Books\\\"},SkullOwner:{Id:\\\"5fdf61b2-71bf-456e-864c-45f7dfeadf38\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBlYWJhZTc2Mjk0ZGFiNTM2NjI3ZGIyMTk3ZWE0YzkyNWFjNmJmN2VhMDNkOTVkMmYxNGUxNzI1NTFlY2I0YiJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBlYWJhZTc2Mjk0ZGFiNTM2NjI3ZGIyMTk3ZWE0YzkyNWFjNmJmN2VhMDNkOTVkMmYxNGUxNzI1NTFlY2I0YiJ9fX0="),
+        FMAP("§a§oFMap", Material.PLAYER_HEAD, "{display:{Name:\\\"Grass Block (alpha)\\\"},SkullOwner:{Id:\\\"e2e44b3b-e45b-45ae-82ce-2ed4208184a2\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19"),
         SETTINGS("§a§oSettings", Material.PLAYER_HEAD, "{display:{Name:\\\"Command Block (impulse)\\\"},SkullOwner:{Id:\\\"a36e6694-fa87-48d2-abdb-62eaf2b6711d\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19"),
-        HOMES("§a§oPlayer homes", Material.PLAYER_HEAD, "{display:{Name:\\\"House\\\"},SkullOwner:{Id:\\\"7db0de46-0c0a-4e23-b00f-3bd851839481\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc0MTBjMDdiZmJiNDE0NTAwNGJmOTE4YzhkNjMwMWJkOTdjZTEzMjcwY2UxZjIyMWQ5YWFiZWUxYWZkNTJhMyJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc0MTBjMDdiZmJiNDE0NTAwNGJmOTE4YzhkNjMwMWJkOTdjZTEzMjcwY2UxZjIyMWQ5YWFiZWUxYWZkNTJhMyJ9fX0="),
+        APPLICATIONS("§a§oApplications", Material.PLAYER_HEAD, "{display:{Name:\\\"Old Manuscript\\\"},SkullOwner:{Id:\\\"82929274-58b4-4a75-8e00-46f4e1aa85f9\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ==\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ=="),
         UPGRADES("§a§oFaction upgrades", Material.PLAYER_HEAD, "{display:{Name:\\\"Quartz Arrow Up\\\"},SkullOwner:{Id:\\\"96f198b9-1e67-4b68-bbd1-c5213797e58a\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk5YWFmMjQ1NmE2MTIyZGU4ZjZiNjI2ODNmMmJjMmVlZDlhYmI4MWZkNWJlYTFiNGMyM2E1ODE1NmI2NjkifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk5YWFmMjQ1NmE2MTIyZGU4ZjZiNjI2ODNmMmJjMmVlZDlhYmI4MWZkNWJlYTFiNGMyM2E1ODE1NmI2NjkifX19"),
         FINANCE("§a§oFinance", Material.PLAYER_HEAD, "{display:{Name:\\\"Monitor\\\"},SkullOwner:{Id:\\\"bbc26eae-6689-4c28-846a-6908baf83d12\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0="),
         FLAGS("§a§oFlags", Material.PLAYER_HEAD, "{display:{Name:\\\"Icon (Flag)\\\"},SkullOwner:{Id:\\\"5ec8b668-ed18-40ed-8aaa-b93f169ee0b4\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0="),

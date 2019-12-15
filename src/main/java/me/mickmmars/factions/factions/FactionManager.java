@@ -71,6 +71,24 @@ public class FactionManager {
         return owner;
     }
 
+    public void addPlayerApplication(Player player, FactionData data) {
+        if (data.getApplications().contains(player.getUniqueId().toString())) {
+            return;
+        }
+        List<String> applications = new ArrayList<String>(data.getApplications());
+        applications.add(player.getUniqueId().toString());
+        data.setApplications(applications);
+    }
+
+    public void removePlayerApplication(Player player, FactionData data) {
+        if (!data.getApplications().contains(player.getUniqueId().toString())) {
+            return;
+        }
+        List<String> applications = new ArrayList<String>(data.getApplications());
+        applications.remove(player.getUniqueId().toString());
+        data.setApplications(applications);
+    }
+
     public String getRelColour(String id1, String id2) {
         if (id1.equals(id2)){
             return FactionRelations.SELF.getColour();

@@ -155,6 +155,12 @@ public enum Message {
     ALREADY_HAS_PREMISSION("§7This group §calready §7has that permission.", ""),
     RANK_DOESNT_HAVE_PERMISSION("§7This group §cdoes not §7have that permission.", ""),
     NO_PERMISSION_TO_DELETE_CAPITAL("§cYour faction does not allow you to delete the capital.", ""),
+    APPLICATION_SUCCESSFULLY_SENT("§7You §asuccessfully §7sent an application to §b%faction%§7.", ""),
+    PLAYER_SENT_APPLICATION("§6%player% §7sent an citizen-application to your faction. §a/f accept <name>", ""),
+    PLAYER_DOESNT_EXIST("§7This player §cdoes not §7exist.", ""),
+    APPLICATION_DOESNT_EXIST("§7This player never sent an application to your faction.", ""),
+    PLAYER_JOINED_YOUR_FACTION("§7Player §6%player% §7joined your faction.", ""),
+    SUCCESSFULLY_JOINED_FACTION("§7You §asuccessfully §7joined §b%faction%§7.", ""),
     DEV_VERSION("§bDEV #176", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "

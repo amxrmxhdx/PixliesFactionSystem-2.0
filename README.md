@@ -36,6 +36,8 @@ Command | Function
 /f relationlist | shows factions you have a relation with.
 /f version | see the version of the plugin.
 /f info | show basic information about your faction.
+/f apply <faction> | Send citizenship application to a faction
+/f accept <player> | accept a players application.
 
 ## Permissions
 
