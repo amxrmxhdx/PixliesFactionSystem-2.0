@@ -38,6 +38,7 @@ Command | Function
 /f info | show basic information about your faction.
 /f apply <faction> | Send citizenship application to a faction
 /f accept <player> | accept a players application.
+/f dynmapcolour <colour> | Change your factions dynmapcolour
 
 ## Permissions
 
