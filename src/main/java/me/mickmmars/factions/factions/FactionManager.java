@@ -78,6 +78,7 @@ public class FactionManager {
         List<String> applications = new ArrayList<String>(data.getApplications());
         applications.add(player.getUniqueId().toString());
         data.setApplications(applications);
+        updateFactionData(data);
     }
 
     public void removePlayerApplication(Player player, FactionData data) {
@@ -87,6 +88,7 @@ public class FactionManager {
         List<String> applications = new ArrayList<String>(data.getApplications());
         applications.remove(player.getUniqueId().toString());
         data.setApplications(applications);
+        updateFactionData(data);
     }
 
     public String getRelColour(String id1, String id2) {
@@ -253,7 +255,7 @@ public class FactionManager {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
                 return;
             }
-            if (this.checkForPlayergroupPermission(player, FactionPerms.CLAIM)) {
+            if (!this.checkForPlayergroupPermission(player, FactionPerms.CLAIM)) {
                 player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
                 return;
             }
@@ -329,7 +331,7 @@ public class FactionManager {
             ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
             ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
             String id = instance.generateKey(10);
-            ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation);
+            ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ());
             this.addChunk(factionData, chunkData);
             instance.getFactionManager().getFactionById(factionId).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) - price);
             instance.getChunkManager().getChunks().add(chunkData);
@@ -348,7 +350,7 @@ public class FactionManager {
         ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
         ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
         String id = instance.getChunkManager().getChunkDataByChunk(chunk).getId();
-        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation);
+        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ());
         this.removeChunk(factionData, chunkData);
         instance.getFactionManager().getFactionById(factionid).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) + price);
         instance.getChunkManager().getChunks().remove(chunkData);
@@ -546,23 +548,23 @@ public class FactionManager {
     public void removePermFromGroup(Player player, String groupname, String permission) {
         if (groupname.equalsIgnoreCase("admin")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAdminperms());
-            perms.remove(permission);
+            perms.remove(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setAdminperms(perms);
         } else if (groupname.equalsIgnoreCase("member")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getMemberperms());
-            perms.remove(permission);
+            perms.remove(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setMemberperms(perms);
         } else if (groupname.equalsIgnoreCase("newbie")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getNewbieperms());
-            perms.remove(permission);
+            perms.remove(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setNewbieperms(perms);
         } else if (groupname.equalsIgnoreCase("ally")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getAllyperms());
-            perms.remove(permission);
+            perms.remove(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setAllyperms(perms);
         } else if (groupname.equalsIgnoreCase("enemy")) {
             List<String> perms = new ArrayList<String>(instance.getPlayerData(player).getCurrentFactionData().getEnemyperms());
-            perms.remove(permission);
+            perms.remove(permission.toUpperCase());
             instance.getPlayerData(player).getCurrentFactionData().setEnemyperms(perms);
         }
         updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
@@ -601,7 +603,7 @@ public class FactionManager {
         ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
         ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
         String id = instance.generateKey(10);
-        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation);
+        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, requester.getLocation().getChunk().getX(), requester.getLocation().getChunk().getZ());
         if (instance.getPlayerData(reciever).getAccessableChunks().contains(chunkData)) {
             requester.sendMessage(Message.PLAYER_ALREADY_HAS_ACCESS_TO_CHUNK.getMessage().replace("%player%", reciever.getName()));
             return;
@@ -611,6 +613,7 @@ public class FactionManager {
         instance.getPlayerData(reciever).setAccessableChunks(accessableChunks);
         requester.sendMessage(Message.GAVE_CHUNKACCESS_TO_PLAYER.getMessage().replace("%player%", reciever.getName()));
         reciever.sendMessage(Message.PLAYER_GAINED_CHUNK_ACCESS.getMessage().replace("%loc%", requester.getLocation().getChunk().getX() + "§7, §a" + requester.getLocation().getChunk().getZ()));
+        instance.getChunkPlayer(reciever.getUniqueId()).updatePlayerData(instance.getPlayerData(reciever.getUniqueId()));
     }
 
     public FactionPerms getPermissionByName(String name) {

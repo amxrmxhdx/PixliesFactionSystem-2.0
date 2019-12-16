@@ -99,9 +99,6 @@ public class FactionInventory {
                     inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(member.getName()).setDisplayName(member.getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(member).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
                 }
                 break;
-            case FMAP:
-                new FMapInventory(player.getUniqueId()).setChunks().load();
-                break;
             case APPLICATIONS:
                 for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {
                     UUID uuid = UUID.fromString(uuids);

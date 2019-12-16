@@ -128,10 +128,10 @@ public class PlayerMoveEventListener implements Listener {
         }*/
 
         if (!instance.getAutoClaim().contains(player.getUniqueId()) || !instance.getAutoUnclaim().contains(player.getUniqueId())) {
-            FactionData data = instance.getChunkManager().getFactionDataByChunk(chunk);
+            FactionData data = instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk());
 
             if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null) {
-                if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
+                if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() || instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
                     if (data.getName() == instance.getPlayerData(player).getCurrentFactionData().getName()) {
                         player.sendTitle("§b" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
                         instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
@@ -160,9 +160,6 @@ public class PlayerMoveEventListener implements Listener {
                     instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(false);
                 }
             }
-
-
         }
     }
-
 }

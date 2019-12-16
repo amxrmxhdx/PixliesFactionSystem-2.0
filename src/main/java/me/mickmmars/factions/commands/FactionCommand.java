@@ -828,13 +828,13 @@ public class FactionCommand implements CommandExecutor {
                     }
                     instance.getFactionManager().removePlayerApplication(Bukkit.getPlayer(strings[1]), instance.getPlayerData(player).getCurrentFactionData());
                     instance.getChunkPlayer(Bukkit.getPlayer(strings[1]).getUniqueId()).addToFaction(instance.getPlayerData(player).getCurrentFactionData(), FactionRank.NEWBIE);
+                    if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(strings[1]))) {
+                        Bukkit.getPlayer(strings[1]).sendMessage(Message.SUCCESSFULLY_JOINED_FACTION.getMessage().replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()));
+                    }
                     if (instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers().size() >= 1) {
                         for (UUID uuid : instance.getFactionManager().getFactionByName(strings[1]).getOnlineMembers()) {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_JOINED_YOUR_FACTION.getMessage().replace("%player%", strings[1]));
                         }
-                    }
-                    if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(strings[1]))) {
-                        Bukkit.getPlayer(strings[1]).sendMessage(Message.SUCCESSFULLY_JOINED_FACTION.getMessage().replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()));
                     }
                 }
                 break;

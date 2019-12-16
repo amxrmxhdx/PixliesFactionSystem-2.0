@@ -6,7 +6,11 @@
 
     <groupId>me.mickmmars</groupId>
     <artifactId>PixliesFactionSystem</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>pfsdynmap</module>
+    </modules>
 
 
 </project>
