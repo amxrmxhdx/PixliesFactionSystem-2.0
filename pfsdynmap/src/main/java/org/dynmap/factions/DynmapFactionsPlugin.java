@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.chunk.data.ChunkData;
+import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.FactionManager;
 import me.mickmmars.factions.factions.data.FactionData;
@@ -34,13 +35,15 @@ import org.dynmap.utils.TileFlags;
 
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:120%;\">%regionname%</span><br />Flags<br /><span style=\"font-weight:bold;\">%flags%</span></div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:120%;\">%regionname%</span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%<span style=\"font-weight:bold;\"></span></div>";
     Plugin dynmap;
     DynmapAPI api;
     MarkerAPI markerapi;
     Plugin factions;
     Factions factapi;
     boolean playersets;
+    private static DynmapFactionsPlugin instance;
+    public static DynmapFactionsPlugin getInstance() { return instance; }
 
     int blocksize;
 
@@ -88,12 +91,12 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         }
 
         AreaStyle(FileConfiguration cfg, String path) {
-            strokecolor = cfg.getString(path+".strokeColor", "#FF0000");
+            strokecolor = cfg.getString(path+".strokeColor", "#45C96F");
             strokeopacity = cfg.getDouble(path+".strokeOpacity", 0.8);
             strokeweight = cfg.getInt(path+".strokeWeight", 3);
-            fillcolor = cfg.getString(path+".fillColor", "#FF0000");
+            fillcolor = cfg.getString(path+".fillColor", "#28F569");
             fillopacity = cfg.getDouble(path+".fillOpacity", 0.35);
-            homemarker = cfg.getString(path+".homeicon", null);
+            homemarker = cfg.getString(path+".homeicon", "blueicon");
             if(homemarker != null) {
                 homeicon = markerapi.getMarkerIcon(homemarker);
                 if(homeicon == null) {
@@ -190,21 +193,17 @@ public class DynmapFactionsPlugin extends JavaPlugin {
     private String formatInfoWindow(FactionData fact) {
         String v = "<div class=\"regioninfo\">"+infowindow+"</div>";
         v = v.replace("%regionname%", ChatColor.stripColor(fact.getName()));
-        if(fact.getDescription() != null) {
-            v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
-        } else {
-            v = v.replace("%description%", "");
-        }
+        v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
 
         Player adm = Bukkit.getPlayer(Factions.getInstance().getFactionManager().getLeader(fact));
-        v = v.replace("%playerowners%", (adm!=null)?adm.getName():"");
-        String res = "";
-        for(UUID r : Factions.getInstance().getFactionManager().getMembersFromFaction(fact)) {
-            if(res.length()>0) res += ", ";
-            res += Bukkit.getPlayer(r).getName();
+        v = v.replace("%playerowners%", adm.getName());
+        StringJoiner members = new StringJoiner(", ");
+        for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(fact)) {
+            if (Factions.getInstance().getFactionManager().getLeader(fact) != uuid) {
+                members.add(Bukkit.getPlayer(uuid).getName());
+            }
         }
-        v = v.replace("%playermembers%", res);
-
+        v = v.replace("%playermembers%", members.toString());
         v = v.replace("%nation%", ChatColor.stripColor(fact.getName()));
         return v;
     }
@@ -437,8 +436,16 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         }
     }
 
+    private MarkerIcon getMarkerIcon(String factname, FactionData fact) {
+        AreaStyle as = cusstyle.get(factname);
+        if(as == null) {
+            as = defstyle;
+        }
+        return as.homeicon;
+    }
+
     /* Update Factions information */
-    private void updateFactions() {
+    public void updateFactions() {
         Map<String,AreaMarker> newmap = new HashMap<String,AreaMarker>(); /* Build new map */
         Map<String,Marker> newmark = new HashMap<String,Marker>(); /* Build new map */
 
@@ -483,6 +490,28 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                 handleFactionOnWorld(factname, fact, worldblocks.getKey(), worldblocks.getValue(), newmap, newmark);
             }
             factblocks.blocks.clear();
+
+            ChunkLocation homeloc = fact.getCapitalLocation();
+            if(homeloc != null) {
+                String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "__home";
+                MarkerIcon ico = getMarkerIcon(factname, fact);
+                if (ico != null) {
+                    Marker home = resmark.remove(markid);
+                    String lbl = factname + " [capital]";
+                    if (home == null) {
+                        home = set.createMarker(markid, lbl, homeloc.getWorld(),
+                                homeloc.getX(), homeloc.getY(), homeloc.getZ(), ico, false);
+                    } else {
+                        home.setLocation(homeloc.getWorld(), homeloc.getX(), homeloc.getY(), homeloc.getZ());
+                        home.setLabel(lbl);   /* Update label */
+                        home.setMarkerIcon(ico);
+                    }
+                    if (home != null) {
+                        home.setDescription(formatInfoWindow(fact)); /* Set popup */
+                        newmark.put(markid, home);
+                    }
+                }
+            }
         }
         blocks_by_faction.clear();
 
@@ -634,7 +663,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         updatePlayerSets();
 
         /* Set up update job - based on periond */
-        int per = cfg.getInt("update.period", 300);
+        int per = cfg.getInt("update.period", 100);
         if(per < 15) per = 15;
         updperiod = (per*20);
         stop = false;

@@ -1,5 +1,5 @@
-name: Dynmap-Factions
+name: PFS-Dynmap
 main: org.dynmap.factions.DynmapFactionsPlugin
-version: "${project.version}-${BUILD_NUMBER}"
+version: "1.2"
 author: MickMMars
 depend: [ dynmap, PixliesFactionSystem ]

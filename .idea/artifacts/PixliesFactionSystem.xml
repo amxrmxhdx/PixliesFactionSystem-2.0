@@ -2,7 +2,7 @@
   <artifact type="jar" build-on-make="true" name="PixliesFactionSystem">
     <output-path>$PROJECT_DIR$/../..</output-path>
     <root id="archive" name="PixliesFactionSystem.jar">
-      <element id="module-output" name="PixliesFactionSystem-2.0" />
+      <element id="module-output" name="factions" />
     </root>
   </artifact>
 </component>
