@@ -54,6 +54,10 @@ public class FactionData {
         this.money = money;
     }
 
+    public List<UUID> listMembers() {
+        return Factions.getInstance().getFactionManager().getMembersFromFaction(this);
+    }
+
     public List<String> getAdminperms() { return adminperms; }
     public List<String> getMemberperms() { return memberperms; }
     public List<String> getNewbieperms() { return newbieperms; }

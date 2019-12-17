@@ -196,6 +196,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
 
         Player adm = Bukkit.getPlayer(Factions.getInstance().getFactionManager().getLeader(fact));
+        assert adm != null;
         v = v.replace("%playerowners%", adm.getName());
         StringJoiner members = new StringJoiner(", ");
         for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(fact)) {
@@ -558,6 +559,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
             severe("Cannot find dynmap!");
             return;
         }
+        instance = this;
         api = (DynmapAPI)dynmap; /* Get API */
         /* Get Factions */
         Plugin p = pm.getPlugin("PixliesFactionSystem");

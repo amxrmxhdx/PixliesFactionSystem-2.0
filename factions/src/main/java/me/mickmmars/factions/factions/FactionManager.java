@@ -337,7 +337,7 @@ public class FactionManager {
             instance.getFactionManager().getFactionById(factionId).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) - price);
             instance.getChunkManager().getChunks().add(chunkData);
             updateFactionData(getFactionById(factionId));
-            if (Bukkit.getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
+            if (Bukkit.getServer().getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
                 DynmapFactionsPlugin.getInstance().updateFactions();
             }
         } else {
@@ -360,7 +360,7 @@ public class FactionManager {
         instance.getFactionManager().getFactionById(factionid).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) + price);
         instance.getChunkManager().getChunks().remove(chunkData);
         updateFactionData(factionData);
-        if (Bukkit.getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
             DynmapFactionsPlugin.getInstance().updateFactions();
         }
     }

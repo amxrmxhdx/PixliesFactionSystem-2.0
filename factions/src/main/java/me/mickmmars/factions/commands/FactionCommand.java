@@ -869,6 +869,8 @@ public class FactionCommand implements CommandExecutor {
                             dynconfig.set("custstyle." + instance.getPlayerData(player).getCurrentFactionData().getName() + ".boost", false);
                             for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                                 Bukkit.getPlayer(uuid).sendMessage(Message.CHANGED_DYNMAPCOLOUR.getMessage().replace("%player%", player.getName()).replace("%col%", "§4§lRed"));
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").saveConfig();
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").reloadConfig();
                             DynmapFactionsPlugin.getInstance().updateFactions();
                         } else if (strings[1].equalsIgnoreCase("orange")) {
                             dynconfig.set("custstyle." + instance.getPlayerData(player).getCurrentFactionData().getName() + ".strokeColor", "#E96E06");
@@ -876,6 +878,8 @@ public class FactionCommand implements CommandExecutor {
                             dynconfig.set("custstyle." + instance.getPlayerData(player).getCurrentFactionData().getName() + ".boost", false);
                             for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                                 Bukkit.getPlayer(uuid).sendMessage(Message.CHANGED_DYNMAPCOLOUR.getMessage().replace("%player%", player.getName()).replace("%col%", "§6§lOrange"));
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").saveConfig();
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").reloadConfig();
                             DynmapFactionsPlugin.getInstance().updateFactions();
                         } else if (strings[1].equalsIgnoreCase("green")) {
                             dynconfig.set("custstyle." + instance.getPlayerData(player).getCurrentFactionData().getName() + ".strokeColor", "#45C96F");
@@ -883,6 +887,8 @@ public class FactionCommand implements CommandExecutor {
                             dynconfig.set("custstyle." + instance.getPlayerData(player).getCurrentFactionData().getName() + ".boost", false);
                             for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                                 Bukkit.getPlayer(uuid).sendMessage(Message.CHANGED_DYNMAPCOLOUR.getMessage().replace("%player%", player.getName()).replace("%col%", "§a§lGreen"));
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").saveConfig();
+                            Bukkit.getPluginManager().getPlugin("PFS-Dynmap").reloadConfig();
                             DynmapFactionsPlugin.getInstance().updateFactions();
                         }
                     }
