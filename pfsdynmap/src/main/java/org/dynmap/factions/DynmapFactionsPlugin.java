@@ -35,7 +35,7 @@ import org.dynmap.utils.TileFlags;
 
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:120%;\">%regionname%</span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%<span style=\"font-weight:bold;\"></span></div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%</div>";
     Plugin dynmap;
     DynmapAPI api;
     MarkerAPI markerapi;

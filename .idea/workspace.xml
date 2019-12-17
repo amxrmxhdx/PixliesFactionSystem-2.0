@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4b061f38-1864-4dff-83fe-3ad014e7ff38" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/FactionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/FactionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/FactionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/FactionManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pfsdynmap/src/main/java/org/dynmap/factions/DynmapFactionsPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/pfsdynmap/src/main/java/org/dynmap/factions/DynmapFactionsPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin.class" beforeDir="false" afterPath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1V28Va9gohoQUs1FNUXQuYz4hrA" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PFSDynmap.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Amir\Desktop\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\resources" />
+    </key>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4b061f38-1864-4dff-83fe-3ad014e7ff38" name="Default Changelist" comment="" />
+      <created>1576439864286</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1576439864286</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="585" y="197" key="#Project_Structure" timestamp="1576521661988">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="2503" y="317" key="#Project_Structure/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576453380716" />
+    <state x="585" y="197" key="#Project_Structure/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576521661988" />
+    <state x="834" y="427" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1576442421658">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="834" y="427" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576442421658" />
+    <state x="914" y="386" key="FileChooserDialogImpl" timestamp="1576541943490">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="2832" y="506" key="FileChooserDialogImpl/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576453289466" />
+    <state x="914" y="386" key="FileChooserDialogImpl/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576541943490" />
+    <state x="654" y="158" key="NewModule_or_Project.wizard" timestamp="1576439998613">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="654" y="158" key="NewModule_or_Project.wizard/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576439998613" />
+    <state x="472" y="113" key="SettingsEditor" timestamp="1576615976646">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="2390" y="233" key="SettingsEditor/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576453337282" />
+    <state x="472" y="113" key="SettingsEditor/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576615976646" />
+    <state x="428" y="146" key="new project wizard" timestamp="1576521404846">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="2346" y="266" key="new project wizard/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576451316116" />
+    <state x="428" y="146" key="new project wizard/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576521404846" />
+    <state x="656" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1576523428362">
+      <screen x="65" y="0" width="1855" height="1080" />
+    </state>
+    <state x="2574" y="355" width="672" height="678" key="search.everywhere.popup/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576451809547" />
+    <state x="656" y="235" width="672" height="678" key="search.everywhere.popup/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576523428362" />
+  </component>
+</project>
