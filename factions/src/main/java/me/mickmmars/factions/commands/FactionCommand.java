@@ -179,7 +179,7 @@ public class FactionCommand implements CommandExecutor {
                     if (player.hasPermission("factions.staff")) {
                         if (instance.getFactionManager().getFactionByName("SafeZone") == null) {
                             boolean success = true;
-                            final FactionData data = new FactionData("SafeZone", "safezone", new ArrayList<String>(), new ArrayList<ChunkData>(), 999999999, "Dont worry, you are safe here.", new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),9999);
+                            final FactionData data = new FactionData("SafeZone", "safezone", new ArrayList<String>(), new ArrayList<ChunkData>(), 999999999, "Dont worry, you are safe here.", new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), 9999);
                             try {
                                 instance.getFactionManager().createNewFaction(data);
                             } catch (IOException e) {
@@ -301,7 +301,7 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
                     boolean success = true;
-                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() , null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
+                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() , null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
                     if (instance.getFactionManager().getFactionById(data.getId()) != null) {
                         player.sendMessage(Message.UNKNOWN_ERROR.getMessage());
                         return false;

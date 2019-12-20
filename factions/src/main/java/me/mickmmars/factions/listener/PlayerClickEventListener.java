@@ -43,7 +43,7 @@ public class PlayerClickEventListener implements Listener {
                     }
                     return;
                 } else if (view.getTitle().equals("§a§oMembers")) {
-                    if (event.getClick().isLeftClick() && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack")) {
+                    if (event.getClick().isLeftClick() && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR)) {
                         if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3) {
                             player.closeInventory();
                             player.sendMessage(Message.NO_PROMOTE_PERM.getMessage());
@@ -54,7 +54,7 @@ public class PlayerClickEventListener implements Listener {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_GOT_PROMOTED.getMessage().replace("%player%", event.getCurrentItem().getItemMeta().getDisplayName().replace("§e§o", "")).replace("%rank%", instance.getPlayerData(Bukkit.getPlayer(event.getCurrentItem().getItemMeta().getDisplayName().replace("§e§o", ""))).getFactionRank().getName()));
                         player.closeInventory();
                         new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.MEMBERS).load();
-                    } else if (event.getClick().isRightClick() && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack")) {
+                    } else if (event.getClick().isRightClick() && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR)) {
                         if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3) {
                             player.closeInventory();
                             player.sendMessage(Message.NO_DEMOTION_PERM.getMessage());
@@ -65,7 +65,7 @@ public class PlayerClickEventListener implements Listener {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_GOT_DEMOTED.getMessage().replace("%player%", event.getCurrentItem().getItemMeta().getDisplayName().replace("§e§o", "")).replace("%rank%", instance.getPlayerData(Bukkit.getPlayer(event.getCurrentItem().getItemMeta().getDisplayName().replace("§e§o", ""))).getFactionRank().getName()));
                         player.closeInventory();
                         new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.MEMBERS).load();
-                    } else if (event.getClick().isLeftClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") || event.getClick().isRightClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack")) {
+                    } else if (event.getClick().isLeftClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR) || event.getClick().isRightClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR)) {
                         event.setCancelled(true);
                         new FactionInventory(player.getUniqueId()).load();
                     }
@@ -109,6 +109,14 @@ public class PlayerClickEventListener implements Listener {
                         event.setCancelled(true);
                         player.performCommand("factions accept " + event.getCurrentItem().getItemMeta().getDisplayName());
                         player.closeInventory();
+                    }
+                } else if (view.getTitle().equals("§a§oFaction upgrades")) {
+                    if (event.getCurrentItem().getType().equals(Material.RED_STAINED_GLASS_PANE)) {
+                        if (event.getSlot() == 19 || event.getSlot() == 21 || event.getSlot() == 23 || event.getSlot() == 25) {
+                            if (event.getSlot() == 19) {
+
+                            }
+                        }
                     }
                 }
         }

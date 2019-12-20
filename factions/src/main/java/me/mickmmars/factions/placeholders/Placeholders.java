@@ -26,7 +26,7 @@ public class Placeholders extends PlaceholderExpansion {
     }
 
     public String getIdentifier() {
-        return "me/mickmmars/factions";
+        return "factions";
     }
 
     public String getVersion() {

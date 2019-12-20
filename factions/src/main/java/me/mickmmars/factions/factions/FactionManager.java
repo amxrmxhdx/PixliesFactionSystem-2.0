@@ -3,6 +3,7 @@ package me.mickmmars.factions.factions;
 import com.google.gson.Gson;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
+import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
@@ -70,6 +71,16 @@ public class FactionManager {
             }
         }
         return owner;
+    }
+
+    public void addUpgradeToFaction(FactionData faction, FactionUpgrades upgrade) {
+        if (faction.getUpgrades().contains(upgrade.getName().toUpperCase())) {
+            return;
+        }
+        List<String> upgrades = new ArrayList<String>(faction.getUpgrades());
+        upgrades.add(upgrade.getName().toUpperCase());
+        faction.setUpgrades(upgrades);
+        updateFactionData(faction);
     }
 
     public void addPlayerApplication(Player player, FactionData data) {

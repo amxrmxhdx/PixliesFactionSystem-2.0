@@ -2,4 +2,7 @@ name: PFS-Dynmap
 main: org.dynmap.factions.DynmapFactionsPlugin
 version: "1.2"
 author: MickMMars
+loadbefore:
+  - PixliesFactionSystem
+  - dynmap
 depend: [ dynmap, PixliesFactionSystem ]

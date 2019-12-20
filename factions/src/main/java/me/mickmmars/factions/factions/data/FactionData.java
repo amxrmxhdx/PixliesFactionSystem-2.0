@@ -30,9 +30,10 @@ public class FactionData {
     private List<String> allyperms;
     private List<String> enemyperms;
     private List<String> applications;
+    private List<String> upgrades;
     private int money;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications,int money) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, int money) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
@@ -51,6 +52,7 @@ public class FactionData {
         this.allyperms = allyperms;
         this.enemyperms = enemyperms;
         this.applications = applications;
+        this.upgrades = upgrades;
         this.money = money;
     }
 
@@ -63,6 +65,10 @@ public class FactionData {
     public List<String> getNewbieperms() { return newbieperms; }
     public List<String> getAllyperms() { return allyperms; }
     public List<String> getEnemyperms() { return enemyperms; }
+
+    public List<String> getUpgrades() { return upgrades; }
+
+    public void setUpgrades(List<String> upgrades) { this.upgrades = upgrades; }
 
     public List<String> getApplications() { return applications; }
 
