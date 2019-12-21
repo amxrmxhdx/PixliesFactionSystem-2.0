@@ -5,6 +5,8 @@ import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.dynmap.DynmapManager;
+import me.mickmmars.factions.factions.flags.FactionFlag;
+import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.util.FlickerlessScoreboard;
 import me.mickmmars.factions.Factions;
@@ -161,7 +163,7 @@ public class FactionCommand implements CommandExecutor {
                         FlickerlessScoreboard fs = new FlickerlessScoreboard("§6" + player.getName(), DisplaySlot.SIDEBAR, staff);
                         player.setScoreboard(fs.getScoreboard());
                     }
-                } else if(strings[0].equalsIgnoreCase("chat")) {
+                } else if (strings[0].equalsIgnoreCase("chat")) {
                     if (!instance.getPlayerData(player).isInFaction()) {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
@@ -258,6 +260,26 @@ public class FactionCommand implements CommandExecutor {
                     instance.getFactionManager().createRelInv(player);
                 } else if (strings[0].equalsIgnoreCase("dynmapcolour")) {
                     player.sendMessage(Message.AVAILABLE_COLOURS_DYNCOL.getMessage());
+                } else if (strings[0].equalsIgnoreCase("fly")) {
+                    if (!instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                        return false;
+                    }
+                    if (!instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(FactionUpgrades.FACTION_FLY.getName().toUpperCase()) || !instance.getStaffmode().contains(player.getUniqueId())) {
+                        player.sendMessage(Message.NO_FLY_UPGRADE.getMessage());
+                        return false;
+                    }
+                    if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.FACTIONFLY) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                        player.sendMessage(Message.NO_PERM_FOR_FFLY.getMessage());
+                        return false;
+                    }
+                    if (!instance.getFactionfly().contains(player.getUniqueId())) {
+                        instance.getFactionfly().add(player.getUniqueId());
+                        player.sendMessage(Message.FFLY_ACTIVATED.getMessage());
+                    } else {
+                        instance.getFactionfly().remove(player.getUniqueId());
+                        player.sendMessage(Message.FFLY_DEACTIVATED.getMessage());
+                    }
                 }
                 break;
             case 2:
@@ -301,7 +323,7 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
                     boolean success = true;
-                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>() , null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
+                    final FactionData data = new FactionData(name, instance.generateKey(7), new ArrayList<String>(), new ArrayList<ChunkData>(), (Integer) Config.DEFAULT_PLAYER_POWER.getData(), instance.getFactionManager().getRandomDescriptions()[new Random().nextInt(instance.getFactionManager().getRandomDescriptions().length)], new ArrayList<FactionPerms>(), " ", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), null, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), (Integer) Config.DEFAULT_BALANCE.getData());
                     if (instance.getFactionManager().getFactionById(data.getId()) != null) {
                         player.sendMessage(Message.UNKNOWN_ERROR.getMessage());
                         return false;
@@ -792,7 +814,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                      if (strings[1].equalsIgnoreCase("list")) {
+                    if (strings[1].equalsIgnoreCase("list")) {
                         player.sendMessage("§8-§b+§8---------§7[ §bPermissionList §7]§8---------§b+§8-");
                         for (FactionPerms perm : instance.getFactionManager().listPerms()) {
                             player.sendMessage("§c" + perm.getName().toUpperCase());
@@ -892,6 +914,23 @@ public class FactionCommand implements CommandExecutor {
                             DynmapFactionsPlugin.getInstance().updateFactions();
                         }
                     }
+                } else if (strings[0].equalsIgnoreCase("join")) {
+                    if (instance.getPlayerData(player).isInFaction()) {
+                        player.sendMessage(Message.ALREADY_IN_FAC.getMessage());
+                        return false;
+                    }
+                    if (instance.getFactionManager().getFactionByName(strings[1]).equals(null)) {
+                        player.sendMessage(Message.FACTION_DOESNT_EXIST.getMessage());
+                        return false;
+                    }
+                    if (!instance.getPlayerData(player).getFactionInvites().contains(instance.getFactionManager().getFactionByName(strings[1]).getId()) && !instance.getFactionManager().getFactionByName(strings[1]).getAllowedFlags().contains(FactionFlag.OPEN.getName())) {
+                        player.sendMessage(Message.PLAYER_WAS_NEVER_INVITED.getMessage());
+                        return false;
+                    }
+                    instance.getChunkPlayer(player.getUniqueId()).addToFaction(instance.getFactionManager().getFactionByName(strings[1]), FactionRank.NEWBIE);
+                    player.sendMessage(Message.SUCCESSFULLY_JOINED_FACTION.getMessage().replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()));
+                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionByName(strings[1])))
+                        Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_JOINED_YOUR_FACTION.getMessage().replace("%player%", player.getName()));
                 }
                 break;
             case 3:
@@ -1087,6 +1126,9 @@ public class FactionCommand implements CommandExecutor {
             case 3:
                 player.sendMessage("§8-§b+§8------------§7[ §b§lPixlies§3§lFaction§f§lSystem §7]§8----------§b+§8-");
                 player.sendMessage("§7§o/f perms §c§oset§8§o/§c§oremove§8§o/§c§olist §e§o<permission> §e§o<rank>");
+                player.sendMessage("§7§o/f fly");
+                player.sendMessage("§7§o/f dynmapcolour §c<colour>");
+                player.sendMessage("§7§o/f join §c<faction>");
                 player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c3§7]§8------------------§b+§8-");
                 break;
             default:

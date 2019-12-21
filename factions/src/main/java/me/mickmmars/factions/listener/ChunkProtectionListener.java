@@ -71,6 +71,14 @@ public class ChunkProtectionListener implements Listener {
     @EventHandler
     public void handleInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (event.getMaterial().isInteractable() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
+            event.setCancelled(false);
+            return;
+        }
+        if (event.isBlockInHand() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
+            event.setCancelled(false);
+            return;
+        }
         if (!event.getMaterial().isAir()) {
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {

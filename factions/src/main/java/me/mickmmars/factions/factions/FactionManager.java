@@ -385,7 +385,7 @@ public class FactionManager {
     }
 
     public FactionFlag getFlagByName(String name) {
-        for (FactionFlag flags : FactionFlag.getFlags()) {
+        for (FactionFlag flags : this.listFlags()) {
             if (flags.getName().equals(name)) {
                 return flags;
             }
@@ -537,7 +537,49 @@ public class FactionManager {
         perms.add(FactionPerms.EDITCAPITAL);
         perms.add(FactionPerms.RELATION);
         perms.add(FactionPerms.EDITPERMS);
+        perms.add(FactionPerms.FACTIONFLY);
         return perms;
+    }
+
+    public List<FactionUpgrades> listUpgrades() {
+        List<FactionUpgrades> upgrades = new ArrayList<FactionUpgrades>();
+        upgrades.add(FactionUpgrades.ONEPUBLICWARP);
+        upgrades.add(FactionUpgrades.TWOPUBLICWARPS);
+        upgrades.add(FactionUpgrades.THREEPUBLICWARPS);
+        upgrades.add(FactionUpgrades.FACTION_FLY);
+        upgrades.add(FactionUpgrades.MOREMEMBERS);
+        upgrades.add(FactionUpgrades.DYNMAPCOLOUR);
+        return upgrades;
+    }
+
+    public FactionUpgrades getUpgradeByGuiName(String guiname) {
+        FactionUpgrades result = null;
+        for (FactionUpgrades upgrade : this.listUpgrades()) {
+            if (upgrade.getGuiname().equalsIgnoreCase(guiname)) {
+                result = upgrade;
+            }
+        }
+        return result;
+    }
+
+    public Boolean checkIfFacHasFlagEnabled(FactionData faction, FactionFlag flag) {
+        if (faction.getAllowedFlags().contains(flag.getName())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public List<FactionFlag> listFlags() {
+        List<FactionFlag> flags = new ArrayList<FactionFlag>();
+        flags.add(FactionFlag.PVP);
+        flags.add(FactionFlag.MONSTER);
+        flags.add(FactionFlag.FRIENDLYFIRE);
+        flags.add(FactionFlag.INFPOWER);
+        flags.add(FactionFlag.EXPLOSIONS);
+        flags.add(FactionFlag.OPEN);
+        flags.add(FactionFlag.ANIMALS);
+        return flags;
     }
 
     public void addPermToGroup(Player player, String groupname, String permission) {

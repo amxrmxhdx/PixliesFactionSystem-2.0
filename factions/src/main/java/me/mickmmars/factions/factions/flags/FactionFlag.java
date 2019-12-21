@@ -5,13 +5,13 @@ import java.util.List;
 
 public enum FactionFlag {
 
-    TNT("§cTNT", true),
+    FRIENDLYFIRE("§cFriendly-fire", false),
     PVP("§cPvP", false),
-    PERMANENT("§cPermanent", false),
-    FIRESPREAD("§cFirespread", true),
-    MONSTERDMG("§cMonster-damage", true),
-    FLY("§cFaction-Fly", false),
-    MONSTER("§cMonster", false);
+    INFPOWER("§cInfinite power", false),
+    EXPLOSIONS("§cExplosions", true),
+    OPEN("§cOpen/No-invitation", false),
+    ANIMALS("§cAnimals", true),
+    MONSTER("§cMonsters", false);
 
     private final String name;
     private Boolean value;
@@ -25,17 +25,6 @@ public enum FactionFlag {
     public Boolean getValue() { return value; }
 
     public void setValue(Boolean value) { this.value = value; }
-
-    public static List<FactionFlag> getFlags() {
-        flags.add(TNT);
-        flags.add(PVP);
-        flags.add(PERMANENT);
-        flags.add(FIRESPREAD);
-        flags.add(MONSTERDMG);
-        flags.add(FLY);
-        flags.add(MONSTER);
-        return flags;
-    }
 
     public String getName() {
         return name;

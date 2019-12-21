@@ -164,6 +164,12 @@ public enum Message {
     NO_PERM_DYNMAPCOLOUR("§cYour faction does not allow you to change the dynmap-colour.", ""),
     CHANGED_DYNMAPCOLOUR("§6%player% §7changed your factions dynmapcolour to %col%§7.", ""),
     AVAILABLE_COLOURS_DYNCOL("§7Usage: /f dynmapcolour <§b§lBlue§8/§4§lRed§8/§6§lOrange§8/§a§lGreen§7>", ""),
+    PLAYER_PURCHASED_UPGRADE("§6%player% §7purchased the §a%upgrade% §7upgrade for your faction.", ""),
+    NO_FLY_UPGRADE("§cYour faction needs the Faction-Fly upgrade for you to use this command.", ""),
+    FFLY_ACTIVATED("§7You §aactivated §7Faction-Fly.", ""),
+    FFLY_DEACTIVATED("§7You §cdeactivated §7Faction-Fly.", ""),
+    NO_PERM_FOR_FFLY("§cYour faction does not allow you to fly in your territory.", ""),
+    PLAYER_WAS_NEVER_INVITED("§7You §cdont have §7any open invitation by that faction.", ""),
     DEV_VERSION("§bDEV #176", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "

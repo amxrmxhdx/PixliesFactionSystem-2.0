@@ -104,27 +104,13 @@ public class PlayerMoveEventListener implements Listener {
             }
         }
 
-        /*if (instance.getChunkPlayer(player).isInFactionChunks()) {
-            if (!instance.getChunkPlayer(player).isTitle()) {
-                if (instance.getChunkManager().isFree(chunk)) {
-                    player.sendTitle("§cWilderness", "§2wilderness", 1, 20 * 2, 1);
-                } else {
-                    FactionData data = instance.getChunkManager().getFactionDataByChunk(chunk);
-                    player.sendTitle("§a" + data.getName(), "§2" + data.getDescription(), 1, 20 * 2, 1);
-                }
-                instance.getChunkPlayer(player).setTitle(true);
+        if (instance.getFactionfly().contains(player.getUniqueId())) {
+            if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getTo().getChunk()))) {
+                player.setFlying(false);
+            } else {
+                player.setFlying(true);
             }
-            instance.getChunkPlayer(player).setInFactionChunks(false);
-        } else {
-            if (!instance.getChunkPlayer(player).isTitle()) {
-                FactionData data = instance.getChunkManager().getFactionDataByChunk(chunk);
-                if (data != null) {
-                    player.sendTitle("§a" + data.getName(), "§2" + data.getDescription(), 1, 20 * 2, 1);
-                    instance.getChunkPlayer(player).setInFactionChunks(true);
-                }
-                instance.getChunkPlayer(player).setTitle(true);
-            }
-        }*/
+        }
 
         if (!instance.getAutoClaim().contains(player.getUniqueId()) || !instance.getAutoUnclaim().contains(player.getUniqueId())) {
             FactionData data = instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk());

@@ -20,6 +20,7 @@ public enum FactionPerms {
     EDITFLAGS("Edit_flags", "Edit faction-flags.", FactionRank.ADMIN),
     EDITCAPITAL("Edit_capital", "Edit the factions capital.", FactionRank.ADMIN),
     DYNMAPCOLOUR("Dynmapcolour", "Change the factions colour on the dynmap", FactionRank.LEADER),
+    FACTIONFLY("Factionfly", "Fly in your factions territory", FactionRank.LEADER),
     EDITPERMS("Edit_permissions", "Edit the factions permission-system", FactionRank.ADMIN);
 
     private final String name;

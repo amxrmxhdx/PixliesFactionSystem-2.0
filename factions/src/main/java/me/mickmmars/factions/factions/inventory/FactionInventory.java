@@ -79,25 +79,12 @@ public class FactionInventory {
                 }
                 break;
             case UPGRADES:
-                if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(FactionUpgrades.ONEPUBLICWARP.getName().toUpperCase())) {
-                    inventory.setItem(19, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§c" + FactionUpgrades.ONEPUBLICWARP.getGuiname() + " §8[§b&l" + FactionUpgrades.ONEPUBLICWARP.getPrice() + "§8]").addLoreLine("§7§oAdd a public warp to your faction!").build());
-                } else {
-                    inventory.setItem(19, new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName("§a" + FactionUpgrades.ONEPUBLICWARP.getGuiname() + " §8[§aPurchased§8]").addLoreLine("§7§oAdd a public warp to your faction!").build());
-                }
-                if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(FactionUpgrades.TWOPUBLICWARPS.getName().toUpperCase())) {
-                    inventory.setItem(21, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§c" + FactionUpgrades.TWOPUBLICWARPS.getGuiname() + " §8[§b&l" + FactionUpgrades.TWOPUBLICWARPS.getPrice() + "§8]").addLoreLine("§7§oHave two public warps in your faction!").build());
-                } else {
-                    inventory.setItem(21, new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName("§a" + FactionUpgrades.TWOPUBLICWARPS.getGuiname() + " §8[§aPurchased§8]").addLoreLine("§7§oHave two public warps in your faction!").build());
-                }
-                if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(FactionUpgrades.THREEPUBLICWARPS.getName().toUpperCase())) {
-                    inventory.setItem(23, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§c" + FactionUpgrades.THREEPUBLICWARPS.getGuiname() + " §8[§b&l" + FactionUpgrades.THREEPUBLICWARPS.getPrice() + "§8]").addLoreLine("§7§oHave three public warps in your faction!").build());
-                } else {
-                    inventory.setItem(23, new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName("§a" + FactionUpgrades.THREEPUBLICWARPS.getGuiname() + " §8[§aPurchased§8]").addLoreLine("§7§oHave three public warps in your faction!").build());
-                }
-                if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(FactionUpgrades.DYNMAPCOLOUR.getName().toUpperCase())) {
-                    inventory.setItem(25, new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§c" + FactionUpgrades.DYNMAPCOLOUR.getGuiname() + " §8[§b&l" + FactionUpgrades.DYNMAPCOLOUR.getPrice() + "§8]").addLoreLine("§7§oChange your factions dynmap-colour!").build());
-                } else {
-                    inventory.setItem(25, new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName("§a" + FactionUpgrades.DYNMAPCOLOUR.getGuiname() + " §8[§aPurchased§8]").addLoreLine("§7§oChange your factions dynmap-colour!").build());
+                for (FactionUpgrades upgrade : instance.getFactionManager().listUpgrades()) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(upgrade.getName().toUpperCase())) {
+                        inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname() + "§8[§aPurchased§8]").addLoreLine("§7§oYou already purchased this upgrade.").build());
+                    } else {
+                        inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname() + "§8§2§l$§a" + upgrade.getPrice() + "§8]").addLoreLine("§7§oYou need to purchase that upgrade to use it.").build());
+                    }
                 }
                 break;
             case MEMBERS:
@@ -121,8 +108,8 @@ public class FactionInventory {
                 inventory.addItem( new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("§7Landcost§8: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getChunks().size() * 5).build());
                 break;
             case FLAGS:
-                for (FactionFlag flags : FactionFlag.values()) {
-                    if (flags.getValue().equals(true)) {
+                for (FactionFlag flags : instance.getFactionManager().listFlags()) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getAllowedFlags().contains(flags.getName())) {
                         inventory.addItem(new ItemBuilder(Material.GREEN_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §aYes", " ", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
                     } else {
                         inventory.addItem(new ItemBuilder(Material.RED_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §cNo", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
