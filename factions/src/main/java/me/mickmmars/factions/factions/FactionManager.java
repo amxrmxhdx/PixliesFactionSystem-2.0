@@ -3,9 +3,9 @@ package me.mickmmars.factions.factions;
 import com.google.gson.Gson;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
+import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
-import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
 import me.mickmmars.factions.util.ItemBuilder;
 import me.mickmmars.factions.Factions;
@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class FactionManager {
@@ -335,9 +336,12 @@ public class FactionManager {
 
     public void claimChunk(Player player, Chunk chunk, String factionId) {
         FactionData factionData = getFactionById(factionId);
+        if (Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX() - 1, chunk.getZ())) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX() + 1, chunk.getZ())) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX(), chunk.getZ() - 1)) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX(), chunk.getZ() + 1)) != getFactionById(factionId)) {
+            return;
+        }
 
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
-        if (factionData.getMoney() >= price) {
+        if (factionData.getMoney() >= price && instance.getPlayerData(player).getCurrentFactionData().getMaxPower() <= instance.getPlayerData(player).getCurrentFactionData().getChunks().size()) {
             Location minLocation = instance.getChunkManager().getMinLocation(chunk);
             Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
             ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
@@ -738,6 +742,33 @@ public class FactionManager {
             if (faction.getId().equals(id))
                 return faction;
         return null;
+    }
+
+    public Boolean canClaimThatAmount(int amount, FactionData faction) {
+        int price = amount * 5;
+        if (price >= faction.getMoney() && amount <= faction.getChunks().size()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void floodFill(Player player, int x, int z, FactionData colour) {
+
+        List<Chunk> claimed = new ArrayList<Chunk>();
+
+        if (instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null) {
+
+            claimChunk(player, Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z), colour.getId());
+            claimed.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+
+            floodFill(player, x, z + 1, colour); // north
+            floodFill(player, x, z - 1, colour); // south
+            floodFill(player,x - 1, z, colour); // left
+            floodFill(player,x + 1, z, colour); // right
+
+        }
+        return;
     }
 
     public List<FactionData> getFactions() {
