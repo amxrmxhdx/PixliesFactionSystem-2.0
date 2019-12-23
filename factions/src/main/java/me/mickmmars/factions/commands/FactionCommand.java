@@ -525,6 +525,23 @@ public class FactionCommand implements CommandExecutor {
                         }
                         instance.getFactionManager().claimChunk(player, player.getLocation().getChunk(), instance.getFactionManager().getFactionByName("SafeZone").getId());
                         player.sendMessage(Message.SAFEZONE_CLAIMED.getMessage().replace("%loc%", "§6" + player.getLocation().getChunk().getX() + "§7, §6" + player.getLocation().getChunk().getZ()));
+                    } else if (strings[1].equalsIgnoreCase("fill")) {
+                        Set<Chunk> floodSearchRes = instance.getFactionManager().floodSearch(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), instance.getPlayerData(player).getCurrentFactionData());
+                        int floodSearchResInt = floodSearchRes.size();
+                        if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + floodSearchResInt > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
+                            player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
+                            return false;
+                        }
+                        FactionData factionData = instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId());
+                        int price = floodSearchResInt * 5;
+                        if (!(factionData.getMoney() >= price)) {
+                            int need = (price - instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()).getMoney());
+                            String needString = instance.asDecimal(need);
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NEED_MORE_TO_CLAIM.getMessage().replace("%need%", needString)));
+                            return false;
+                        }
+                        instance.getFactionManager().claimFill(floodSearchRes, player, factionData);
+                        factionData.sendMessageToMembers(Message.PLAYER_FILL_CLAIMED_BROADCASTFAC.getMessage().replace("%player%", player.getName()).replace("%x%", Integer.toString(floodSearchResInt)));
                     }
                 } else if (strings[0].equalsIgnoreCase("promote")) {
                     String targetName = strings[1];
@@ -849,7 +866,11 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.PLAYER_DOESNT_EXIST.getMessage());
                         return false;
                     }
-                    if (!instance.getPlayerData(player).getCurrentFactionData().getApplications().contains(Objects.requireNonNull(Bukkit.getPlayer(strings[1])).getUniqueId().toString())) {
+                    if (!Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(strings[1]))) {
+                        player.sendMessage(Message.PLAYER_NOT_FOUND.getMessage());
+                        return false;
+                    }
+                    if (!instance.getPlayerData(player).getCurrentFactionData().getApplications().contains(Bukkit.getPlayer(strings[1]).getUniqueId().toString())) {
                         player.sendMessage(Message.APPLICATION_DOESNT_EXIST.getMessage());
                         return false;
                     }
@@ -864,6 +885,10 @@ public class FactionCommand implements CommandExecutor {
                         }
                     }
                 } else if (strings[0].equalsIgnoreCase("dynmapcolour")) {
+                    if (!instance.getFactionManager().hasPurchasedUpgrade(instance.getPlayerData(player).getCurrentFactionData(), FactionUpgrades.DYNMAPCOLOUR)) {
+                        player.sendMessage(Message.NO_DYNMAP_UPGRADE.getMessage());
+                        return false;
+                    }
                     if (!Bukkit.getServer().getPluginManager().isPluginEnabled("PFS-Dynmap")) {
                         player.sendMessage(Message.PREFIX.getDefaultMessage().toString() + "§7You §cdo not §7have the §bDynmap extension§7.");
                     } else {

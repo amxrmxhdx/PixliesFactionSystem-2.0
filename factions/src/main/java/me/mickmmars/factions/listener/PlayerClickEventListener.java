@@ -113,7 +113,7 @@ public class PlayerClickEventListener implements Listener {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CHANGED_FLAG.getMessage().replace("%player%", player.getName()).replace("%flag%", "§c" + event.getCurrentItem().getItemMeta().getDisplayName()).replace("%value%", "§cDisabled"));
                     }
                 } else if (view.getTitle().equals("§a§oApplications")) {
-                    if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack")) {
+                    if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && event.isLeftClick()) {
                         event.setCancelled(true);
                         player.performCommand("factions accept " + event.getCurrentItem().getItemMeta().getDisplayName());
                         player.closeInventory();

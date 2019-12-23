@@ -2,9 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b061f38-1864-4dff-83fe-3ad014e7ff38" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/PFSDynmap.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/PFSDynmap.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/PixliesFactionSystem.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/PixliesFactionSystem.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/PFSDynmap.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/PFSDynmap.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/commands/FactionCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/commands/FactionCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/config/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/config/Config.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/FactionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/FactionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/data/FactionData.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/data/FactionData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/inventory/FactionInventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/factions/inventory/FactionInventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/listener/PlayerClickEventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/listener/PlayerClickEventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/message/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/factions/src/main/java/me/mickmmars/factions/message/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/commands/FactionCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/commands/FactionCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/config/Config.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/config/Config.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/FactionManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/FactionManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/data/FactionData.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/data/FactionData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/inventory/FactionInventory.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/factions/inventory/FactionInventory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/listener/PlayerClickEventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/listener/PlayerClickEventListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/message/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/factions/target/classes/me/mickmmars/factions/message/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pfsdynmap/src/main/java/org/dynmap/factions/DynmapFactionsPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/pfsdynmap/src/main/java/org/dynmap/factions/DynmapFactionsPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin$OurServerListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin$OurServerListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin.class" beforeDir="false" afterPath="$PROJECT_DIR$/pfsdynmap/target/classes/org/dynmap/factions/DynmapFactionsPlugin.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,8 +55,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PFSDynmap.jar!/" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/PFSDynmap.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
@@ -91,19 +109,20 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="640" y="254" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040/1920.120.1920.1040@0.0.1920.1040" timestamp="1577046646467" />
-    <state x="914" y="386" key="FileChooserDialogImpl" timestamp="1576541943490">
-      <screen x="65" y="0" width="1855" height="1080" />
+    <state x="879" y="372" key="FileChooserDialogImpl" timestamp="1577115206945">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="879" y="372" key="FileChooserDialogImpl/0.0.1920.1040/1920.120.1920.1040@0.0.1920.1040" timestamp="1577115206945" />
     <state x="2832" y="506" key="FileChooserDialogImpl/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576453289466" />
     <state x="914" y="386" key="FileChooserDialogImpl/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576541943490" />
     <state x="654" y="158" key="NewModule_or_Project.wizard" timestamp="1576439998613">
       <screen x="65" y="0" width="1855" height="1080" />
     </state>
     <state x="654" y="158" key="NewModule_or_Project.wizard/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576439998613" />
-    <state x="421" y="109" key="SettingsEditor" timestamp="1576964372150">
+    <state x="421" y="109" key="SettingsEditor" timestamp="1577115213028">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="421" y="109" key="SettingsEditor/0.0.1920.1040/1920.120.1920.1040@0.0.1920.1040" timestamp="1576964372150" />
+    <state x="421" y="109" key="SettingsEditor/0.0.1920.1040/1920.120.1920.1040@0.0.1920.1040" timestamp="1577115213028" />
     <state x="2390" y="233" key="SettingsEditor/65.0.1855.1080/1982.120.1858.1080@1982.120.1858.1080" timestamp="1576453337282" />
     <state x="472" y="113" key="SettingsEditor/65.0.1855.1080/1982.120.1858.1080@65.0.1855.1080" timestamp="1576880081982" />
     <state x="428" y="146" key="new project wizard" timestamp="1576882515124">

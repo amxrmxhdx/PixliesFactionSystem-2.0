@@ -27,6 +27,7 @@ public enum Config {
     DYNMAPCOLOUR_PRICE(200000.0),
     MOREMEMBERS_PRICE(150000.0),
     ALLOW_UNCONNECTED_CLAIMS(false),
+    MAX_FILL_SIZE(500),
     INFORM_FACTION_WHEN_FOREIGNER_ENTERS(true);
     private Object data;
 

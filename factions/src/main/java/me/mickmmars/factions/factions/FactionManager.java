@@ -28,10 +28,7 @@ import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class FactionManager {
 
@@ -92,6 +89,14 @@ public class FactionManager {
         applications.add(player.getUniqueId().toString());
         data.setApplications(applications);
         updateFactionData(data);
+    }
+
+    public Boolean hasPurchasedUpgrade(FactionData faction, FactionUpgrades upgrade) {
+        if (faction.getUpgrades().contains(upgrade.getName())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void removePlayerApplication(Player player, FactionData data) {
@@ -753,22 +758,31 @@ public class FactionManager {
         }
     }
 
-    public void floodFill(Player player, int x, int z, FactionData colour) {
+    public void claimFill(Set<Chunk> toClaim, Player player, FactionData faction) {
+        if (toClaim.size() <= Integer.parseInt(Config.MAX_FILL_SIZE.getData().toString())) {
+            toClaim.forEach(cl -> claimChunk(player, cl, faction.getId()));
+            player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
+        } else {
+            player.sendMessage(Message.MAX_FILL_REACHED.getMessage());
+        }
+    }
 
-        List<Chunk> claimed = new ArrayList<Chunk>();
+    public Set<Chunk> floodSearch(int x, int z, FactionData colour) {
+
+        Set<Chunk> toClaim = new HashSet<>();
 
         if (instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null) {
 
-            claimChunk(player, Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z), colour.getId());
-            claimed.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+            //FIRST LOOK IF THE CENTER CHUNK IS EVEN CLAIMED OR NOT, IF IT
+            toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
-            floodFill(player, x, z + 1, colour); // north
-            floodFill(player, x, z - 1, colour); // south
-            floodFill(player,x - 1, z, colour); // left
-            floodFill(player,x + 1, z, colour); // right
-
+            // NOW SEARCH FOR THE NEIGHBOURS
+            floodSearch(x, z + 1, colour); // north
+            floodSearch(x, z - 1, colour); // south
+            floodSearch(x - 1, z, colour); // west
+            floodSearch(x + 1, z, colour); // east
         }
-        return;
+        return toClaim;
     }
 
     public List<FactionData> getFactions() {

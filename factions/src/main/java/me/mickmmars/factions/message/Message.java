@@ -170,6 +170,10 @@ public enum Message {
     FFLY_DEACTIVATED("§7You §cdeactivated §7Faction-Fly.", ""),
     NO_PERM_FOR_FFLY("§cYour faction does not allow you to fly in your territory.", ""),
     PLAYER_WAS_NEVER_INVITED("§7You §cdont have §7any open invitation by that faction.", ""),
+    CLAIM_FILLED_X_CHUNKS("§7You §asuccessfully §7claim-filled §a%x% §7chunks.", ""),
+    MAX_FILL_REACHED("§7You §creached §7the maximum capacity of the fill function.", ""),
+    PLAYER_FILL_CLAIMED_BROADCASTFAC("§6%player% §7used the fill-claim tool to claim §a%x% §7chunks.", ""),
+    NO_DYNMAP_UPGRADE("§7Your faction §cdoes not §7have the Dynmapcolour upgrade!", ""),
     DEV_VERSION("§bDEV #176", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "

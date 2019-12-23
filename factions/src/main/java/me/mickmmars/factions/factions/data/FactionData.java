@@ -195,4 +195,9 @@ public class FactionData {
     public void setMoney(int money) {
         this.money = money;
     }
+
+    public void sendMessageToMembers(String Message) {
+        for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(this))
+            Bukkit.getPlayer(uuid).sendMessage(Message);
+    }
 }

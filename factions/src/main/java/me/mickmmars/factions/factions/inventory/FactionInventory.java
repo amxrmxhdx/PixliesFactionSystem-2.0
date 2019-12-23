@@ -98,7 +98,7 @@ public class FactionInventory {
             case APPLICATIONS:
                 for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {
                     UUID uuid = UUID.fromString(uuids);
-                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName()).setDisplayName(Bukkit.getPlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
+                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Bukkit.getOfflinePlayer(uuid).getName()).setDisplayName(Bukkit.getOfflinePlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
                 }
                 break;
             case FINANCE:
