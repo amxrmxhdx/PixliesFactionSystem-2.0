@@ -75,7 +75,11 @@ public class FactionInventory {
                     for (int i = 0; i < faction.getDescription().length(); i++) {
 
                     }
-                    inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                    if (!faction.getName().equalsIgnoreCase("SafeZone")) {
+                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                    } else {
+                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§lGod" , "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                    }
                 }
                 break;
             case UPGRADES:

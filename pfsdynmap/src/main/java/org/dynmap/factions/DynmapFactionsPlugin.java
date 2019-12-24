@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -519,7 +518,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                     }
                 }
             }
-            //CHECK CUSTOM STYLE
+/*            //CHECK CUSTOM STYLE
             defstyle = new AreaStyle(cfg, "regionstyle");
             cusstyle = new HashMap<String, AreaStyle>();
             ConfigurationSection sect = cfg.getConfigurationSection("custstyle");
@@ -537,7 +536,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
             List<String> hid = cfg.getStringList("hiddenregions");
             if(hid != null) {
                 hidden = new HashSet<String>(hid);
-            }
+            }*/
         }
         blocks_by_faction.clear();
 

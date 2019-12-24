@@ -492,7 +492,6 @@ public class FactionCommand implements CommandExecutor {
                         System.out.println("Chunk claimed at " + player.getLocation().toString() + " for player " + player.getName());
                         int x = player.getLocation().getChunk().getX();
                         int z = player.getLocation().getChunk().getZ();
-                        //Player members = (Player) instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()));
                         for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())))
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
 
@@ -526,7 +525,8 @@ public class FactionCommand implements CommandExecutor {
                         instance.getFactionManager().claimChunk(player, player.getLocation().getChunk(), instance.getFactionManager().getFactionByName("SafeZone").getId());
                         player.sendMessage(Message.SAFEZONE_CLAIMED.getMessage().replace("%loc%", "§6" + player.getLocation().getChunk().getX() + "§7, §6" + player.getLocation().getChunk().getZ()));
                     } else if (strings[1].equalsIgnoreCase("fill")) {
-                        Set<Chunk> floodSearchRes = instance.getFactionManager().floodSearch(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), instance.getPlayerData(player).getCurrentFactionData());
+                        Set<Chunk> floodSearchRes = new HashSet<Chunk>();
+                        instance.getFactionManager().floodSearch(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), floodSearchRes);
                         int floodSearchResInt = floodSearchRes.size();
                         if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + floodSearchResInt > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                             player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
@@ -606,7 +606,7 @@ public class FactionCommand implements CommandExecutor {
                     }
                     if (strings[1].equalsIgnoreCase("one")) {
                         Chunk chunk = player.getLocation().getChunk();
-                        if (instance.getChunkManager().getFactionDataByChunk(chunk).equals(null) || !instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getChunkManager().isFree(chunk) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                        if (instance.getChunkManager().getFactionDataByChunk(chunk) == null || !instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getChunkManager().isFree(chunk) && !instance.getStaffmode().contains(player.getUniqueId())) {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CHUNK_IS_NOT_YOURS.getMessage()));
                             return false;
                         }
@@ -664,12 +664,14 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.PLAYER_NOT_IN_YOUR_FACTION.getMessage().replace("$player$", targetName));
                         return false;
                     }
-                    if (instance.getPlayerData(player).getFactionRank().equals(FactionRank.LEADER)) {
+                    if (instance.getPlayerData(target).getFactionRank().equals(FactionRank.LEADER)) {
                         player.sendMessage(Message.PLAYER_ALREADY_LEADER.getMessage());
                         return false;
                     }
                     instance.getPlayerData(player).setFactionRank(FactionRank.ADMIN);
+                    instance.getChunkPlayer(player).updatePlayerData(instance.getPlayerData(player));
                     instance.getPlayerData(target).setFactionRank(FactionRank.LEADER);
+                    instance.getChunkPlayer(target).updatePlayerData(instance.getPlayerData(target));
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         players.sendMessage(Message.LEADERSHIP_TRANSFERED.getMessage().replace("%player%", player.getName().replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%target%", targetName)));
                     }
@@ -728,7 +730,7 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
                         return false;
                     }
-                    if (!instance.getPlayerData(player).getCurrentFactionData().getAllies().contains(data.getId()) || !instance.getPlayerData(player).getCurrentFactionData().getEnemies().contains(data.getId())) {
+                    if ((instance.getPlayerData(player).getCurrentFactionData().getAllies().contains(data.getId()) && !instance.getPlayerData(player).getCurrentFactionData().getEnemies().contains(data.getId())) || (!instance.getPlayerData(player).getCurrentFactionData().getAllies().contains(data.getId()) && instance.getPlayerData(player).getCurrentFactionData().getEnemies().contains(data.getId()))) {
                         player.sendMessage(Message.NO_RELATION.getMessage());
                         return false;
                     }

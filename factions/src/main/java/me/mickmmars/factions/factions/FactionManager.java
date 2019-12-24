@@ -341,12 +341,12 @@ public class FactionManager {
 
     public void claimChunk(Player player, Chunk chunk, String factionId) {
         FactionData factionData = getFactionById(factionId);
-        if (Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX() - 1, chunk.getZ())) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX() + 1, chunk.getZ())) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX(), chunk.getZ() - 1)) != getFactionById(factionId) && instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(chunk.getX(), chunk.getZ() + 1)) != getFactionById(factionId)) {
+/*        if (!Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && (getFactionById(factionId).getChunks().size() >= 1) && (chunkHandler.getFactionDataByChunk(chunk) == factionData) && ((chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() + 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() - 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() + 1)) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() - 1)) != factionData))) {
             return;
-        }
+        }*/
 
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
-        if (factionData.getMoney() >= price && instance.getPlayerData(player).getCurrentFactionData().getMaxPower() <= instance.getPlayerData(player).getCurrentFactionData().getChunks().size()) {
+        if (factionData.getMoney() >= price) {
             Location minLocation = instance.getChunkManager().getMinLocation(chunk);
             Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
             ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
@@ -759,30 +759,25 @@ public class FactionManager {
     }
 
     public void claimFill(Set<Chunk> toClaim, Player player, FactionData faction) {
-        if (toClaim.size() <= Integer.parseInt(Config.MAX_FILL_SIZE.getData().toString())) {
             toClaim.forEach(cl -> claimChunk(player, cl, faction.getId()));
             player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
-        } else {
-            player.sendMessage(Message.MAX_FILL_REACHED.getMessage());
-        }
     }
 
-    public Set<Chunk> floodSearch(int x, int z, FactionData colour) {
+    public void floodSearch(int x, int z, Set<Chunk> toClaim) {
 
-        Set<Chunk> toClaim = new HashSet<>();
-
-        if (instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null) {
-
-            //FIRST LOOK IF THE CENTER CHUNK IS EVEN CLAIMED OR NOT, IF IT
             toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
             // NOW SEARCH FOR THE NEIGHBOURS
-            floodSearch(x, z + 1, colour); // north
-            floodSearch(x, z - 1, colour); // south
-            floodSearch(x - 1, z, colour); // west
-            floodSearch(x + 1, z, colour); // east
-        }
-        return toClaim;
+            floodSearch(x, z + 1, toClaim); // north
+            floodSearch(x, z - 1, toClaim); // south
+            floodSearch(x - 1, z, toClaim); // west
+            floodSearch(x + 1, z, toClaim); // east
+
+        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+
+        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
+
+        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) return;
     }
 
     public List<FactionData> getFactions() {

@@ -42,8 +42,6 @@ public class ChunkPlayer {
             playerData = jsonConfig.get("userData", PlayerData.class);
 
             homeObject = new HomeObject(uuid);
-
-            //setChunkSize(playerData.getChunks().size());
         }
     }
 
@@ -68,31 +66,6 @@ public class ChunkPlayer {
 
         return false;
     }
-
-    /*public void claimChunk(final Chunk chunk) {
-        int price = 500;
-        if (money >= price) {
-            Location minLocation = instance.getChunkManager().getMinLocation(chunk);
-            Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
-            ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
-            ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
-            String id = instance.generateKey(10);
-            ChunkData chunkData = new ChunkData(id, uuid, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation);
-            this.addChunk(chunkData);
-            instance.getChunkManager().getChunks().add(chunkData);
-            setChunkSize(16 * playerData.getChunks().size());
-        } else {
-            Bukkit.broadcastMessage("zu wenig geld");
-        }
-
-    }*/
-
-    /*private void addChunk(final ChunkData chunkData) {
-        final List<ChunkData> chunks = playerData.getChunks();
-        chunks.add(chunkData);
-        playerData.setChunks(chunks);
-        updatePlayerData(playerData);
-    }*/
 
     public void addToFaction(FactionData data, FactionRank rank) {
         final PlayerData playerData = this.playerData;
@@ -134,18 +107,9 @@ public class ChunkPlayer {
         this.playerData = playerData;
     }
 
-
     public PlayerData getPlayerData() {
         return playerData;
     }
-
-   /* public int getChunkSize() {
-        return chunkSize;
-    }
-
-    public void setChunkSize(int chunkSize) {
-        this.chunkSize = chunkSize;
-    }*/
 
     public UUID getUuid() {
         return uuid;

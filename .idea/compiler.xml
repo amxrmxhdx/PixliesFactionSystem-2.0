@@ -7,9 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="factions" />
+        <module name="PixliesFactionSystem" />
         <module name="pfsdynmap" />
         <module name="MickMLib" />
-        <module name="PixliesFactionSystem" />
       </profile>
     </annotationProcessing>
   </component>
