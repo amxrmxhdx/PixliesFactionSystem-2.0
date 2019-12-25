@@ -370,10 +370,8 @@ public class FactionManager {
     public void unclaimChunk(Player player, Chunk chunk, String factionid) {
         int price = (instance.getFactionManager().getFactionById(factionid).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionid)).size() : 5);
         FactionData factionData = getFactionById(factionid);
-        Location minLocation = instance.getChunkManager().getMinLocation(chunk);
-        Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
-        ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
-        ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
+        ChunkLocation minChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMinLocation();
+        ChunkLocation maxChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMaxLocation();
         String id = instance.getChunkManager().getChunkDataByChunk(chunk).getId();
         ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, chunk.getX(), chunk.getZ());
         this.removeChunk(factionData, chunkData);
@@ -467,6 +465,7 @@ public class FactionManager {
             chunks.add(new Gson().fromJson(data, ChunkData.class));
         factionData.setChunks(chunks);
         updateFactionData(factionData);
+        instance.getChunkManager().reloadChunks();
     }
 
     public void removeFaction(FactionData data) {
@@ -767,11 +766,17 @@ public class FactionManager {
 
     public void floodSearch(int x, int z, Set<Chunk> toClaim) {
 
-        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()){
+            return;
+        }
 
-        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
+        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) {
+            return;
+        }
 
-        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) return;
+        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) {
+            return;
+        }
 
             toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 

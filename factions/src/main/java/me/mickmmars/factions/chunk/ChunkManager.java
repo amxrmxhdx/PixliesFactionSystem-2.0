@@ -27,6 +27,16 @@ public class ChunkManager {
         System.out.println("§cFactions added " + chunks.size() + " chunks.");
     }
 
+    public void reloadChunks() {
+        chunks.clear();
+        for (FactionData factioNData : Factions.getInstance().getFactionManager().getFactions())
+            chunks.addAll(factioNData.getChunks());
+    }
+
+    public void removeChunkFromColl(ChunkData chunk) {
+        chunks.remove(chunk);
+    }
+
     public boolean isFree(Chunk chunk) {
         final ChunkLocation maxLocation = new ChunkLocation(this.getMaxLocation(chunk));
         final ChunkLocation minLocation = new ChunkLocation(this.getMinLocation(chunk));

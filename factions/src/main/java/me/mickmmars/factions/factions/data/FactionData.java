@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 public class FactionData {
@@ -58,6 +59,16 @@ public class FactionData {
 
     public List<UUID> listMembers() {
         return Factions.getInstance().getFactionManager().getMembersFromFaction(this);
+    }
+
+    public List<UUID> listOnlineMembers() {
+        List<UUID> members = new ArrayList<UUID>();
+        for (UUID uuid : listMembers()) {
+            if (Bukkit.getServer().getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+                members.add(uuid);
+            }
+        }
+        return members;
     }
 
     public List<String> getAdminperms() { return adminperms; }
@@ -199,5 +210,22 @@ public class FactionData {
     public void sendMessageToMembers(String Message) {
         for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(this))
             Bukkit.getPlayer(uuid).sendMessage(Message);
+    }
+
+    public String getMembersString(String split, String colour) {
+        StringJoiner sj = new StringJoiner(split);
+        for (UUID uuid : listMembers())
+            sj.add(colour + Bukkit.getPlayer(uuid).getName());
+        return sj.toString();
+    }
+
+    public String getOnlineMembersString(String split, String colour) {
+        StringJoiner sj = new StringJoiner(split);
+        for (UUID uuid : listMembers()) {
+            if (Bukkit.getServer().getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+                sj.add(colour + Bukkit.getPlayer(uuid).getName());
+            }
+        }
+        return sj.toString();
     }
 }

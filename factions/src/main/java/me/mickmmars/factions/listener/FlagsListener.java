@@ -16,7 +16,8 @@ public class FlagsListener implements Listener {
 
     private static Factions instance;
 
-    @EventHandler
+    //TODO
+/*    @EventHandler
     public void onExplosion(ExplosionPrimeEvent e) {
         for (FactionData factions : instance.getFactionManager().getFactions()) {
             if (factions.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(e.getEntity().getLocation().getChunk())) && !factions.getAllowedFlags().contains(FactionFlag.EXPLOSIONS.getName())) {
@@ -61,6 +62,6 @@ public class FlagsListener implements Listener {
                 e.setCancelled(true);
             }
         }
-    }
+    }*/
 
 }

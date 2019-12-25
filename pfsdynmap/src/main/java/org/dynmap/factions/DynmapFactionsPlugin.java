@@ -518,25 +518,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                     }
                 }
             }
-/*            //CHECK CUSTOM STYLE
-            defstyle = new AreaStyle(cfg, "regionstyle");
-            cusstyle = new HashMap<String, AreaStyle>();
-            ConfigurationSection sect = cfg.getConfigurationSection("custstyle");
-            if(sect != null) {
-                Set<String> ids = sect.getKeys(false);
 
-                for(String id : ids) {
-                    cusstyle.put(id, new AreaStyle(cfg, "custstyle." + id, defstyle));
-                }
-            }
-            List<String> vis = cfg.getStringList("visibleregions");
-            if(vis != null) {
-                visible = new HashSet<String>(vis);
-            }
-            List<String> hid = cfg.getStringList("hiddenregions");
-            if(hid != null) {
-                hidden = new HashSet<String>(hid);
-            }*/
         }
         blocks_by_faction.clear();
 

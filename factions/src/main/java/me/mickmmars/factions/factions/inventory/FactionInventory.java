@@ -85,9 +85,9 @@ public class FactionInventory {
             case UPGRADES:
                 for (FactionUpgrades upgrade : instance.getFactionManager().listUpgrades()) {
                     if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(upgrade.getName().toUpperCase())) {
-                        inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname() + "§8[§aPurchased§8]").addLoreLine("§7§oYou already purchased this upgrade.").build());
+                        inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou already purchased this upgrade.").build());
                     } else {
-                        inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname() + "§8§2§l$§a" + upgrade.getPrice() + "§8]").addLoreLine("§7§oYou need to purchase that upgrade to use it.").build());
+                        inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou need to purchase that upgrade to use it.").addLoreLine(" ").addLoreLine("§7Price: §2§l$§a" + upgrade.getPrice()).build());
                     }
                 }
                 break;

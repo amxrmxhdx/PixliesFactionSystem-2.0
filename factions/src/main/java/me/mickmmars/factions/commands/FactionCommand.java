@@ -887,7 +887,7 @@ public class FactionCommand implements CommandExecutor {
                         }
                     }
                 } else if (strings[0].equalsIgnoreCase("dynmapcolour")) {
-                    if (!instance.getFactionManager().hasPurchasedUpgrade(instance.getPlayerData(player).getCurrentFactionData(), FactionUpgrades.DYNMAPCOLOUR)) {
+                    if (!instance.getFactionManager().hasPurchasedUpgrade(instance.getPlayerData(player).getCurrentFactionData(), FactionUpgrades.DYNMAPCOLOUR) && !instance.getStaffmode().contains(player.getUniqueId())) {
                         player.sendMessage(Message.NO_DYNMAP_UPGRADE.getMessage());
                         return false;
                     }

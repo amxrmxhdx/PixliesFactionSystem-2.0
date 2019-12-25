@@ -115,7 +115,7 @@ public class PlayerMoveEventListener implements Listener {
         if (!instance.getAutoClaim().contains(player.getUniqueId()) || !instance.getAutoUnclaim().contains(player.getUniqueId())) {
             FactionData data = instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk());
 
-            if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null) {
+            if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null && !instance.getPlayerData(player).isInFaction()) {
                 if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() || instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
                     if (data.getName() == instance.getPlayerData(player).getCurrentFactionData().getName()) {
                         player.sendTitle("§b" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
