@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.UUID;
@@ -28,12 +29,15 @@ public class PlayerClickEventListener implements Listener {
 
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
+        if (event.getCurrentItem() == null) return;
+        if (event.getCurrentItem().getType().equals(Material.AIR)) return;
+        if (!event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+        if (event.getSlotType().equals(InventoryType.SlotType.OUTSIDE)) return;
+        if (event.getCurrentItem().getItemMeta() == null) return;
+        if (event.getCurrentItem().getType().equals(Material.BLACK_STAINED_GLASS_PANE) && event.getCurrentItem().getItemMeta().getDisplayName().equals(" ")) { event.setCancelled(true); }
+        if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(" ")) return;
         Player player = (Player) event.getWhoClicked();
         InventoryView view = player.getOpenInventory();
-        if (event.getCurrentItem().getType().equals(Material.BLACK_STAINED_GLASS_PANE) && event.getCurrentItem().getItemMeta().getDisplayName().equals(" ")) { event.setCancelled(true); }
-        if (event.getCurrentItem() == null) return;
-        if (event.getCurrentItem().getItemMeta() == null) return;
-        if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(" ")) return;
         if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§d§oFaction Discord")) {
             player.sendMessage("");
         }
@@ -74,44 +78,48 @@ public class PlayerClickEventListener implements Listener {
                         new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.MEMBERS).load();
                     } else if (event.getClick().isLeftClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR) || event.getClick().isRightClick() && event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && !event.getCurrentItem().getType().equals(Material.AIR)) {
                         event.setCancelled(true);
-                        new FactionInventory(player.getUniqueId()).load();
+                        new FactionInventory(player.getUniqueId()).setItems().load();
                     }
                 } else if (view.getTitle().equalsIgnoreCase("§8Chunk-map §0| §8Facing: §c" + player.getFacing().toString())) {
                     if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§aClaim-fill map")) {
                         event.setCancelled(true);
                         instance.getFactionManager().fillClaimPlayerRadius(player);
                         player.closeInventory();
-                        new FMapInventory(player.getUniqueId()).load();
+                        new FMapInventory(player.getUniqueId()).setChunks().load();
                     }
                     if (!event.getCurrentItem().getType().equals(Material.AIR)) {
                         event.setCancelled(true);
                     }
                 } else if (view.getTitle().equals("§a§oFlags")) {
-                    if (event.getCurrentItem().getType().equals(Material.GREEN_BANNER)) {
-                        event.setCancelled(true);
-                        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITFLAGS)) {
-                            player.sendMessage(Message.NO_FLAG_PERM.getMessage());
+                    switch (event.getCurrentItem().getType()) {
+                        case GREEN_BANNER:
+                            event.setCancelled(true);
+                            if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITFLAGS)) {
+                                player.sendMessage(Message.NO_FLAG_PERM.getMessage());
+                                player.closeInventory();
+                                return;
+                            }
+                            instance.getFactionManager().removeFlag(instance.getPlayerData(player).getCurrentFactionData(), instance.getFactionManager().getFlagByName(event.getCurrentItem().getItemMeta().getDisplayName()));
                             player.closeInventory();
-                            return;
-                        }
-                        instance.getFactionManager().removeFlag(instance.getPlayerData(player).getCurrentFactionData(), instance.getFactionManager().getFlagByName(event.getCurrentItem().getItemMeta().getDisplayName()));
-                        player.closeInventory();
-                        new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.FLAGS).load();
-                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
-                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CHANGED_FLAG.getMessage().replace("%player%", player.getName()).replace("%flag%", "§c" + event.getCurrentItem().getItemMeta().getDisplayName()).replace("%value%", "§aEnabled"));
-                    } else if (event.getCurrentItem().getType().equals(Material.RED_BANNER)) {
-                        event.setCancelled(true);
-                        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITFLAGS)) {
-                            player.sendMessage(Message.NO_FLAG_PERM.getMessage());
+                            new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.FLAGS).load();
+                            for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
+                                if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                    Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CHANGED_FLAG.getMessage().replace("%player%", player.getName()).replace("%flag%", "§c" + event.getCurrentItem().getItemMeta().getDisplayName()).replace("%value%", "§cDisabled"));
+                            break;
+                        case RED_BANNER:
+                            event.setCancelled(true);
+                            if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.EDITFLAGS)) {
+                                player.sendMessage(Message.NO_FLAG_PERM.getMessage());
+                                player.closeInventory();
+                                return;
+                            }
+                            instance.getFactionManager().addFlag(instance.getPlayerData(player).getCurrentFactionData(), instance.getFactionManager().getFlagByName(event.getCurrentItem().getItemMeta().getDisplayName()));
                             player.closeInventory();
-                            return;
+                            for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
+                                if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                    Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CHANGED_FLAG.getMessage().replace("%player%", player.getName()).replace("%flag%", "§c" + event.getCurrentItem().getItemMeta().getDisplayName()).replace("%value%", "§aEnabled"));
+                            break;
                         }
-                        instance.getFactionManager().addFlag(instance.getPlayerData(player).getCurrentFactionData(), instance.getFactionManager().getFlagByName(event.getCurrentItem().getItemMeta().getDisplayName()));
-                        player.closeInventory();
-                        new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.FLAGS).load();
-                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
-                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CHANGED_FLAG.getMessage().replace("%player%", player.getName()).replace("%flag%", "§c" + event.getCurrentItem().getItemMeta().getDisplayName()).replace("%value%", "§cDisabled"));
-                    }
                 } else if (view.getTitle().equals("§a§oApplications")) {
                     if (event.getCurrentItem().getType().equals(Material.PLAYER_HEAD) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§cBack") && event.isLeftClick()) {
                         event.setCancelled(true);
@@ -120,7 +128,8 @@ public class PlayerClickEventListener implements Listener {
                     }
                 } else if (view.getTitle().equals("§a§oFaction upgrades")) {
                     if (event.getCurrentItem().getType().equals(Material.WHITE_STAINED_GLASS_PANE)) {
-                                EconomyResponse r = economy.withdrawPlayer(player, instance.getFactionManager().getUpgradeByGuiName(event.getCurrentItem().getItemMeta().getDisplayName()).getPrice());
+                        event.setCancelled(true);
+                                EconomyResponse r = economy.withdrawPlayer(player, instance.getFactionManager().getUpgradeByGuiName(event.getCurrentItem().getItemMeta().getDisplayName().replace("§o", "")).getPrice());
                                 if (r.transactionSuccess()) {
                                     for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
                                         Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_PURCHASED_UPGRADE.getMessage().replace("%player%", player.getName()).replace("%upgrade%", event.getCurrentItem().getItemMeta().getDisplayName()));
@@ -128,6 +137,11 @@ public class PlayerClickEventListener implements Listener {
                                 } else {
                                     player.sendMessage(Message.TRANSACTION_ERROR.getMessage());
                                 }
+                    }
+                } else if (view.getTitle().equals("§a§oList")) {
+                    if ((event.getCurrentItem().getType() == Material.PAPER) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
+                        player.performCommand("f apply " + event.getCurrentItem().getItemMeta().getDisplayName().replace("§c§l", ""));
+                        player.closeInventory();
                     }
                 }
         }

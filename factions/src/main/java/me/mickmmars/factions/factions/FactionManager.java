@@ -300,6 +300,7 @@ public class FactionManager {
         }
         for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()))) {
             if (claimable.size() > 0)
+                if (Bukkit.getOnlinePlayers().contains(uuid))
                 Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.CHAT, new TextComponent(Message.PLAYER_FILLED.getMessage().replace("%player%", player.getName()).replace("%chunks%", String.valueOf(claimable.size()))));
         }
         lines.remove(lines);

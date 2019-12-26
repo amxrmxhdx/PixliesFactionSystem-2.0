@@ -108,9 +108,18 @@ public class FactionCommand implements CommandExecutor {
                     }
                 } else if (strings[0].equalsIgnoreCase("version") || strings[0].equalsIgnoreCase("ver")) {
                     if (player.hasPermission("factions.seeversion")) {
-                        player.sendMessage("§bPixlies§3Faction§fSystem §7written by §6MickMMars §7& §6Tylix§7.");
+                        player.sendMessage("§bPixlies§3Faction§fSystem §7written by §6MickMMars§7.");
                         player.sendMessage("§7§oVersion: §b" + Bukkit.getPluginManager().getPlugin("PixliesFactionSystem").getDescription().getVersion() + " §c" + Message.DEV_VERSION.getMessage());
                     }
+                } else if (strings[0].equalsIgnoreCase("plugininfo")) {
+                    player.sendMessage("§bPixlies§3Faction§fSystem §7written by §6MickMMars§7.");
+                    player.sendMessage("§6Special thanks to§7:");
+                    player.sendMessage("§8* §bTylix §7- §3Ideas and helped with the chunk-claiming");
+                    player.sendMessage("§8* §bButterKing5000 §7& §bRsl1122 §7- §3Helped with the fill-claim-system");
+                    player.sendMessage("§8* §bMikeprimm §7- §3His plugin Dynmap-factions was the foundation of PFS-Dynmap");
+                    player.sendMessage("§8* §bBukkit Developer forums§7, §bSpigot Forums §7& §bStackoverflow §7- §3Helped me with some bugfixes");
+                    player.sendMessage("§8* §bEnergydrinks §7- §3Helped me when i was sleepy");
+                    player.sendMessage("§7§oAnd all the other people who helped me in any shape or form to develop this plugin...");
                 } else if (strings[0].equalsIgnoreCase("leave")) {
                     if (!instance.getPlayerData(player).isInFaction()) {
                         player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
@@ -492,8 +501,11 @@ public class FactionCommand implements CommandExecutor {
                         System.out.println("Chunk claimed at " + player.getLocation().toString() + " for player " + player.getName());
                         int x = player.getLocation().getChunk().getX();
                         int z = player.getLocation().getChunk().getZ();
-                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())))
-                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
+                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()))) {
+                            if (Bukkit.getOnlinePlayers().contains(Bukkit.getOfflinePlayer(uuid))) {
+                                Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
+                            }
+                        }
 
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk claimed")));
                     } else if (strings[1].equalsIgnoreCase("auto")) {
@@ -560,8 +572,11 @@ public class FactionCommand implements CommandExecutor {
                         return false;
                     }
                     instance.getFactionManager().promotePlayer(target);
-                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
-                        Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_GOT_PROMOTED.getMessage().replace("%player%", targetName).replace("%rank%", instance.getPlayerData(Bukkit.getPlayer(targetName)).getFactionRank().getName()));
+                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData())) {
+                        if (Bukkit.getOnlinePlayers().contains(Bukkit.getOfflinePlayer(uuid))) {
+                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_GOT_PROMOTED.getMessage().replace("%player%", targetName).replace("%rank%", instance.getPlayerData(Bukkit.getPlayer(targetName)).getFactionRank().getName()));
+                        }
+                    }
                     if (instance.getPlayerData(target).getFactionRank().equals(FactionRank.ADMIN)) {
                         player.sendMessage(Message.PROMOTION_NOT_POSSIBLE.getMessage());
                         return false;
@@ -1156,6 +1171,7 @@ public class FactionCommand implements CommandExecutor {
                 player.sendMessage("§7§o/f fly");
                 player.sendMessage("§7§o/f dynmapcolour §c<colour>");
                 player.sendMessage("§7§o/f join §c<faction>");
+                player.sendMessage("§7§o/f plugininfo");
                 player.sendMessage("§8-§b+§8------------------§7[§cPage " + page + "§8/§c3§7]§8------------------§b+§8-");
                 break;
             default:

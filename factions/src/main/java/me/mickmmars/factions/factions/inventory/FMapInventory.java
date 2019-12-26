@@ -58,7 +58,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(line1chunks).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§6" + line1chunks.getX() + "§7, §6" + line1chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line1chunks).getName()).build());
                 } else {
-                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line1chunks.getX() + "§7, §6" + line1chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line1chunks).getName()).build());
+                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line1chunks.getX() + "§7, §6" + line1chunks.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(line1chunks).getName()).build());
                 }
         }
         //LINE 2
@@ -91,7 +91,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(line2chunks).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§6" + line2chunks.getX() + "§7, §6" + line2chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line2chunks).getName()).build());
                 } else {
-                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line2chunks.getX() + "§7, §6" + line2chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line2chunks).getName()).build());
+                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line2chunks.getX() + "§7, §6" + line2chunks.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(line2chunks).getName()).build());
                 }
         }
         //LINE 3
@@ -123,7 +123,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(line3chunks).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§6" + line3chunks.getX() + "§7, §6" + line3chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line3chunks).getName()).build());
                 } else {
-                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line3chunks.getX() + "§7, §6" + line3chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line3chunks).getName()).build());
+                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line3chunks.getX() + "§7, §6" + line3chunks.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(line3chunks).getName()).build());
                 }
             if (instance.getChunkManager().isFree(playerchunk)) {
                 inventory.setItem(22, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getName()).setDisplayName("§6" + playerchunk.getX() + "§7, §6" + playerchunk.getZ()).build());
@@ -135,7 +135,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(playerchunk).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.setItem(22, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getName()).setDisplayName("§6" + playerchunk.getX() + "§7, §6" + playerchunk.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(playerchunk).getName()).build());
                 } else {
-                    inventory.setItem(22, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getName()).setDisplayName("§6" + playerchunk.getX() + "§7, §6" + playerchunk.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(playerchunk).getName()).build());
+                    inventory.setItem(22, new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(player.getName()).setDisplayName("§6" + playerchunk.getX() + "§7, §6" + playerchunk.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(playerchunk).getName()).build());
                 }
             }
         }
@@ -169,7 +169,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(line4chunks).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§6" + line4chunks.getX() + "§7, §6" + line4chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line4chunks).getName()).build());
                 } else {
-                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line4chunks.getX() + "§7, §6" + line4chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line4chunks).getName()).build());
+                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line4chunks.getX() + "§7, §6" + line4chunks.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(line4chunks).getName()).build());
                 }
             }
         //LINE5
@@ -202,7 +202,7 @@ public class FMapInventory {
                 } else if (instance.getChunkManager().getFactionDataByChunk(line5chunks).getEnemies().contains(instance.getPlayerData(player).getFactionId())) {
                     inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§6" + line5chunks.getX() + "§7, §6" + line5chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line5chunks).getName()).build());
                 } else {
-                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line5chunks.getX() + "§7, §6" + line5chunks.getZ()).addLoreLine("§7Claimed by: §4" + instance.getChunkManager().getFactionDataByChunk(line5chunks).getName()).build());
+                    inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName("§6" + line5chunks.getX() + "§7, §6" + line5chunks.getZ()).addLoreLine("§7Claimed by: §f" + instance.getChunkManager().getFactionDataByChunk(line5chunks).getName()).build());
                 }
         }
         inventory.setItem(45, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());

@@ -115,27 +115,36 @@ public class PlayerMoveEventListener implements Listener {
         if (!instance.getAutoClaim().contains(player.getUniqueId()) || !instance.getAutoUnclaim().contains(player.getUniqueId())) {
             FactionData data = instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk());
 
-            if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null && !instance.getPlayerData(player).isInFaction()) {
-                if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() || instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
-                    if (data.getName() == instance.getPlayerData(player).getCurrentFactionData().getName()) {
-                        player.sendTitle("§b" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
-                        instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
-                    } else if(data.getId().equals("safezone")) {
-                        player.sendTitle("§aSafeZone", "§7" + data.getDescription(), 20, 20 * 3, 20);
-                        instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
-                    } else if(data.getAllies().contains(instance.getPlayerData(player).getCurrentFactionData().getId())) {
-                        player.sendTitle("§d" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
-                        instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
-                    } else {
-                        player.sendTitle("§f" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
-                        instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
-                        if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
-                            for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
-                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
-                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
-                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
-                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
+            if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && data != null) {
+                if (instance.getPlayerData(player).isInFaction()) {
+                    if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() || instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
+                        if (data.getName() == instance.getPlayerData(player).getCurrentFactionData().getName()) {
+                            player.sendTitle("§b" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                        } else if (data.getId().equals("safezone")) {
+                            player.sendTitle("§aSafeZone", "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                        } else if (data.getAllies().contains(instance.getPlayerData(player).getCurrentFactionData().getId())) {
+                            player.sendTitle("§d" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                        } else {
+                            player.sendTitle("§f" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                            if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
+                                for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
+                                    if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                    Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
+                                }
                             }
+                        }
+                    }
+                } else {
+                    player.sendTitle(data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
+                    instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                    if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
+                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
+                            if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
                         }
                     }
                 }
