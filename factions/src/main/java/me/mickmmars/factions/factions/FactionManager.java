@@ -92,7 +92,7 @@ public class FactionManager {
     }
 
     public Boolean hasPurchasedUpgrade(FactionData faction, FactionUpgrades upgrade) {
-        if (faction.getUpgrades().contains(upgrade.getName())) {
+        if (faction.getUpgrades().contains(upgrade.getName().toUpperCase())) {
             return true;
         } else {
             return false;
@@ -765,29 +765,30 @@ public class FactionManager {
             player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
     }
 
+
+    // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
     public void floodSearch(int x, int z, Set<Chunk> toClaim) {
 
-        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()){
-            return;
-        }
+        // MAX REACHED?
+        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
 
-        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) {
-            return;
-        }
+        // ALREADY CONTAINS CHUNK?
+        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
 
-        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) {
-            return;
-        }
+        // ALREADY CLAIMED?
+        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) return;
 
             toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
-            // NOW SEARCH FOR THE NEIGHBOURS
+            // RECOURSE
             floodSearch(x, z + 1, toClaim); // north
             floodSearch(x, z - 1, toClaim); // south
             floodSearch(x - 1, z, toClaim); // west
             floodSearch(x + 1, z, toClaim); // east
-
-        return;
+            floodSearch(x - 1, z + 1, toClaim); // north-west
+            floodSearch(x + 1, z - 1, toClaim); // south-east
+            floodSearch(x - 1, z + 1, toClaim); // north-west
+            floodSearch(x + 1, z - 1, toClaim); // south-east
 
     }
 

@@ -205,7 +205,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(fact)) {
             if (Factions.getInstance().getFactionManager().getLeader(fact) != uuid) {
                 if (Factions.getInstance().getFactionManager().getMembersFromFaction(fact).size() > 1) {
-                    members.add(Bukkit.getOfflinePlayer(Factions.getInstance().getFactionManager().getLeader(fact)).getName());
+                    members.add(Bukkit.getOfflinePlayer(uuid).getName());
                 }
             }
         }

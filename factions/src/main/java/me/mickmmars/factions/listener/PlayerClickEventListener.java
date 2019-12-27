@@ -1,6 +1,8 @@
 package me.mickmmars.factions.listener;
 
+import me.mickmmars.earth.base;
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.inventory.FMapInventory;
 import me.mickmmars.factions.factions.inventory.FactionInventory;
 import me.mickmmars.factions.factions.perms.FactionPerms;
@@ -8,9 +10,12 @@ import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.Factions;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,6 +91,44 @@ public class PlayerClickEventListener implements Listener {
                         instance.getFactionManager().fillClaimPlayerRadius(player);
                         player.closeInventory();
                         new FMapInventory(player.getUniqueId()).setChunks().load();
+                    } else if (event.getCurrentItem().getType().equals(Material.LIME_STAINED_GLASS_PANE)) {
+                        event.setCancelled(true);
+                        String[] arr = event.getCurrentItem().getItemMeta().getDisplayName().split("§7, ", 2);
+                        int x = Integer.parseInt(arr[0].replace("§6", ""));
+                        int z = Integer.parseInt(arr[1].replace("§6", ""));
+                        Chunk chunk = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z);
+                        if (!instance.getPlayerData(player).isInFaction()) {
+                            player.sendMessage(Message.NOT_IN_A_FACTION.getMessage());
+                            return;
+                        }
+                        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.CLAIM) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                            player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
+                            return;
+                        }
+                        if (instance.getChunkManager().getFactionDataByChunk(chunk) != null) {
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
+                            return;
+                        }
+                        if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
+                            player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
+                            return;
+                        }
+                        FactionData factionData = instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId());
+                        int price = (instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())).size() : 5);
+                        if (!(factionData.getMoney() >= price)) {
+                            int need = (price - instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()).getMoney());
+                            String needString = instance.asDecimal(need);
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NEED_MORE_TO_CLAIM.getMessage().replace("%need%", needString)));
+                            return;
+                        }
+                        instance.getFactionManager().claimChunk(player, chunk, instance.getChunkPlayer(player).getPlayerData().getFactionId());
+                        player.closeInventory();
+                        new FMapInventory(player.getUniqueId()).setChunks().load();
+                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()))) {
+                            if (Bukkit.getOnlinePlayers().contains(Bukkit.getOfflinePlayer(uuid))) {
+                                Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
+                            }
+                        }
                     }
                     if (!event.getCurrentItem().getType().equals(Material.AIR)) {
                         event.setCancelled(true);
@@ -129,14 +172,38 @@ public class PlayerClickEventListener implements Listener {
                 } else if (view.getTitle().equals("§a§oFaction upgrades")) {
                     if (event.getCurrentItem().getType().equals(Material.WHITE_STAINED_GLASS_PANE)) {
                         event.setCancelled(true);
-                                EconomyResponse r = economy.withdrawPlayer(player, instance.getFactionManager().getUpgradeByGuiName(event.getCurrentItem().getItemMeta().getDisplayName().replace("§o", "")).getPrice());
-                                if (r.transactionSuccess()) {
-                                    for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
-                                        Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_PURCHASED_UPGRADE.getMessage().replace("%player%", player.getName()).replace("%upgrade%", event.getCurrentItem().getItemMeta().getDisplayName()));
-                                    instance.getFactionManager().addUpgradeToFaction(instance.getPlayerData(player).getCurrentFactionData(), instance.getFactionManager().getUpgradeByGuiName(event.getCurrentItem().getItemMeta().getDisplayName()));
-                                } else {
-                                    player.sendMessage(Message.TRANSACTION_ERROR.getMessage());
-                                }
+                        Double price = null;
+                        FactionUpgrades upgrade = null;
+                        if (event.getSlot() == 0) {
+                            price = (Double) Config.ONE_PUBLIC_WARP_PRICE.getData();
+                            upgrade = FactionUpgrades.ONEPUBLICWARP;
+                        } else if (event.getSlot() == 1) {
+                            price = (Double) Config.TWO_PUBLIC_WARPS_PRICE.getData();
+                            upgrade = FactionUpgrades.TWOPUBLICWARPS;
+                        } else if (event.getSlot() == 2) {
+                            price = (Double) Config.THREE_PUBLIC_WARPS_PRICE.getData();
+                            upgrade = FactionUpgrades.THREEPUBLICWARPS;
+                        } else if (event.getSlot() == 3) {
+                            price = (Double) Config.FACTION_FLY_PRICE.getData();
+                            upgrade = FactionUpgrades.FACTION_FLY;
+                        } else if (event.getSlot() == 4) {
+                            price = (Double) Config.MOREMEMBERS_PRICE.getData();
+                            upgrade = FactionUpgrades.MOREMEMBERS;
+                        } else if (event.getSlot() == 5) {
+                            price = (Double) Config.DYNMAPCOLOUR_PRICE.getData();
+                            upgrade = FactionUpgrades.DYNMAPCOLOUR;
+                        }
+                        EconomyResponse r = Factions.econ.withdrawPlayer(player, price);
+                        if (r.transactionSuccess()) {
+                            for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData()))
+                                if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_PURCHASED_UPGRADE.getMessage().replace("%player%", player.getName()).replace("%upgrade%", event.getCurrentItem().getItemMeta().getDisplayName()));
+                                instance.getFactionManager().addUpgradeToFaction(instance.getPlayerData(player).getCurrentFactionData(), upgrade);
+                                player.closeInventory();
+                                new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.UPGRADES).load();
+                        } else {
+                            player.sendMessage(Message.TRANSACTION_ERROR.getMessage());
+                        }
                     }
                 } else if (view.getTitle().equals("§a§oList")) {
                     if ((event.getCurrentItem().getType() == Material.PAPER) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {

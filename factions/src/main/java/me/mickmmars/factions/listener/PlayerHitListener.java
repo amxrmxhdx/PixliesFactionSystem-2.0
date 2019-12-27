@@ -1,6 +1,7 @@
 package me.mickmmars.factions.listener;
 
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.flags.FactionFlag;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.Factions;
 import net.md_5.bungee.api.ChatMessageType;
@@ -16,10 +17,10 @@ public class PlayerHitListener implements Listener {
 
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
-        if (e.getEntity() instanceof Player) {
+        if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player attacker = (Player) e.getDamager();
             Player target = (Player) e.getEntity();
-            if (instance.getPlayerData(attacker).getCurrentFactionData().getName().equals(instance.getPlayerData(target).getCurrentFactionData().getName())) {
+            if (instance.getPlayerData(attacker).getCurrentFactionData().getName().equals(instance.getPlayerData(target).getCurrentFactionData().getName()) && instance.getFactionManager().checkIfFacHasFlagEnabled(instance.getPlayerData(target).getCurrentFactionData(), FactionFlag.FRIENDLYFIRE)) {
                 e.setCancelled(true);
                 e.setDamage(0);
                 attacker.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CANT_HIT_FAC_MEMBER.getMessageRaw().toString()));
