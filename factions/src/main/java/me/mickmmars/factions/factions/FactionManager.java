@@ -64,10 +64,10 @@ public class FactionManager {
 
     public UUID getLeader(FactionData faction) {
         UUID owner = null;
-        for (UUID registeredPlayer : instance.getRegisteredPlayers()) {
-            ChunkPlayer chunkPlayer = (instance.getChunkPlayer(registeredPlayer) == null ? new ChunkPlayer(registeredPlayer) : instance.getChunkPlayer(registeredPlayer));
-            if (chunkPlayer.getPlayerData().getCurrentFactionData().equals(faction) && chunkPlayer.getPlayerData().getFactionRank().equals(FactionRank.LEADER))
-                owner = registeredPlayer;
+        for (UUID uuid : getMembersFromFaction(faction)) {
+            if (instance.getPlayerData(uuid).getFactionRank().equals(FactionRank.LEADER)) {
+                owner = uuid;
+            }
         }
         return owner;
     }
