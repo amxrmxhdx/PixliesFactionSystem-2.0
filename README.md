@@ -39,6 +39,8 @@ Command | Function
 /f apply <faction> | Send citizenship application to a faction
 /f accept <player> | accept a players application.
 /f dynmapcolour <colour> | Change your factions dynmapcolour
+/f join <faction> | Join a faction
+/f rellist or /f relationlist | Shows a GUI with all relations with the factions
 
 ## Permissions
 

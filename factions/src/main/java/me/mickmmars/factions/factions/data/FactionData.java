@@ -4,10 +4,12 @@ import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.perms.FactionPerms;
+import me.mickmmars.factions.publicwarps.data.WarpData;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 public class FactionData {
@@ -30,9 +32,13 @@ public class FactionData {
     private List<String> allyperms;
     private List<String> enemyperms;
     private List<String> applications;
+    private List<String> upgrades;
+    private List<WarpData> warps;
     private int money;
+    private List<String> puppets;
+    private List<UUID> bannedplayer;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications,int money) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
@@ -51,18 +57,45 @@ public class FactionData {
         this.allyperms = allyperms;
         this.enemyperms = enemyperms;
         this.applications = applications;
+        this.upgrades = upgrades;
+        this.warps = warps;
         this.money = money;
+        this.puppets = puppets;
+        this.bannedplayer = bannedplayer;
     }
+
+    public List<String> getPuppets() { return puppets; }
+    public void setPuppets(List<String> puppets) { this.puppets = puppets; }
+
+    public List<UUID> getBannedplayer() { return bannedplayer; }
+    public void setBannedplayer(List<UUID> bannedplayer) { this.bannedplayer = bannedplayer; }
 
     public List<UUID> listMembers() {
         return Factions.getInstance().getFactionManager().getMembersFromFaction(this);
     }
+
+    public List<UUID> listOnlineMembers() {
+        List<UUID> members = new ArrayList<UUID>();
+        for (UUID uuid : listMembers()) {
+            if (Bukkit.getServer().getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+                members.add(uuid);
+            }
+        }
+        return members;
+    }
+
+    public List<WarpData> getWarps() { return warps; }
+    public void setWarps(List<WarpData> warps) { this.warps = warps; }
 
     public List<String> getAdminperms() { return adminperms; }
     public List<String> getMemberperms() { return memberperms; }
     public List<String> getNewbieperms() { return newbieperms; }
     public List<String> getAllyperms() { return allyperms; }
     public List<String> getEnemyperms() { return enemyperms; }
+
+    public List<String> getUpgrades() { return upgrades; }
+
+    public void setUpgrades(List<String> upgrades) { this.upgrades = upgrades; }
 
     public List<String> getApplications() { return applications; }
 
@@ -188,5 +221,27 @@ public class FactionData {
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    public void sendMessageToMembers(String Message) {
+        for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(this))
+            Bukkit.getPlayer(uuid).sendMessage(Message);
+    }
+
+    public String getMembersString(String split, String colour) {
+        StringJoiner sj = new StringJoiner(split);
+        for (UUID uuid : listMembers())
+            sj.add(colour + Bukkit.getPlayer(uuid).getName());
+        return sj.toString();
+    }
+
+    public String getOnlineMembersString(String split, String colour) {
+        StringJoiner sj = new StringJoiner(split);
+        for (UUID uuid : listMembers()) {
+            if (Bukkit.getServer().getOnlinePlayers().contains(Bukkit.getPlayer(uuid))) {
+                sj.add(colour + Bukkit.getPlayer(uuid).getName());
+            }
+        }
+        return sj.toString();
     }
 }

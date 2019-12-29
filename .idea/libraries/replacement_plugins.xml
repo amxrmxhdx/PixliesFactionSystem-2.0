@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="replacement plugins">
+    <CLASSES>
+      <root url="jar://E:/PixliesEarth/lobby/replacement plugins/Vault (2).jar!/" />
+      <root url="file://E:/PixliesEarth/lobby/replacement plugins" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://E:/PixliesEarth/lobby/replacement plugins" />
+    </SOURCES>
+    <jarDirectory url="file://E:/PixliesEarth/lobby/replacement plugins" recursive="false" />
+    <jarDirectory url="file://E:/PixliesEarth/lobby/replacement plugins" recursive="false" type="SOURCES" />
+  </library>
+</component>

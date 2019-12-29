@@ -2,12 +2,14 @@ package me.mickmmars.factions.factions.inventory;
 
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.flags.FactionFlag;
+import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.util.ItemBuilder;
 import me.mickmmars.factions.util.SkullBuilder;
 import me.mickmmars.factions.Factions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -73,34 +75,34 @@ public class FactionInventory {
                     for (int i = 0; i < faction.getDescription().length(); i++) {
 
                     }
-                    /*FactionData factionData = instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk());
-                    String owner = "None";
-                    for (UUID registeredPlayer : instance.getRegisteredPlayers()) {
-                        ChunkPlayer chunkPlayer = (instance.getChunkPlayer(registeredPlayer) == null ? new ChunkPlayer(registeredPlayer) : instance.getChunkPlayer(registeredPlayer));
-                        if (chunkPlayer.getPlayerData().getFactionId().equals(factionData.getId()) && chunkPlayer.getPlayerData().getFactionRank().equals(FactionRank.LEADER))
-                            owner = registeredPlayer.toString();
-                    }*/
-                    String owner = "None";
-                    for (UUID registeredPlayer : instance.getRegisteredPlayers()) {
-                        ChunkPlayer chunkPlayer = (instance.getChunkPlayer(registeredPlayer) == null ? new ChunkPlayer(registeredPlayer) : instance.getChunkPlayer(registeredPlayer));
-                        if (chunkPlayer.getPlayerData().getFactionId().equals(faction.getId()))
-                            owner = Bukkit.getOfflinePlayer(registeredPlayer).getName();
+                    if (!faction.getName().equalsIgnoreCase("SafeZone")) {
+                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                    } else {
+                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§lGod" , "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
                     }
-                    inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§l" + owner, "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                }
+                break;
+            case UPGRADES:
+                for (FactionUpgrades upgrade : instance.getFactionManager().listUpgrades()) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(upgrade.getName().toUpperCase())) {
+                        inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou already purchased this upgrade.").build());
+                    } else {
+                        inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou need to purchase that upgrade to use it.").addLoreLine(" ").addLoreLine("§7Price: §2§l$§a" + upgrade.getPrice()).build());
+                    }
                 }
                 break;
             case MEMBERS:
                 String factionName = instance.getPlayerData(player).getCurrentFactionData().getName();
                 FactionData factionData = instance.getFactionManager().getFactionByName(factionName);
                 for (UUID uuid : instance.getFactionManager().getMembersFromFaction(factionData)) {
-                    Player member = Bukkit.getPlayer(uuid);
-                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(member.getName()).setDisplayName(member.getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(member).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
+                    OfflinePlayer member = Bukkit.getOfflinePlayer(uuid);
+                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(member.getName()).setDisplayName(member.getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(uuid).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
                 }
                 break;
             case APPLICATIONS:
                 for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {
                     UUID uuid = UUID.fromString(uuids);
-                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName()).setDisplayName(Bukkit.getPlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
+                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Bukkit.getOfflinePlayer(uuid).getName()).setDisplayName(Bukkit.getOfflinePlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
                 }
                 break;
             case FINANCE:
@@ -110,8 +112,8 @@ public class FactionInventory {
                 inventory.addItem( new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("§7Landcost§8: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getChunks().size() * 5).build());
                 break;
             case FLAGS:
-                for (FactionFlag flags : FactionFlag.values()) {
-                    if (flags.getValue().equals(true)) {
+                for (FactionFlag flags : instance.getFactionManager().listFlags()) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getAllowedFlags().contains(flags.getName())) {
                         inventory.addItem(new ItemBuilder(Material.GREEN_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §aYes", " ", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
                     } else {
                         inventory.addItem(new ItemBuilder(Material.RED_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §cNo", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());

@@ -42,6 +42,7 @@ public class Factions extends JavaPlugin {
     private final List<UUID> staffmode = new ArrayList<>();
     private final List<UUID> factionchat = new ArrayList<>();
     private final List<UUID> createfactiongui = new ArrayList<>();
+    private final List<UUID> factionfly = new ArrayList<>();
 
     private final Gson gson = new Gson(),
             prettyGson = new GsonBuilder().setPrettyPrinting().create();
@@ -133,6 +134,7 @@ public class Factions extends JavaPlugin {
         pluginManager.registerEvents(new ChunkProtectionListener(), this);
         pluginManager.registerEvents(new PlayerMoveEventListener(), this);
         pluginManager.registerEvents(new PlayerHitListener(), this);
+        pluginManager.registerEvents(new FlagsListener(), this);
     }
 
     private void loadPlayers() {
@@ -140,50 +142,6 @@ public class Factions extends JavaPlugin {
             for (File file : new File("plugins/Factions/players").listFiles())
                 registeredPlayers.add(UUID.fromString(file.getName().replace(".yml", "")));
     }
-
-/*    public FlickerlessScoreboard getDefaultScoreboard(Player player) {
-        List<UUID> onlinemembers = new ArrayList<UUID>();
-        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getPlayerData(player).getCurrentFactionData())) {
-            if (Bukkit.getOnlinePlayers().contains(uuid)) {
-                onlinemembers.add(uuid);
-            }
-        }
-        if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && instance.getPlayerData(player).isInFaction()) {
-            FlickerlessScoreboard.Track line1 = new FlickerlessScoreboard.Track("default", "§6§lPlayer", 7, " ", "");
-            FlickerlessScoreboard.Track line2 = new FlickerlessScoreboard.Track("default1", "  §7Balance: §2§l$§a" + econ.getBalance(player), 6, "", "");
-            FlickerlessScoreboard.Track line3 = new FlickerlessScoreboard.Track("default2", "  §7Territory: " + instance.getFactionManager().getRelColour(instance.getPlayerData(player).getFactionId(), instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()).getId()) + instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()).getName(), 5, "", "");
-            FlickerlessScoreboard.Track line4 = new FlickerlessScoreboard.Track("default3", "  §7Faction: §b" + instance.getPlayerData(player).getCurrentFactionData().getName(), 4, "", "");
-            FlickerlessScoreboard.Track line5 = new FlickerlessScoreboard.Track("default4", "§6§lFaction", 3, "", "");
-            FlickerlessScoreboard.Track line6 = new FlickerlessScoreboard.Track("default5", "  §7Balance: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getMoney(), 2, "", "");
-            FlickerlessScoreboard.Track line7 = new FlickerlessScoreboard.Track("default6", "  §7Online members: §a" + onlinemembers.size(), 1, "", "");
-            FlickerlessScoreboard fs = new FlickerlessScoreboard("§a§lEARTH", DisplaySlot.SIDEBAR, line1, line2, line3, line4, line5, line6, line7);
-            return fs;
-        } else if (instance.getChunkManager().isFree(player.getLocation().getChunk()) && instance.getPlayerData(player).isInFaction()){
-            FlickerlessScoreboard.Track line1 = new FlickerlessScoreboard.Track("default1", "§6§lPlayer", 7, " ", "");
-            FlickerlessScoreboard.Track line2 = new FlickerlessScoreboard.Track("default2", "  §7Balance: §2§l$§a" + econ.getBalance(player), 6, "", "");
-            FlickerlessScoreboard.Track line3 = new FlickerlessScoreboard.Track("default3", "  §7Territory: §cWILDERNESS", 5, "", "");
-            FlickerlessScoreboard.Track line4 = new FlickerlessScoreboard.Track("default4", "  §7Faction: §b" + instance.getPlayerData(player).getCurrentFactionData().getName(), 4, "", "");
-            FlickerlessScoreboard.Track line5 = new FlickerlessScoreboard.Track("default5", "§6§lFaction", 3, "", "");
-            FlickerlessScoreboard.Track line6 = new FlickerlessScoreboard.Track("default6", "  §7Balance: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getMoney(), 2, "", "");
-            FlickerlessScoreboard.Track line7 = new FlickerlessScoreboard.Track("default7", "  §7Online members: §a" + onlinemembers.size(), 1, "", "");
-            FlickerlessScoreboard fs = new FlickerlessScoreboard("§a§lEARTH", DisplaySlot.SIDEBAR, line1, line2, line3, line4, line5, line6, line7);
-            return fs;
-        } else if (!instance.getChunkManager().isFree(player.getLocation().getChunk()) && !instance.getPlayerData(player).isInFaction()) {
-            FlickerlessScoreboard.Track line1 = new FlickerlessScoreboard.Track("default1", "§6§lPlayer", 7, " ", "");
-            FlickerlessScoreboard.Track line2 = new FlickerlessScoreboard.Track("default2", "  §7Balance: §2§l$§a" + econ.getBalance(player), 6, "", "");
-            FlickerlessScoreboard.Track line3 = new FlickerlessScoreboard.Track("default2", "  §7Territory: " + instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()).getName(), 5, "", "");
-            FlickerlessScoreboard.Track line4 = new FlickerlessScoreboard.Track("default4", "  §7Faction: §cNONE", 4, "", "");
-            FlickerlessScoreboard fs = new FlickerlessScoreboard("§a§lEARTH", DisplaySlot.SIDEBAR, line1, line2, line3, line4);
-            return fs;
-        } else {
-            FlickerlessScoreboard.Track line1 = new FlickerlessScoreboard.Track("default1", "§6§lPlayer", 7, " ", "");
-            FlickerlessScoreboard.Track line2 = new FlickerlessScoreboard.Track("default2", "  §7Balance: §2§l$§a" + econ.getBalance(player), 6, "", "");
-            FlickerlessScoreboard.Track line3 = new FlickerlessScoreboard.Track("default3", "  §7Territory: §cWILDERNESS", 5, "", "");
-            FlickerlessScoreboard.Track line4 = new FlickerlessScoreboard.Track("default4", "  §7Faction: §cNONE", 4, "", "");
-            FlickerlessScoreboard fs = new FlickerlessScoreboard("§a§lEARTH", DisplaySlot.SIDEBAR, line1, line2, line3, line4);
-            return fs;
-        }
-    }*/
 
     public String generateKey(int letters) {
         final StringBuilder builder = new StringBuilder();
@@ -295,6 +253,8 @@ public class Factions extends JavaPlugin {
     public Map<UUID, List<Chunk>> getAutoUnclaimChunks() { return autoUnclaimChunks; }
 
     public List<UUID> getCreatefactiongui() { return createfactiongui; }
+
+    public List<UUID> getFactionfly() { return factionfly; }
 
     public static class Skulls {
         public final static String[] BACK_ITEM = new String[] {"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0=", "{display:{Name:\\\"Black Backward\\\"},SkullOwner:{Id:\\\"66d19f8d-b159-4034-9b86-3f75b6064629\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0=\\\"}]}}}"};

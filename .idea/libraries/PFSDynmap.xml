@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PFSDynmap">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/PFSDynmap.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

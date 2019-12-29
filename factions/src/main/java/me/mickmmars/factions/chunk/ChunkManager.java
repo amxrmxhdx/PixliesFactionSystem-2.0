@@ -1,9 +1,12 @@
 package me.mickmmars.factions.chunk;
 
+import com.sun.istack.internal.NotNull;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
+import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.Factions;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
@@ -24,12 +27,19 @@ public class ChunkManager {
         System.out.println("§cFactions added " + chunks.size() + " chunks.");
     }
 
+    public void reloadChunks() {
+        chunks.clear();
+        for (FactionData factioNData : Factions.getInstance().getFactionManager().getFactions())
+            chunks.addAll(factioNData.getChunks());
+    }
+
+    public void removeChunkFromColl(ChunkData chunk) {
+        chunks.remove(chunk);
+    }
+
     public boolean isFree(Chunk chunk) {
-        final ChunkLocation maxLocation = new ChunkLocation(this.getMaxLocation(chunk));
-        final ChunkLocation minLocation = new ChunkLocation(this.getMinLocation(chunk));
-        for (ChunkData chunkData : this.chunks)
-            if (chunkData.getMaxLocation().getX() == maxLocation.getX() && chunkData.getMaxLocation().getZ() == maxLocation.getZ() && chunkData.getMinLocation().getX() == minLocation.getX() && chunkData.getMinLocation().getZ() == minLocation.getZ())
-                return false;
+        if (getFactionDataByChunk(chunk) != null)
+            return false;
         return true;
     }
 
@@ -64,5 +74,10 @@ public class ChunkManager {
         final int maxY = 0;
         final int maxZ = (chunk.getZ() * 16) + 15;
         return new Location(chunk.getWorld(), maxX, maxY, maxZ);
+    }
+
+    @NotNull
+    public Chunk getChunkFromXZ(int x, int z) {
+        return Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z);
     }
 }

@@ -13,9 +13,9 @@ import me.mickmmars.factions.factions.FactionManager;
 import me.mickmmars.factions.factions.data.FactionData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -35,7 +35,7 @@ import org.dynmap.utils.TileFlags;
 
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:120%;\">%regionname%</span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%<span style=\"font-weight:bold;\"></span></div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%</div>";
     Plugin dynmap;
     DynmapAPI api;
     MarkerAPI markerapi;
@@ -84,7 +84,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                 homeicon = markerapi.getMarkerIcon(homemarker);
                 if(homeicon == null) {
                     severe("Invalid homeicon: " + homemarker);
-                    homeicon = markerapi.getMarkerIcon("blueicon");
+                    homeicon = markerapi.getMarkerIcon(def.homemarker);
                 }
             }
             boost = cfg.getBoolean(path+".boost", def.boost);
@@ -96,12 +96,12 @@ public class DynmapFactionsPlugin extends JavaPlugin {
             strokeweight = cfg.getInt(path+".strokeWeight", 3);
             fillcolor = cfg.getString(path+".fillColor", "#28F569");
             fillopacity = cfg.getDouble(path+".fillOpacity", 0.35);
-            homemarker = cfg.getString(path+".homeicon", "blueicon");
+            homemarker = cfg.getString(path+".homeicon", "blueflag");
             if(homemarker != null) {
                 homeicon = markerapi.getMarkerIcon(homemarker);
                 if(homeicon == null) {
                     severe("Invalid homeicon: " + homemarker);
-                    homeicon = markerapi.getMarkerIcon("blueicon");
+                    homeicon = markerapi.getMarkerIcon("blueflag");
                 }
             }
             boost = cfg.getBoolean(path+".boost", false);
@@ -195,13 +195,18 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         v = v.replace("%regionname%", ChatColor.stripColor(fact.getName()));
         v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
 
-        Player adm = Bukkit.getPlayer(Factions.getInstance().getFactionManager().getLeader(fact));
-        assert adm != null;
-        v = v.replace("%playerowners%", adm.getName());
+        OfflinePlayer adm = Bukkit.getOfflinePlayer(Factions.getInstance().getFactionManager().getLeader(fact));
+        if (adm != null) {
+            v = v.replace("%playerowners%", adm.getName());
+        } else {
+            v = v.replace("%playerowners%", " ");
+        }
         StringJoiner members = new StringJoiner(", ");
         for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(fact)) {
             if (Factions.getInstance().getFactionManager().getLeader(fact) != uuid) {
-                members.add(Bukkit.getPlayer(uuid).getName());
+                if (Factions.getInstance().getFactionManager().getMembersFromFaction(fact).size() > 1) {
+                    members.add(Bukkit.getOfflinePlayer(uuid).getName());
+                }
             }
         }
         v = v.replace("%playermembers%", members.toString());
@@ -513,6 +518,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                     }
                 }
             }
+
         }
         blocks_by_faction.clear();
 

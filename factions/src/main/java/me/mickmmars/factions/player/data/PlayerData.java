@@ -78,4 +78,5 @@ public class PlayerData {
     public void setHomes(List<HomeData> homes) {
         this.homes = homes;
     }
+    
 }

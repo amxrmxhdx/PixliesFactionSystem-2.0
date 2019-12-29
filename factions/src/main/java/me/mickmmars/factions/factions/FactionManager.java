@@ -3,9 +3,11 @@ package me.mickmmars.factions.factions;
 import com.google.gson.Gson;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
+import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
-import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
+import me.mickmmars.factions.publicwarps.data.WarpData;
 import me.mickmmars.factions.util.ItemBuilder;
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.data.FactionData;
@@ -27,9 +29,7 @@ import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class FactionManager {
 
@@ -72,6 +72,16 @@ public class FactionManager {
         return owner;
     }
 
+    public void addUpgradeToFaction(FactionData faction, FactionUpgrades upgrade) {
+        if (faction.getUpgrades().contains(upgrade.getName().toUpperCase())) {
+            return;
+        }
+        List<String> upgrades = new ArrayList<String>(faction.getUpgrades());
+        upgrades.add(upgrade.getName().toUpperCase());
+        faction.setUpgrades(upgrades);
+        updateFactionData(faction);
+    }
+
     public void addPlayerApplication(Player player, FactionData data) {
         if (data.getApplications().contains(player.getUniqueId().toString())) {
             return;
@@ -80,6 +90,44 @@ public class FactionManager {
         applications.add(player.getUniqueId().toString());
         data.setApplications(applications);
         updateFactionData(data);
+    }
+
+    public Boolean hasPurchasedUpgrade(FactionData faction, FactionUpgrades upgrade) {
+        if (faction.getUpgrades().contains(upgrade.getName().toUpperCase())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setPublicWarp(Player player, String name) {
+        WarpData location = new WarpData(name, new ChunkLocation(player.getLocation()));
+        List<WarpData> warps = new ArrayList<WarpData>(instance.getPlayerData(player).getCurrentFactionData().getWarps());
+        if (instance.getPlayerData(player).getCurrentFactionData().getWarps().contains(location)) {
+            return;
+        }
+        warps.add(location);
+        instance.getPlayerData(player).getCurrentFactionData().setWarps(warps);
+        updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
+    }
+
+    public void removePublicWarp(Player player, String name) {
+        WarpData location = getWarpByName(name, instance.getPlayerData(player).getCurrentFactionData());
+        List<WarpData> warps = new ArrayList<WarpData>(instance.getPlayerData(player).getCurrentFactionData().getWarps());
+        if (instance.getPlayerData(player).getCurrentFactionData().getWarps().contains(location)) {
+            return;
+        }
+        warps.remove(location);
+        instance.getPlayerData(player).getCurrentFactionData().setWarps(warps);
+        updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
+    }
+
+    public WarpData getWarpByName(String name, FactionData data) {
+        for (WarpData warp : data.getWarps())
+            if (warp.getName().equalsIgnoreCase(name)) {
+                return warp;
+            }
+        return null;
     }
 
     public void removePlayerApplication(Player player, FactionData data) {
@@ -283,6 +331,7 @@ public class FactionManager {
         }
         for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()))) {
             if (claimable.size() > 0)
+                if (Bukkit.getOnlinePlayers().contains(uuid))
                 Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.CHAT, new TextComponent(Message.PLAYER_FILLED.getMessage().replace("%player%", player.getName()).replace("%chunks%", String.valueOf(claimable.size()))));
         }
         lines.remove(lines);
@@ -324,6 +373,9 @@ public class FactionManager {
 
     public void claimChunk(Player player, Chunk chunk, String factionId) {
         FactionData factionData = getFactionById(factionId);
+/*        if (!Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && (getFactionById(factionId).getChunks().size() >= 1) && (chunkHandler.getFactionDataByChunk(chunk) == factionData) && ((chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() + 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() - 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() + 1)) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() - 1)) != factionData))) {
+            return;
+        }*/
 
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
         if (factionData.getMoney() >= price) {
@@ -350,10 +402,8 @@ public class FactionManager {
     public void unclaimChunk(Player player, Chunk chunk, String factionid) {
         int price = (instance.getFactionManager().getFactionById(factionid).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionid)).size() : 5);
         FactionData factionData = getFactionById(factionid);
-        Location minLocation = instance.getChunkManager().getMinLocation(chunk);
-        Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
-        ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
-        ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
+        ChunkLocation minChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMinLocation();
+        ChunkLocation maxChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMaxLocation();
         String id = instance.getChunkManager().getChunkDataByChunk(chunk).getId();
         ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, chunk.getX(), chunk.getZ());
         this.removeChunk(factionData, chunkData);
@@ -374,7 +424,7 @@ public class FactionManager {
     }
 
     public FactionFlag getFlagByName(String name) {
-        for (FactionFlag flags : FactionFlag.getFlags()) {
+        for (FactionFlag flags : this.listFlags()) {
             if (flags.getName().equals(name)) {
                 return flags;
             }
@@ -447,9 +497,12 @@ public class FactionManager {
             chunks.add(new Gson().fromJson(data, ChunkData.class));
         factionData.setChunks(chunks);
         updateFactionData(factionData);
+        instance.getChunkManager().reloadChunks();
     }
 
     public void removeFaction(FactionData data) {
+        for (UUID uuid : getMembersFromFaction(data))
+            instance.getChunkPlayer(uuid).removeFromFaction();
         this.factions.remove(getFactionById(data.getId()));
 
         final List<String> factions = new ArrayList<>();
@@ -462,6 +515,7 @@ public class FactionManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        instance.getChunkManager().reloadChunks();
     }
 
     public void updateFactionData(FactionData factionData) {
@@ -526,7 +580,46 @@ public class FactionManager {
         perms.add(FactionPerms.EDITCAPITAL);
         perms.add(FactionPerms.RELATION);
         perms.add(FactionPerms.EDITPERMS);
+        perms.add(FactionPerms.SETWARP);
+        perms.add(FactionPerms.FACTIONFLY);
         return perms;
+    }
+
+    public List<FactionUpgrades> listUpgrades() {
+        List<FactionUpgrades> upgrades = new ArrayList<FactionUpgrades>();
+        upgrades.add(FactionUpgrades.ONEPUBLICWARP);
+        upgrades.add(FactionUpgrades.TWOPUBLICWARPS);
+        upgrades.add(FactionUpgrades.THREEPUBLICWARPS);
+        upgrades.add(FactionUpgrades.FACTION_FLY);
+        upgrades.add(FactionUpgrades.MOREMEMBERS);
+        upgrades.add(FactionUpgrades.DYNMAPCOLOUR);
+        return upgrades;
+    }
+
+    public FactionUpgrades getUpgradeByGuiName(String guiname) {
+        FactionUpgrades result = null;
+        for (FactionUpgrades upgrade : this.listUpgrades()) {
+            if (upgrade.getGuiname().equalsIgnoreCase(guiname)) {
+                result = upgrade;
+            }
+        }
+        return result;
+    }
+
+    public Boolean checkIfFacHasFlagEnabled(FactionData faction, FactionFlag flag) {
+        return faction.getAllowedFlags().contains(flag.getName());
+    }
+
+    public List<FactionFlag> listFlags() {
+        List<FactionFlag> flags = new ArrayList<FactionFlag>();
+        flags.add(FactionFlag.PVP);
+        flags.add(FactionFlag.MONSTER);
+        flags.add(FactionFlag.FRIENDLYFIRE);
+        flags.add(FactionFlag.INFPOWER);
+        flags.add(FactionFlag.EXPLOSIONS);
+        flags.add(FactionFlag.OPEN);
+        flags.add(FactionFlag.ANIMALS);
+        return flags;
     }
 
     public void addPermToGroup(Player player, String groupname, String permission) {
@@ -685,6 +778,55 @@ public class FactionManager {
             if (faction.getId().equals(id))
                 return faction;
         return null;
+    }
+
+    public Boolean canClaimThatAmount(int amount, FactionData faction) {
+        int price = amount * 5;
+        if (price >= faction.getMoney() && amount <= faction.getChunks().size()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void claimFill(Set<Chunk> toClaim, Player player, FactionData faction) {
+            for (Chunk chunks : toClaim) {
+                claimChunk(player, chunks, faction.getId());
+            }
+            player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
+    }
+
+
+    // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
+    public void floodSearch(int x, int z, Set<Chunk> toClaim, Set<Chunk> alreadyChecked) {
+
+        // CHECK IF WE ALREADY CHECKED
+        if (alreadyChecked.contains(instance.getChunkManager().getChunkFromXZ(x, z))) return;
+
+        // MAX REACHED?
+        if (alreadyChecked.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+
+        // ADD TO ALREADY CHECKED SET
+        alreadyChecked.add(instance.getChunkManager().getChunkFromXZ(x, z));
+
+        // ALREADY CONTAINS CHUNK?
+        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
+
+        // ALREADY CLAIMED?
+        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) return;
+
+            toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+
+            // RECOURSE
+            floodSearch(x, z + 1, toClaim, alreadyChecked); // north
+            floodSearch(x, z - 1, toClaim, alreadyChecked); // south
+            floodSearch(x - 1, z, toClaim, alreadyChecked); // west
+            floodSearch(x + 1, z, toClaim, alreadyChecked); // east
+            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+
     }
 
     public List<FactionData> getFactions() {

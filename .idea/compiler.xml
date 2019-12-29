@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="factions" />
         <module name="pfsdynmap" />
+        <module name="MickMLib" />
         <module name="PixliesFactionSystem" />
       </profile>
     </annotationProcessing>

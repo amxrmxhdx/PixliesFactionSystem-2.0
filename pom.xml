@@ -23,6 +23,7 @@
     <modules>
         <module>pfsdynmap</module>
         <module>factions</module>
+        <module>MickMLib</module>
     </modules>
 
 

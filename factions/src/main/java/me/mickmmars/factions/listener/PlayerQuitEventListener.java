@@ -11,7 +11,7 @@ public class PlayerQuitEventListener implements Listener {
     private Factions instance = Factions.getInstance();
 
     @EventHandler
-    public void handleJoin(PlayerQuitEvent event) {
+    public void handleQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
         instance.getPlayers().remove(instance.getChunkPlayer(player));

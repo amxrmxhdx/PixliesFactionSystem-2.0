@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,6 +72,19 @@ public class ChunkProtectionListener implements Listener {
     @EventHandler
     public void handleInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (event.getMaterial().isInteractable() && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) return;
+        if (event.getClickedBlock() == null) return;
+        if (!event.getMaterial().isAir()) return;
+        if (event.getMaterial().isInteractable() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
+            event.setCancelled(false);
+            return;
+        }
+        if (event.isBlockInHand() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
+            event.setCancelled(false);
+            return;
+        }
+        if (instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != instance.getPlayerData(player).getCurrentFactionData() && !instance.getStaffmode().contains(player.getUniqueId())) event.setCancelled(true);
+        if (!(event.getItem() instanceof Block)) return;
         if (!event.getMaterial().isAir()) {
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
