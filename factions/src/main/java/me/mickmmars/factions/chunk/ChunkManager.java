@@ -38,11 +38,8 @@ public class ChunkManager {
     }
 
     public boolean isFree(Chunk chunk) {
-        final ChunkLocation maxLocation = new ChunkLocation(this.getMaxLocation(chunk));
-        final ChunkLocation minLocation = new ChunkLocation(this.getMinLocation(chunk));
-        for (ChunkData chunkData : this.chunks)
-            if (chunkData.getMaxLocation().getX() == maxLocation.getX() && chunkData.getMaxLocation().getZ() == maxLocation.getZ() && chunkData.getMinLocation().getX() == minLocation.getX() && chunkData.getMinLocation().getZ() == minLocation.getZ())
-                return false;
+        if (getFactionDataByChunk(chunk) != null)
+            return false;
         return true;
     }
 

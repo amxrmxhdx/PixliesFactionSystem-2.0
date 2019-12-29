@@ -7,6 +7,7 @@ import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.data.PlayerData;
+import me.mickmmars.factions.publicwarps.data.WarpData;
 import me.mickmmars.factions.util.ItemBuilder;
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.data.FactionData;
@@ -97,6 +98,36 @@ public class FactionManager {
         } else {
             return false;
         }
+    }
+
+    public void setPublicWarp(Player player, String name) {
+        WarpData location = new WarpData(name, new ChunkLocation(player.getLocation()));
+        List<WarpData> warps = new ArrayList<WarpData>(instance.getPlayerData(player).getCurrentFactionData().getWarps());
+        if (instance.getPlayerData(player).getCurrentFactionData().getWarps().contains(location)) {
+            return;
+        }
+        warps.add(location);
+        instance.getPlayerData(player).getCurrentFactionData().setWarps(warps);
+        updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
+    }
+
+    public void removePublicWarp(Player player, String name) {
+        WarpData location = getWarpByName(name, instance.getPlayerData(player).getCurrentFactionData());
+        List<WarpData> warps = new ArrayList<WarpData>(instance.getPlayerData(player).getCurrentFactionData().getWarps());
+        if (instance.getPlayerData(player).getCurrentFactionData().getWarps().contains(location)) {
+            return;
+        }
+        warps.remove(location);
+        instance.getPlayerData(player).getCurrentFactionData().setWarps(warps);
+        updateFactionData(instance.getPlayerData(player).getCurrentFactionData());
+    }
+
+    public WarpData getWarpByName(String name, FactionData data) {
+        for (WarpData warp : data.getWarps())
+            if (warp.getName().equalsIgnoreCase(name)) {
+                return warp;
+            }
+        return null;
     }
 
     public void removePlayerApplication(Player player, FactionData data) {
@@ -470,6 +501,8 @@ public class FactionManager {
     }
 
     public void removeFaction(FactionData data) {
+        for (UUID uuid : getMembersFromFaction(data))
+            instance.getChunkPlayer(uuid).removeFromFaction();
         this.factions.remove(getFactionById(data.getId()));
 
         final List<String> factions = new ArrayList<>();
@@ -482,6 +515,7 @@ public class FactionManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        instance.getChunkManager().reloadChunks();
     }
 
     public void updateFactionData(FactionData factionData) {
@@ -546,6 +580,7 @@ public class FactionManager {
         perms.add(FactionPerms.EDITCAPITAL);
         perms.add(FactionPerms.RELATION);
         perms.add(FactionPerms.EDITPERMS);
+        perms.add(FactionPerms.SETWARP);
         perms.add(FactionPerms.FACTIONFLY);
         return perms;
     }
@@ -572,11 +607,7 @@ public class FactionManager {
     }
 
     public Boolean checkIfFacHasFlagEnabled(FactionData faction, FactionFlag flag) {
-        if (faction.getAllowedFlags().contains(flag.getName())) {
-            return true;
-        } else {
-            return false;
-        }
+        return faction.getAllowedFlags().contains(flag.getName());
     }
 
     public List<FactionFlag> listFlags() {
@@ -767,10 +798,16 @@ public class FactionManager {
 
 
     // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
-    public void floodSearch(int x, int z, Set<Chunk> toClaim) {
+    public void floodSearch(int x, int z, Set<Chunk> toClaim, Set<Chunk> alreadyChecked) {
+
+        // CHECK IF WE ALREADY CHECKED
+        if (alreadyChecked.contains(instance.getChunkManager().getChunkFromXZ(x, z))) return;
 
         // MAX REACHED?
-        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+        if (alreadyChecked.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+
+        // ADD TO ALREADY CHECKED SET
+        alreadyChecked.add(instance.getChunkManager().getChunkFromXZ(x, z));
 
         // ALREADY CONTAINS CHUNK?
         if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
@@ -781,14 +818,14 @@ public class FactionManager {
             toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
             // RECOURSE
-            floodSearch(x, z + 1, toClaim); // north
-            floodSearch(x, z - 1, toClaim); // south
-            floodSearch(x - 1, z, toClaim); // west
-            floodSearch(x + 1, z, toClaim); // east
-            floodSearch(x - 1, z + 1, toClaim); // north-west
-            floodSearch(x + 1, z - 1, toClaim); // south-east
-            floodSearch(x - 1, z + 1, toClaim); // north-west
-            floodSearch(x + 1, z - 1, toClaim); // south-east
+            floodSearch(x, z + 1, toClaim, alreadyChecked); // north
+            floodSearch(x, z - 1, toClaim, alreadyChecked); // south
+            floodSearch(x - 1, z, toClaim, alreadyChecked); // west
+            floodSearch(x + 1, z, toClaim, alreadyChecked); // east
+            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
 
     }
 

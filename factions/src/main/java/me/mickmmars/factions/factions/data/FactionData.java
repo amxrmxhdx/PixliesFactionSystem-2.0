@@ -4,6 +4,7 @@ import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.perms.FactionPerms;
+import me.mickmmars.factions.publicwarps.data.WarpData;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -32,9 +33,12 @@ public class FactionData {
     private List<String> enemyperms;
     private List<String> applications;
     private List<String> upgrades;
+    private List<WarpData> warps;
     private int money;
+    private List<String> puppets;
+    private List<UUID> bannedplayer;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, int money) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
@@ -54,8 +58,17 @@ public class FactionData {
         this.enemyperms = enemyperms;
         this.applications = applications;
         this.upgrades = upgrades;
+        this.warps = warps;
         this.money = money;
+        this.puppets = puppets;
+        this.bannedplayer = bannedplayer;
     }
+
+    public List<String> getPuppets() { return puppets; }
+    public void setPuppets(List<String> puppets) { this.puppets = puppets; }
+
+    public List<UUID> getBannedplayer() { return bannedplayer; }
+    public void setBannedplayer(List<UUID> bannedplayer) { this.bannedplayer = bannedplayer; }
 
     public List<UUID> listMembers() {
         return Factions.getInstance().getFactionManager().getMembersFromFaction(this);
@@ -70,6 +83,9 @@ public class FactionData {
         }
         return members;
     }
+
+    public List<WarpData> getWarps() { return warps; }
+    public void setWarps(List<WarpData> warps) { this.warps = warps; }
 
     public List<String> getAdminperms() { return adminperms; }
     public List<String> getMemberperms() { return memberperms; }

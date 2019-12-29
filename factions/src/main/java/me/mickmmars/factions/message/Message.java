@@ -174,7 +174,16 @@ public enum Message {
     MAX_FILL_REACHED("§7You §creached §7the maximum capacity of the fill function.", ""),
     PLAYER_FILL_CLAIMED_BROADCASTFAC("§6%player% §7used the fill-claim tool to claim §a%x% §7chunks.", ""),
     NO_DYNMAP_UPGRADE("§7Your faction §cdoes not §7have the Dynmapcolour upgrade!", ""),
-    DEV_VERSION("§bDEV #176", null),
+    NO_1PW_UPGRADE("§7Your faction §cdoes not §7have the OnePublicWarp upgrade!", ""),
+    NO_2PW_UPGRADE("§7Your faction §cdoes not §7have the TwoPublicWarp upgrade!", ""),
+    NO_3PW_UPGRADE("§7Your faction §cdoes not §7have the ThreePublicWarp upgrade!", ""),
+    TOO_MANY_WARPS("§7Your faction §ccannot §7have more than 3 warps.", ""),
+    NO_PERM_SETWARP("§7Your faction §cdoes not §7allow you to set warps.", ""),
+    WARP_MUST_BE_IN_TERRITORY("§7Faciton warps must be located within faction territory.", ""),
+    WARP_SET("§6%player% §7set the warp §b%warp%§7.", ""),
+    PLAYER_BANNED("§7You are §cbanned §7from this faction.", ""),
+    WARP_DOESNT_EXIST("§7This warp §cdoes not §7exist.", ""),
+    DEV_VERSION("§bDEV #305", null),
     HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
             " "
             , "§7Home Commands §8[§e$page$§7/§e$max_pages$§8]",

@@ -19,6 +19,7 @@ public enum FactionPerms {
     EDITCAPITAL("Edit_capital", "Edit the factions capital"),
     DYNMAPCOLOUR("Dynmapcolour", "Change the factions colour on the dynmap"),
     FACTIONFLY("Factionfly", "Fly in your factions territory"),
+    SETWARP("SetWarp", "Set warps for your faction."),
     EDITPERMS("Edit_permissions", "Edit the factions permission-system");
 
     private final String name;

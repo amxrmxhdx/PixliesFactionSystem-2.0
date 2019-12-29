@@ -62,7 +62,6 @@ public class PlayerMoveEventListener implements Listener {
                     System.out.println("Chunk claimed at " + player.getLocation().toString() + " for player " + player.getName());
                     int x = event.getTo().getChunk().getX();
                     int z = event.getTo().getChunk().getZ();
-                    //Player members = (Player) instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()));
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk claimed")));
 
                     for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())))
@@ -86,7 +85,7 @@ public class PlayerMoveEventListener implements Listener {
                 instance.getAutoClaimChunks().put(player.getUniqueId(), chunks);
                 player.sendMessage("added chunk");*/
                 if (!(event.getFrom().getChunk() == event.getTo().getChunk())) {
-                    if (instance.getChunkManager().getFactionDataByChunk(chunk).equals(null) || !instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getChunkManager().isFree(chunk) && !instance.getStaffmode().contains(player.getUniqueId())) {
+                    if (instance.getChunkManager().getFactionDataByChunk(chunk) == null || !instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getChunkManager().isFree(chunk) && !instance.getStaffmode().contains(player.getUniqueId())) {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CHUNK_IS_NOT_YOURS.getMessage()));
                         return;
                     }
@@ -106,8 +105,10 @@ public class PlayerMoveEventListener implements Listener {
 
         if (instance.getFactionfly().contains(player.getUniqueId())) {
             if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getTo().getChunk()))) {
+                player.setAllowFlight(false);
                 player.setFlying(false);
             } else {
+                player.setAllowFlight(true);
                 player.setFlying(true);
             }
         }
@@ -138,7 +139,7 @@ public class PlayerMoveEventListener implements Listener {
                             }
                         }
                     }
-                } else {
+                } else if (instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk()) && !instance.getPlayerData(player).isInFaction()) {
                     player.sendTitle(data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
                     instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
                     if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
