@@ -53,13 +53,13 @@ public class ChunkProtectionListener implements Listener {
             event.setCancelled(false);
             return;
         }
-        if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
+        if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
             event.setCancelled(true);
             player.closeInventory();
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
             return;
         }
-        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
+        if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(chunk))) {
             event.setCancelled(true);
             player.closeInventory();
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
@@ -75,30 +75,39 @@ public class ChunkProtectionListener implements Listener {
         if (event.getMaterial().isInteractable() && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) return;
         if (event.getClickedBlock() == null) return;
         if (!event.getMaterial().isAir()) return;
-        if (event.getMaterial().isInteractable() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
+        if (event.getMaterial().isInteractable() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
             event.setCancelled(false);
             return;
         }
-        if (event.isBlockInHand() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
+        if (event.isBlockInHand() && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && (instance.getPlayerData(player).getCurrentFactionData() == instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk())) && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) != null || instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) == null) {
             event.setCancelled(false);
             return;
         }
-        if (instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != instance.getPlayerData(player).getCurrentFactionData() && !instance.getStaffmode().contains(player.getUniqueId())) event.setCancelled(true);
+        if (instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getLocation().getChunk()) != instance.getPlayerData(player).getCurrentFactionData() && !instance.getStaffmode().contains(player.getUniqueId())) event.setCancelled(true);
         if (!(event.getItem() instanceof Block)) return;
         if (!event.getMaterial().isAir()) {
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                if (instance.getChunkManager().getChunkDataByChunk(chunk) == null) {
+                if (instance.getChunkManager().getFactionDataByChunk(chunk) == null) {
                     event.setCancelled(false);
                     return;
                 }
-                if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
+                if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(chunk))) {
+                    event.setCancelled(false);
+                    return;
+                }
+                if (!instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(chunk) != null && !instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(chunk))) {
+                    event.setCancelled(true);
+                    player.sendMessage(Message.NO_PERMISSION_TO_INTERACT.getMessage());
+                    return;
+                }
+                if (!instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(player).getCurrentFactionData()) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId()) && instance.getChunkManager().getFactionDataByChunk(chunk) != null) {
                     event.setCancelled(true);
                     player.closeInventory();
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
                     return;
                 }
-                if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
+                if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && instance.getChunkManager().getFactionDataByChunk(chunk) == instance.getPlayerData(player).getCurrentFactionData()) {
                     event.setCancelled(true);
                     player.closeInventory();
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));
@@ -112,8 +121,17 @@ public class ChunkProtectionListener implements Listener {
                     event.setCancelled(false);
                     return;
                 }
-                if (event.getClickedBlock().getChunk().equals(null)) {
+                if (instance.getChunkManager().getFactionDataByChunk(chunk) == null) {
                     event.setCancelled(true);
+                    return;
+                }
+                if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(chunk))) {
+                    event.setCancelled(false);
+                    return;
+                }
+                if (!instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(chunk) != null && !instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(chunk))) {
+                    event.setCancelled(true);
+                    player.sendMessage(Message.NO_PERMISSION_TO_INTERACT.getMessage());
                     return;
                 }
                 if (!instance.getChunkManager().getFactionDataByChunk(chunk).getName().equals(instance.getPlayerData(player).getCurrentFactionData().getName()) && !instance.getStaffmode().contains(player.getUniqueId()) || !instance.getPlayerData(player).isInFaction() && !instance.getStaffmode().contains(player.getUniqueId())) {
@@ -122,7 +140,7 @@ public class ChunkProtectionListener implements Listener {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessageRaw().toString()));
                     return;
                 }
-                if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
+                if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(chunk))) {
                     event.setCancelled(true);
                     player.closeInventory();
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col(Message.NOPERM_INTERACT_FAC.getMessageRaw().toString())));

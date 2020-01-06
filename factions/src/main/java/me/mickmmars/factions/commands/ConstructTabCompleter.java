@@ -16,7 +16,7 @@ public class ConstructTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings.length == 1 || command.getName().equalsIgnoreCase("f") && strings.length == 1 ) {
+        if (command.getName().equalsIgnoreCase("factions") && strings.length == 1 || command.getName().equalsIgnoreCase("f") && strings.length == 1 ) {
             if (commandSender instanceof Player) {
                 Player p = (Player) commandSender;
 
@@ -51,14 +51,20 @@ public class ConstructTabCompleter implements TabCompleter {
                 list.add("apply");
                 list.add("accept");
                 list.add("enemy");
+                list.add("setflag");
+                list.add("ban");
+                list.add("unban");
+                list.add("warp");
+                list.add("delwarp");
+                list.add("setwarp");
                 return list;
             }
         }
-        if (command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("create") && strings.length == 2) {
+        if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("create") && strings.length == 2) {
             List<String> namelist = new ArrayList<>();
             namelist.add("§c<name>");
         }
-        if (command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("ally") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("enemy") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("neutral") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("home") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("delhome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("sethome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("apply")) {
+        if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("ally") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("enemy") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("neutral") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("home") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("delhome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("sethome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("apply")) {
             List<String> facnames = new ArrayList<>();
             for (FactionData factions : instance.getFactionManager().getFactions())
                 facnames.add(factions.getName());

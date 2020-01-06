@@ -46,7 +46,7 @@ public class PlayerMoveEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
                         return;
                     }
-                    if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                         player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
                         return;
                     }
@@ -148,6 +148,9 @@ public class PlayerMoveEventListener implements Listener {
                                 Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
                         }
                     }
+                }
+                if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getTo().getChunk()))) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§aYou have elevated access in this area."));
                 }
             } else {
                 if (instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks()) {

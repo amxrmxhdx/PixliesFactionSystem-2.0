@@ -14,6 +14,7 @@ import me.mickmmars.factions.message.manager.MessageManager;
 import me.mickmmars.factions.placeholders.Placeholders;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
+import me.mickmmars.factions.util.FileManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -26,6 +27,9 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Logger;
+
+import static java.lang.reflect.Modifier.TRANSIENT;
+import static me.mickmmars.factions.util.StaticTypeAdapterFactory.getStaticTypeAdapterFactory;
 
 public class Factions extends JavaPlugin {
 
@@ -43,10 +47,20 @@ public class Factions extends JavaPlugin {
     private final List<UUID> factionchat = new ArrayList<>();
     private final List<UUID> createfactiongui = new ArrayList<>();
     private final List<UUID> factionfly = new ArrayList<>();
+    private final List<UUID> teleportingPlayers = new ArrayList<>();
+
+    public List<UUID> getTeleportingPlayers() { return teleportingPlayers; }
 
     private final Gson gson = new Gson(),
-            prettyGson = new GsonBuilder().setPrettyPrinting().create();
+            prettyGson = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .excludeFieldsWithModifiers(TRANSIENT)
+                    .registerTypeAdapterFactory(getStaticTypeAdapterFactory())
+                    .setPrettyPrinting()
+                    .create();
     private final JsonParser parser = new JsonParser();
+
+    public FileManager flags;
 
     private ChunkManager chunkManager;
     private FactionManager factionManager;
@@ -86,6 +100,9 @@ public class Factions extends JavaPlugin {
         instance = this;
 
         this.init();
+
+        flags = new FileManager(this, "flags", getDataFolder().getAbsolutePath());
+        flags.save();
     }
 
     @Override
@@ -135,6 +152,7 @@ public class Factions extends JavaPlugin {
         pluginManager.registerEvents(new PlayerMoveEventListener(), this);
         pluginManager.registerEvents(new PlayerHitListener(), this);
         pluginManager.registerEvents(new FlagsListener(), this);
+        pluginManager.registerEvents(new TeleportationListeners(), this);
     }
 
     private void loadPlayers() {

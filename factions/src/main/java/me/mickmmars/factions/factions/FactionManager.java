@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.itemstacks.BannerData;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.data.PlayerData;
@@ -15,6 +16,7 @@ import me.mickmmars.factions.factions.flags.FactionFlag;
 import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.relations.FactionRelations;
+import me.mickmmars.factions.util.ItemStackSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -25,11 +27,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static java.lang.reflect.Modifier.TRANSIENT;
 
 public class FactionManager {
 
@@ -308,7 +315,7 @@ public class FactionManager {
                 player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
                 return;
             }
-            if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
+            if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                 player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
                 return;
             }
@@ -373,6 +380,10 @@ public class FactionManager {
 
     public void claimChunk(Player player, Chunk chunk, String factionId) {
         FactionData factionData = getFactionById(factionId);
+        if (!checkIfClaimIsConnected(chunk, getFactionById(factionId)) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false)) {
+            player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
+            return;
+        }
 /*        if (!Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && (getFactionById(factionId).getChunks().size() >= 1) && (chunkHandler.getFactionDataByChunk(chunk) == factionData) && ((chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() + 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() - 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() + 1)) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() - 1)) != factionData))) {
             return;
         }*/
@@ -581,8 +592,74 @@ public class FactionManager {
         perms.add(FactionPerms.RELATION);
         perms.add(FactionPerms.EDITPERMS);
         perms.add(FactionPerms.SETWARP);
+        perms.add(FactionPerms.PUPPET);
+        perms.add(FactionPerms.SETFLAG);
         perms.add(FactionPerms.FACTIONFLY);
         return perms;
+    }
+
+    public Boolean checkIfAlreadyPuppeted(FactionData data1) {
+        for (FactionData facs : getFactions()) {
+            if (facs.getPuppets().contains(data1.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<String> getDefaultNewbiePerms() {
+        List<String> list = new ArrayList<String>();
+        list.add(FactionPerms.FACTIONFLY.getName().toUpperCase());
+        return list;
+    }
+
+    public List<String> getDefaultMemberPerms() {
+        List<String> list = new ArrayList<String>(getDefaultNewbiePerms());
+        list.add(FactionPerms.CLAIM.getName().toUpperCase());
+        list.add(FactionPerms.INTERACT.getName().toUpperCase());
+        list.add(FactionPerms.BUILD.getName().toUpperCase());
+        return list;
+    }
+
+    public void setFactionFlag(FactionData fac1, ItemStack flag) {
+        if (!flag.getType().name().contains("BANNER")) return;
+        instance.flags.getConfiguration().set(fac1.getId(), flag);
+        instance.flags.save();
+        instance.flags.reload();
+    }
+
+    public Boolean checkIfClaimIsConnected(Chunk start, FactionData fac1) {
+        if (fac1.getChunks().size() == 0) {
+            return true;
+        }
+        if (instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX() - 1, start.getZ()))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX() + 1, start.getZ()))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX(), start.getZ() - 1))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX(), start.getZ() + 1)))) {
+            return true;
+        }
+        return false;
+    }
+
+    public void banPlayerFromFac(FactionData fac1, Player player) {
+        if (fac1.getBannedplayer().contains(player.getUniqueId())) return;
+        List<UUID> bannedplayers = new ArrayList<UUID>(fac1.getBannedplayer());
+        bannedplayers.add(player.getUniqueId());
+        fac1.setBannedplayer(bannedplayers);
+        updateFactionData(fac1);
+    }
+
+    public void unBanPlayerFromFac(FactionData fac1, Player player) {
+        if (!fac1.getBannedplayer().contains(player.getUniqueId())) return;
+        List<UUID> bannedplayers = new ArrayList<UUID>(fac1.getBannedplayer());
+        bannedplayers.remove(player.getUniqueId());
+        fac1.setBannedplayer(bannedplayers);
+        updateFactionData(fac1);
+    }
+
+    public List<String> getDefaultAdminPerms() {
+        List<String> list = new ArrayList<String>(getDefaultMemberPerms());
+        for (FactionPerms perms : listPerms())
+            if (!list.contains(perms.getName().toUpperCase()))
+                list.add(perms.getName().toUpperCase());
+        return list;
     }
 
     public List<FactionUpgrades> listUpgrades() {
@@ -591,7 +668,6 @@ public class FactionManager {
         upgrades.add(FactionUpgrades.TWOPUBLICWARPS);
         upgrades.add(FactionUpgrades.THREEPUBLICWARPS);
         upgrades.add(FactionUpgrades.FACTION_FLY);
-        upgrades.add(FactionUpgrades.MOREMEMBERS);
         upgrades.add(FactionUpgrades.DYNMAPCOLOUR);
         return upgrades;
     }
@@ -700,14 +776,14 @@ public class FactionManager {
     }
 
     public void addChunkaccessToPlayer(Player reciever, Player requester, Chunk chunk) {
-        Location minLocation = instance.getChunkManager().getMinLocation(chunk);
-        Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
-        ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
-        ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
         String id = instance.generateKey(10);
-        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, requester.getLocation().getChunk().getX(), requester.getLocation().getChunk().getZ());
+        ChunkData chunkData = instance.getChunkManager().getChunkDataByChunk(chunk);
         if (instance.getPlayerData(reciever).getAccessableChunks().contains(chunkData)) {
             requester.sendMessage(Message.PLAYER_ALREADY_HAS_ACCESS_TO_CHUNK.getMessage().replace("%player%", reciever.getName()));
+            return;
+        }
+        if (instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(requester).getCurrentFactionData())) {
+            requester.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CANT_ACCESS_WHATS_NOT_YOURS.getMessage()));
             return;
         }
         List<ChunkData> accessableChunks = new ArrayList<ChunkData>(instance.getPlayerData(reciever).getAccessableChunks());
@@ -794,6 +870,13 @@ public class FactionManager {
                 claimChunk(player, chunks, faction.getId());
             }
             player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
+    }
+
+    public Boolean warpWithNameAlreadyExists(FactionData data, String name) {
+        for (WarpData warp : data.getWarps())
+            if (warp.getName().equalsIgnoreCase(name))
+                return true;
+        return false;
     }
 
 

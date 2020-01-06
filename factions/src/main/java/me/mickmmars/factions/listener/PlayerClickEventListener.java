@@ -51,6 +51,7 @@ public class PlayerClickEventListener implements Listener {
         if (event.getView().getTitle().equals("§8-= §bYour factions relations §8=-")) {
             event.setCancelled(true);
         }
+        if (event.getView().getTitle().equals("§8-= §bBanned players §8=-")) event.setCancelled(true);
 
         for (FactionInventory.GUIPage value : FactionInventory.GUIPage.values()) {
             if (view.getTitle().equals(value.getName())) {
@@ -111,7 +112,7 @@ public class PlayerClickEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
                         return;
                     }
-                    if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getMaxPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
+                    if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + 1 > instance.getPlayerData(player).getCurrentFactionData().getPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                         player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
                         return;
                     }
@@ -192,9 +193,6 @@ public class PlayerClickEventListener implements Listener {
                         price = (Double) Config.FACTION_FLY_PRICE.getData();
                         upgrade = FactionUpgrades.FACTION_FLY;
                     } else if (event.getSlot() == 4) {
-                        price = (Double) Config.MOREMEMBERS_PRICE.getData();
-                        upgrade = FactionUpgrades.MOREMEMBERS;
-                    } else if (event.getSlot() == 5) {
                         price = (Double) Config.DYNMAPCOLOUR_PRICE.getData();
                         upgrade = FactionUpgrades.DYNMAPCOLOUR;
                     }

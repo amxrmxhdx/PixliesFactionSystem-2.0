@@ -9,7 +9,6 @@ public enum FactionUpgrades {
     TWOPUBLICWARPS("twopublicwarps", "Two public-warps", (Double) Config.TWO_PUBLIC_WARPS_PRICE.getData()),
     THREEPUBLICWARPS("threepublicwarps", "Three public-warps", (Double) Config.THREE_PUBLIC_WARPS_PRICE.getData()),
     FACTION_FLY("factionfly", "Faction fly", (Double) Config.FACTION_FLY_PRICE.getData()),
-    MOREMEMBERS("moremembers", "40 members", (Double) Config.MOREMEMBERS_PRICE.getData()),
     DYNMAPCOLOUR("dynmapcolour", "Change dynmap-colour", (Double) Config.DYNMAPCOLOUR_PRICE.getData());
 
     private Factions instance = Factions.getInstance();

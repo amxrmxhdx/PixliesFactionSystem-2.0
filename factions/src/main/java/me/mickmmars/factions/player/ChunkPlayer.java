@@ -8,6 +8,7 @@ import me.mickmmars.factions.config.JsonConfig;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.player.data.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class ChunkPlayer {
     public boolean createIfNotExists() {
         if (exists()) return true;
         new File("plugins/Factions/players").mkdirs();
-        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>(), new ArrayList<ChunkData>());
+        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>(), new ArrayList<ChunkData>(), Bukkit.getPlayer(uuid).getName());
 
         final JsonConfig jsonConfig = new JsonConfig(this.file);
         jsonConfig.set("userData", playerData);

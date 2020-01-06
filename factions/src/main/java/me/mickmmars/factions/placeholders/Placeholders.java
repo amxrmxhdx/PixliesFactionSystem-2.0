@@ -58,7 +58,7 @@ public class Placeholders extends PlaceholderExpansion {
 
             case "maxpower":
                 if (plugin.getPlayerData(p).isInFaction()) {
-                    return String.valueOf(plugin.getPlayerData(p).getCurrentFactionData().getMaxPower());
+                    return String.valueOf(plugin.getPlayerData(p).getCurrentFactionData().getPower());
                 }
                 break;
 

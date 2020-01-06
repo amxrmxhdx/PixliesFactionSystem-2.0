@@ -70,7 +70,11 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         String fillcolor;
         double fillopacity;
         String homemarker;
+        String warpmarker;
         MarkerIcon homeicon;
+        MarkerIcon warpicon1;
+        MarkerIcon warpicon2;
+        MarkerIcon warpicon3;
         boolean boost;
 
         AreaStyle(FileConfiguration cfg, String path, AreaStyle def) {

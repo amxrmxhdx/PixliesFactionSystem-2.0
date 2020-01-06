@@ -3,14 +3,15 @@ package me.mickmmars.factions.factions.data;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.Factions;
+import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.itemstacks.BannerData;
 import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.publicwarps.data.WarpData;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 public class FactionData {
 
@@ -18,7 +19,7 @@ public class FactionData {
     private String id;
     private List<String> allowedFlags;
     private List<ChunkData> chunks;
-    private int maxPower;
+    private int powerboost;
     private String description;
     private List<FactionPerms> perms;
     private String discordlink;
@@ -37,13 +38,15 @@ public class FactionData {
     private int money;
     private List<String> puppets;
     private List<UUID> bannedplayer;
+    private List<String> puppetrequests;
+    private Boolean isInWar;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int maxPower, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer) {
+    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int powerboost, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer, List<String> puppetrequests, Boolean isInWar) {
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
         this.chunks = chunks;
-        this.maxPower = maxPower;
+        this.powerboost = powerboost;
         this.description = description;
         this.perms = perms;
         this.discordlink = discordlink;
@@ -62,7 +65,15 @@ public class FactionData {
         this.money = money;
         this.puppets = puppets;
         this.bannedplayer = bannedplayer;
+        this.puppetrequests = puppetrequests;
+        this.isInWar = isInWar;
     }
+
+    public Boolean isInWar() { return isInWar; }
+    public void setIfIsInWar(Boolean isInWar) { this.isInWar = isInWar; }
+
+    public List<String> getPuppetrequests() { return puppetrequests; }
+    public void setPuppetrequests(List<String> puppetrequests) { this.puppetrequests = puppetrequests; }
 
     public List<String> getPuppets() { return puppets; }
     public void setPuppets(List<String> puppets) { this.puppets = puppets; }
@@ -82,6 +93,11 @@ public class FactionData {
             }
         }
         return members;
+    }
+
+    public void broadcastMessage(String Message) {
+        for (UUID uuid : listOnlineMembers())
+            Bukkit.getPlayer(uuid).sendMessage(Message);
     }
 
     public List<WarpData> getWarps() { return warps; }
@@ -189,13 +205,15 @@ public class FactionData {
         this.chunks = chunks;
     }
 
-    public int getMaxPower() {
-        return maxPower;
+    public int getPowerboost() {
+        return powerboost;
     }
 
-    public void setMaxPower(int maxPower) {
-        this.maxPower = maxPower;
+    public void setPowerboost(int powerboost) {
+        this.powerboost = powerboost;
     }
+
+    public int getPower() { return (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData()) + powerboost - getChunks().size(); }
 
     public String getDescription() {
         return description;

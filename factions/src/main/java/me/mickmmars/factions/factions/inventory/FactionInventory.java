@@ -5,6 +5,7 @@ import me.mickmmars.factions.factions.flags.FactionFlag;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.util.ItemBuilder;
+import me.mickmmars.factions.util.ItemStackSerializer;
 import me.mickmmars.factions.util.SkullBuilder;
 import me.mickmmars.factions.Factions;
 import org.bukkit.Bukkit;
@@ -12,11 +13,11 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class FactionInventory {
 
@@ -67,6 +68,7 @@ public class FactionInventory {
 
     public FactionInventory setItems(GUIPage page) {
         inventory = Bukkit.createInventory(null, 9 * 5, page.getName());
+        FactionData data = instance.getPlayerData(player).getCurrentFactionData();
 
         switch (page) {
             case LIST:
@@ -75,10 +77,15 @@ public class FactionInventory {
                     for (int i = 0; i < faction.getDescription().length(); i++) {
 
                     }
+                    ItemStack item = new ItemStack(instance.flags.getConfiguration().getItemStack(faction.getId()).getType());
+                    BannerMeta meta = (BannerMeta) instance.flags.getConfiguration().getItemStack(faction.getId()).getItemMeta();
+                    meta.setDisplayName("§c§l" + faction.getName());
+                    meta.setLore(Arrays.asList(new String[]{"§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}));
+                    item.setItemMeta(meta);
                     if (!faction.getName().equalsIgnoreCase("SafeZone")) {
-                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                        inventory.addItem(item);
                     } else {
-                        inventory.addItem(new ItemBuilder(Material.PAPER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§lGod" , "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
+                        inventory.addItem(new ItemBuilder(Material.YELLOW_BANNER).setDisplayName("§c§l" + faction.getName()).addLoreArray(new String[]{"§7Leader: §b§lGod" , "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"}).build());
                     }
                 }
                 break;

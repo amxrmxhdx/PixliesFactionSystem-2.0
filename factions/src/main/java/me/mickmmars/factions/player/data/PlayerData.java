@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PlayerData {
 
+    private String lastKnownName;
     private boolean isInFaction;
     private String factionId;
     private FactionRank factionRank;
@@ -17,14 +18,17 @@ public class PlayerData {
     private List<HomeData> homes;
     private List<ChunkData> AccessableChunks;
 
-    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes, List<ChunkData> AccessableChunks) {
+    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes, List<ChunkData> AccessableChunks, String lastKnownName) {
         this.isInFaction = isInFaction;
         this.factionId = factionId;
         this.factionRank = factionRank;
         this.factionInvites = factionInvites;
         this.homes = homes;
         this.AccessableChunks = AccessableChunks;
+        this.lastKnownName = lastKnownName;
     }
+
+    public String getLastKnownName() { return lastKnownName; }
 
     public List<ChunkData> getAccessableChunks() {
         return AccessableChunks;

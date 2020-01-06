@@ -54,7 +54,7 @@ public class PlayerJoinEventListener implements Listener {
             int chunks = instance.getPlayerData(player).getCurrentFactionData().getChunks().size();
             player.sendMessage("§8-§b+§8---------------------------------------------§b+§8-");
             player.sendMessage("§7Faction: §b" + instance.getPlayerData(player).getCurrentFactionData().getName());
-            player.sendMessage("§7Land: §b" + chunks + "§7/§b" + instance.getPlayerData(player).getCurrentFactionData().getMaxPower());
+            player.sendMessage("§7Land: §b" + chunks + "§7/§b" + instance.getPlayerData(player).getCurrentFactionData().getPower());
             player.sendMessage("§7Factionbank: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getMoney());
             player.sendMessage("§7Total landcost: §2§l$§a" + chunks * 5);
             player.sendMessage("§7Online members: " + sj.toString());
