@@ -48,6 +48,8 @@ public class Factions extends JavaPlugin {
     private final List<UUID> createfactiongui = new ArrayList<>();
     private final List<UUID> factionfly = new ArrayList<>();
     private final List<UUID> teleportingPlayers = new ArrayList<>();
+    private final List<UUID> fillClaimPlayers = new ArrayList<>();
+    public List<UUID> getFillClaimPlayers() { return fillClaimPlayers; }
 
     public List<UUID> getTeleportingPlayers() { return teleportingPlayers; }
 

@@ -38,11 +38,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class FactionCommand implements CommandExecutor {
 
@@ -547,6 +549,10 @@ public class FactionCommand implements CommandExecutor {
                         player.sendMessage(Message.NO_CLAIM_PERM.getMessage());
                         return false;
                     }
+                    if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !strings[1].equalsIgnoreCase("fill")) {
+                        player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
+                        return false;
+                    }
                     if (strings[1].equalsIgnoreCase("one")) {
                         if (instance.getChunkManager().getFactionDataByChunk(player.getLocation().getChunk()) != null) {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.ALREADY_CLAIMED.getMessage()));
@@ -604,9 +610,16 @@ public class FactionCommand implements CommandExecutor {
                         instance.getFactionManager().claimChunk(player, player.getLocation().getChunk(), instance.getFactionManager().getFactionByName("SafeZone").getId());
                         player.sendMessage(Message.SAFEZONE_CLAIMED.getMessage().replace("%loc%", "§6" + player.getLocation().getChunk().getX() + "§7, §6" + player.getLocation().getChunk().getZ()));
                     } else if (strings[1].equalsIgnoreCase("fill")) {
+                        instance.getFillClaimPlayers().add(player.getUniqueId());
                         Set<Chunk> floodSearchRes = new HashSet<Chunk>();
                         Set<Chunk> alreadyChecked = new HashSet<Chunk>();
-                        instance.getFactionManager().floodSearch(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), floodSearchRes, alreadyChecked);
+                        try {
+                            instance.getFactionManager().floodSearch(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), floodSearchRes, alreadyChecked);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         int floodSearchResInt = floodSearchRes.size();
                         if (instance.getPlayerData(player).getCurrentFactionData().getChunks().size() + floodSearchResInt > instance.getPlayerData(player).getCurrentFactionData().getPower() && !instance.getStaffmode().contains(player.getUniqueId())) {
                             player.sendMessage(Message.NO_CLAIMING_POWER.getMessage());
@@ -622,6 +635,7 @@ public class FactionCommand implements CommandExecutor {
                         }
                         instance.getFactionManager().claimFill(floodSearchRes, player, factionData);
                         factionData.sendMessageToMembers(Message.PLAYER_FILL_CLAIMED_BROADCASTFAC.getMessage().replace("%player%", player.getName()).replace("%x%", Integer.toString(floodSearchResInt)));
+                        instance.getFillClaimPlayers().remove(player.getUniqueId());
                     }
                 } else if (strings[0].equalsIgnoreCase("promote")) {
                     String targetName = strings[1];

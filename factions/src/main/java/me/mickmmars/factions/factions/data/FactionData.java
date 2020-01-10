@@ -213,7 +213,7 @@ public class FactionData {
         this.powerboost = powerboost;
     }
 
-    public int getPower() { return (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData()) + powerboost - getChunks().size(); }
+    public int getPower() { return (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData()) + powerboost; }
 
     public String getDescription() {
         return description;
@@ -243,7 +243,8 @@ public class FactionData {
 
     public void sendMessageToMembers(String Message) {
         for (UUID uuid : Factions.getInstance().getFactionManager().getMembersFromFaction(this))
-            Bukkit.getPlayer(uuid).sendMessage(Message);
+            if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+              Bukkit.getPlayer(uuid).sendMessage(Message);
     }
 
     public String getMembersString(String split, String colour) {

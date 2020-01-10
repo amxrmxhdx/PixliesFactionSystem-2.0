@@ -1,10 +1,6 @@
 package me.mickmmars.factions.chunk.data;
 
-import com.sun.istack.internal.NotNull;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
-import me.mickmmars.factions.config.Config;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 
 import java.util.List;
 import java.util.UUID;

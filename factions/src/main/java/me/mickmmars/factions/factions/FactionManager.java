@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
-import me.mickmmars.factions.factions.itemstacks.BannerData;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.data.PlayerData;
@@ -16,7 +15,6 @@ import me.mickmmars.factions.factions.flags.FactionFlag;
 import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.relations.FactionRelations;
-import me.mickmmars.factions.util.ItemStackSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -28,15 +26,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static java.lang.reflect.Modifier.TRANSIENT;
+import java.util.concurrent.ExecutionException;
 
 public class FactionManager {
 
@@ -380,13 +375,10 @@ public class FactionManager {
 
     public void claimChunk(Player player, Chunk chunk, String factionId) {
         FactionData factionData = getFactionById(factionId);
-        if (!checkIfClaimIsConnected(chunk, getFactionById(factionId)) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false)) {
+        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId())) {
             player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
             return;
         }
-/*        if (!Boolean.getBoolean(Config.ALLOW_UNCONNECTED_CLAIMS.getData().toString()) && (getFactionById(factionId).getChunks().size() >= 1) && (chunkHandler.getFactionDataByChunk(chunk) == factionData) && ((chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() + 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX() - 1, chunk.getZ())) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() + 1)) != factionData) && (chunkHandler.getFactionDataByChunk(chunkHandler.getChunkFromXZ(chunk.getX(), chunk.getZ() - 1)) != factionData))) {
-            return;
-        }*/
 
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
         if (factionData.getMoney() >= price) {
@@ -629,13 +621,14 @@ public class FactionManager {
     }
 
     public Boolean checkIfClaimIsConnected(Chunk start, FactionData fac1) {
+        Chunk north = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX(), start.getZ() + 1);
+        Chunk south = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX(), start.getZ() - 1);
+        Chunk west = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX() - 1, start.getZ());
+        Chunk east = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX() + 1, start.getZ() + 1);
         if (fac1.getChunks().size() == 0) {
             return true;
         }
-        if (instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX() - 1, start.getZ()))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX() + 1, start.getZ()))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX(), start.getZ() - 1))) || instance.getChunkManager().getFactionDataByChunk(start).equals(instance.getChunkManager().getChunkDataByChunk(instance.getChunkManager().getChunkFromXZ(start.getX(), start.getZ() + 1)))) {
-            return true;
-        }
-        return false;
+        return (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(north)) && instance.getChunkManager().getChunkDataByChunk(north) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(south)) && instance.getChunkManager().getChunkDataByChunk(south) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(west)) && instance.getChunkManager().getChunkDataByChunk(west) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(east)) && instance.getChunkManager().getChunkDataByChunk(east) != null);
     }
 
     public void banPlayerFromFac(FactionData fac1, Player player) {
@@ -881,35 +874,36 @@ public class FactionManager {
 
 
     // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
-    public void floodSearch(int x, int z, Set<Chunk> toClaim, Set<Chunk> alreadyChecked) {
+    public void floodSearch(int x, int z, Set<Chunk> toClaim, Set<Chunk> alreadyChecked) throws ExecutionException, InterruptedException {
 
-        // CHECK IF WE ALREADY CHECKED
-        if (alreadyChecked.contains(instance.getChunkManager().getChunkFromXZ(x, z))) return;
+                // CHECK IF WE ALREADY CHECKED
+                if (alreadyChecked.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
 
-        // MAX REACHED?
-        if (alreadyChecked.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+                // MAX REACHED?
+                if (alreadyChecked.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
 
-        // ADD TO ALREADY CHECKED SET
-        alreadyChecked.add(instance.getChunkManager().getChunkFromXZ(x, z));
+                // ADD TO ALREADY CHECKED SET
+                alreadyChecked.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
-        // ALREADY CONTAINS CHUNK?
-        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
+                // ALREADY CONTAINS CHUNK?
+                if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)))
+                    return;
 
-        // ALREADY CLAIMED?
-        if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getServer().getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null)) return;
+                // ALREADY CLAIMED?
+                if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null))
+                    return;
 
-            toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+                toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
-            // RECOURSE
-            floodSearch(x, z + 1, toClaim, alreadyChecked); // north
-            floodSearch(x, z - 1, toClaim, alreadyChecked); // south
-            floodSearch(x - 1, z, toClaim, alreadyChecked); // west
-            floodSearch(x + 1, z, toClaim, alreadyChecked); // east
-            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
-            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
-            floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
-            floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
-
+                // RECOURSE
+                floodSearch(x, z + 1, toClaim, alreadyChecked); // north
+                floodSearch(x, z - 1, toClaim, alreadyChecked); // south
+                floodSearch(x - 1, z, toClaim, alreadyChecked); // west
+                floodSearch(x + 1, z, toClaim, alreadyChecked); // east
+                floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+                floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+                floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
+                floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
     }
 
     public List<FactionData> getFactions() {
