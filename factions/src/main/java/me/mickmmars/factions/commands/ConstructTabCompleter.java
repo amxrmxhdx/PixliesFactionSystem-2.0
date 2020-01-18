@@ -8,6 +8,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConstructTabCompleter implements TabCompleter {
@@ -20,43 +21,14 @@ public class ConstructTabCompleter implements TabCompleter {
             if (commandSender instanceof Player) {
                 Player p = (Player) commandSender;
 
+                List<String> all = Arrays.asList("create", "invite", "menu", "kick", "desc", "description", "delete", "setdesc", "help", "leave", "sethome", "home", "delhome", "unclaim", "claim", "promote", "demote", "discord", "forcedisband", "staff", "override", "perms", "capital", "home", "setcapital", "sethome", "apply", "accept", "enemy", "ally");
+
                 List<String> list = new ArrayList<>();
-                list.add("create");
-                list.add("invite");
-                list.add("menu");
-                list.add("kick");
-                list.add("desc");
-                list.add("description");
-                list.add("setdesc");
-                list.add("delete");
-                list.add("help");
-                list.add("leave");
-                list.add("sethome");
-                list.add("home");
-                list.add("delhome");
-                list.add("unclaim");
-                list.add("claim");
-                list.add("promote");
-                list.add("demote");
-                list.add("discord");
-                list.add("forcedisband");
-                list.add("staff");
-                list.add("override");
-                list.add("perms");
-                list.add("capital");
-                list.add("delcapital");
-                list.add("setcapital");
-                list.add("ally");
-                list.add("neutral");
-                list.add("apply");
-                list.add("accept");
-                list.add("enemy");
-                list.add("setflag");
-                list.add("ban");
-                list.add("unban");
-                list.add("warp");
-                list.add("delwarp");
-                list.add("setwarp");
+                for (String string : all) {
+                    if (string.startsWith(strings[0])) {
+                        list.add(string);
+                    }
+                }
                 return list;
             }
         }

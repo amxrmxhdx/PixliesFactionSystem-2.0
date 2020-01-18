@@ -11,6 +11,7 @@ public enum FactionFlag {
     EXPLOSIONS("§cExplosions", true),
     OPEN("§cOpen/No-invitation", false),
     ANIMALS("§cAnimals", true),
+    PERMANENT("§cPermanent", false),
     MONSTER("§cMonsters", false);
 
     private final String name;

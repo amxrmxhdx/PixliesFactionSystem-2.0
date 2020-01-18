@@ -392,9 +392,6 @@ public class FactionManager {
             instance.getFactionManager().getFactionById(factionId).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) - price);
             instance.getChunkManager().getChunks().add(chunkData);
             updateFactionData(getFactionById(factionId));
-            if (Bukkit.getServer().getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
-                DynmapFactionsPlugin.getInstance().updateFactions();
-            }
         } else {
             int need = (price - instance.getFactionManager().getFactionById(factionId).getMoney());
             String needString = instance.asDecimal(need);
@@ -413,9 +410,6 @@ public class FactionManager {
         instance.getFactionManager().getFactionById(factionid).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) + price);
         instance.getChunkManager().getChunks().remove(chunkData);
         updateFactionData(factionData);
-        if (Bukkit.getServer().getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
-            DynmapFactionsPlugin.getInstance().updateFactions();
-        }
     }
 
     public List<UUID> getMembersFromFaction(FactionData data) {
@@ -586,6 +580,7 @@ public class FactionManager {
         perms.add(FactionPerms.SETWARP);
         perms.add(FactionPerms.PUPPET);
         perms.add(FactionPerms.SETFLAG);
+        perms.add(FactionPerms.SLIMEFUN);
         perms.add(FactionPerms.FACTIONFLY);
         return perms;
     }
@@ -775,7 +770,7 @@ public class FactionManager {
             requester.sendMessage(Message.PLAYER_ALREADY_HAS_ACCESS_TO_CHUNK.getMessage().replace("%player%", reciever.getName()));
             return;
         }
-        if (instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(requester).getCurrentFactionData())) {
+        if (!instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(requester).getCurrentFactionData())) {
             requester.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CANT_ACCESS_WHATS_NOT_YOURS.getMessage()));
             return;
         }
@@ -904,6 +899,7 @@ public class FactionManager {
                 floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
                 floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
                 floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+
     }
 
     public List<FactionData> getFactions() {

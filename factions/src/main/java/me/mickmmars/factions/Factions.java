@@ -63,6 +63,7 @@ public class Factions extends JavaPlugin {
     private final JsonParser parser = new JsonParser();
 
     public FileManager flags;
+    public FileManager factionchests;
 
     private ChunkManager chunkManager;
     private FactionManager factionManager;
@@ -104,6 +105,8 @@ public class Factions extends JavaPlugin {
         this.init();
 
         flags = new FileManager(this, "flags", getDataFolder().getAbsolutePath());
+        factionchests = new FileManager(this, "fchests", getDataFolder().getAbsolutePath());
+        factionchests.save();
         flags.save();
     }
 
@@ -155,6 +158,7 @@ public class Factions extends JavaPlugin {
         pluginManager.registerEvents(new PlayerHitListener(), this);
         pluginManager.registerEvents(new FlagsListener(), this);
         pluginManager.registerEvents(new TeleportationListeners(), this);
+        pluginManager.registerEvents(new FInventoryListener(), this);
     }
 
     private void loadPlayers() {

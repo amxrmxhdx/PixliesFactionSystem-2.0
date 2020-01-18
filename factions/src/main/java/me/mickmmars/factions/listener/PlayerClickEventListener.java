@@ -1,6 +1,5 @@
 package me.mickmmars.factions.listener;
 
-import me.mickmmars.earth.base;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.inventory.FMapInventory;
@@ -23,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
+import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.util.UUID;
 
@@ -132,6 +132,9 @@ public class PlayerClickEventListener implements Listener {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
                         }
                     }
+                    if (Bukkit.getServer().getPluginManager().getPlugin("PFS-Dynmap").isEnabled()) {
+                        DynmapFactionsPlugin.getInstance().updateFactions();
+                    }
                 }
                 if (!event.getCurrentItem().getType().equals(Material.AIR)) {
                     event.setCancelled(true);
@@ -211,7 +214,7 @@ public class PlayerClickEventListener implements Listener {
                     }
                 }
             } else if (view.getTitle().equals("§a§oList")) {
-                if ((event.getCurrentItem().getType() == Material.PAPER) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
+                if ((event.getCurrentItem().getType().name().contains("BANNER")) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
                     player.performCommand("f apply " + event.getCurrentItem().getItemMeta().getDisplayName().replace("§c§l", ""));
                     player.closeInventory();
                 }

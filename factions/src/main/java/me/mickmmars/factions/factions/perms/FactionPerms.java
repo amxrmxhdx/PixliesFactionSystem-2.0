@@ -22,6 +22,7 @@ public enum FactionPerms {
     SETWARP("SetWarp", "Set warps for your faction."),
     PUPPET("PuppetFacs", "Puppet factions."),
     SETFLAG("SetFlag", "Set the factions flag"),
+    SLIMEFUN("Slimefun", "Access slimefun machines"),
     EDITPERMS("Edit_permissions", "Edit the factions permission-system");
 
     private final String name;
