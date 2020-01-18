@@ -57,14 +57,60 @@ public class ChunkProtectionListener implements Listener {
         if (event.getBlockPlaced().isEmpty()) return;
         if (event.getBlockPlaced().getType().isAir()) return;
         if (instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk()).equals(null)) return;
-        if (instance.getStaffmode().contains(player.getUniqueId())) event.setCancelled(false);
+        if (instance.getStaffmode().contains(player.getUniqueId())) {
+            event.setCancelled(false);
+            return;
+        }
 
         // SET EVENT TRUE
-        if (!instance.getPlayerData(player).isInFaction() && !instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) event.setCancelled(true);
+        if (!instance.getPlayerData(player).isInFaction() && !instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
 
         // SET EVENT FALSE
-        if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) event.setCancelled(false);
-        if (instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) event.setCancelled(false);
+        if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+        if (instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
+            event.setCancelled(false);
+            return;
+        }
+
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+
+        // RETURN STATEMENTS
+        if (event.getBlockPlaced().getChunk().equals(null)) return;
+        if (event.getBlockPlaced() == null) return;
+        if (event.getBlockPlaced().isEmpty()) return;
+        if (event.getBlockPlaced().getType().isAir()) return;
+        if (instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk()).equals(null)) return;
+        if (instance.getStaffmode().contains(player.getUniqueId())) {
+            event.setCancelled(false);
+            return;
+        }
+
+        // SET EVENT TRUE
+        if (!instance.getPlayerData(player).isInFaction() && !instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+
+        // SET EVENT FALSE
+        if (instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+        if (instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
+            event.setCancelled(false);
+            return;
+        }
+        // test
 
     }
 
