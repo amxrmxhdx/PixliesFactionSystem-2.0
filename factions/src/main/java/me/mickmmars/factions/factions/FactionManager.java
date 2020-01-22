@@ -767,7 +767,12 @@ public class FactionManager {
         String id = instance.generateKey(10);
         ChunkData chunkData = instance.getChunkManager().getChunkDataByChunk(chunk);
         if (instance.getPlayerData(reciever).getAccessableChunks().contains(chunkData)) {
-            requester.sendMessage(Message.PLAYER_ALREADY_HAS_ACCESS_TO_CHUNK.getMessage().replace("%player%", reciever.getName()));
+            List<ChunkData> accessableChunks = new ArrayList<ChunkData>(instance.getPlayerData(reciever).getAccessableChunks());
+            accessableChunks.add(chunkData);
+            instance.getPlayerData(reciever).setAccessableChunks(accessableChunks);
+            requester.sendMessage(Message.GAVE_CHUNKACCESS_TO_PLAYER.getMessage().replace("%player%", reciever.getName()));
+            reciever.sendMessage(Message.PLAYER_GAINED_CHUNK_ACCESS.getMessage().replace("%loc%", requester.getLocation().getChunk().getX() + "§7, §a" + requester.getLocation().getChunk().getZ()));
+            instance.getChunkPlayer(reciever.getUniqueId()).updatePlayerData(instance.getPlayerData(reciever.getUniqueId()));
             return;
         }
         if (!instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(requester).getCurrentFactionData())) {

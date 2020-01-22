@@ -48,7 +48,7 @@
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
+            <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
@@ -88,8 +88,8 @@
     <dependencies>
         <dependency> <!-- Spigot (this includes Spigot API, Bukkit API, Craftbukkit and NMS) -->
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
+            <artifactId>spigot-api</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -122,14 +122,14 @@
             <artifactId>pfsdynmap</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>C:/Users/Amir/Desktop/FactionSystemGithub/PixliesFactionSystem-2.0/PFSDynmap.jar</systemPath>
+            <systemPath>C:/Users/Amir/Desktop/PixliesEarth reloaded/FactionSystemGithub/PixliesFactionSystem-2.0/PFSDynmap.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>me.mickmmars</groupId>
             <artifactId>slimefun</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>C:/Users/Amir/Desktop/FactionSystemGithub/PixliesFactionSystem-2.0/factions/lib/repo/Slimefun4 - DEV 408 (git 73b64).jar</systemPath>
+            <systemPath>C:/Users/Amir/Desktop/PixliesEarth reloaded/FactionSystemGithub/PixliesFactionSystem-2.0/factions/lib/repo/Slimefun4 - DEV 408 (git 73b64).jar</systemPath>
         </dependency>
     </dependencies>
 
