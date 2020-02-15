@@ -13,17 +13,17 @@ public enum FactionRank {
     NONE("", "");
 
     private final String name;
-    private final String prefix;
+    private final String defaultPrefix;
 
-    FactionRank(String name, String prefix) {
+    FactionRank(String name, String defaultPrefix) {
         this.name = name;
-        this.prefix = prefix;
+        this.defaultPrefix = defaultPrefix;
     }
 
     public String getName() {
         return name;
     }
-    public String getPrefix() { return prefix; }
+    public String getDefaultPrefix() { return defaultPrefix; }
 
     public static int getRankId(FactionRank rank) {
         final List<FactionRank> ranks = new ArrayList<>(Arrays.asList(values()));

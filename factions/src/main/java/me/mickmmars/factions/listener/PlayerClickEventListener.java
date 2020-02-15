@@ -2,6 +2,7 @@ package me.mickmmars.factions.listener;
 
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.data.FactionData;
+import me.mickmmars.factions.factions.ideologies.Ideology;
 import me.mickmmars.factions.factions.inventory.FMapInventory;
 import me.mickmmars.factions.factions.inventory.FactionInventory;
 import me.mickmmars.factions.factions.perms.FactionPerms;
@@ -9,6 +10,7 @@ import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.Factions;
+import me.mickmmars.factions.util.ItemBuilder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
@@ -24,7 +26,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.dynmap.factions.DynmapFactionsPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerClickEventListener implements Listener {
 
@@ -33,17 +38,63 @@ public class PlayerClickEventListener implements Listener {
     private Economy economy;
 
     @EventHandler
-    public void handleClick(InventoryClickEvent event) {
+    public void handleClick(InventoryClickEvent event) throws InterruptedException {
+        Player player = (Player) event.getWhoClicked();
         if (event.getCurrentItem() == null) return;
         if (event.getCurrentItem().getType().equals(Material.AIR)) return;
+        if (event.getView().getTitle().equals("§8-= §bYour factions relations §8=-")) event.setCancelled(true);
+        if (event.getView().getTitle().equals("§bPuppets")) event.setCancelled(true);
         if (!event.getCurrentItem().getItemMeta().hasDisplayName()) return;
         if (event.getSlotType().equals(InventoryType.SlotType.OUTSIDE)) return;
         if (event.getCurrentItem().getItemMeta() == null) return;
         if (event.getCurrentItem().getType().equals(Material.BLACK_STAINED_GLASS_PANE) && event.getCurrentItem().getItemMeta().getDisplayName().equals(" ")) {
             event.setCancelled(true);
         }
+        if (event.getView().getTitle().equals("§a§oList")) {
+            if ((event.getCurrentItem().getType().name().contains("BANNER")) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
+                player.performCommand("f apply " + event.getCurrentItem().getItemMeta().getDisplayName().replace("§c§l", ""));
+                player.closeInventory();
+            }
+        }
+        if (event.getView().getTitle().equals(FactionInventory.GUIPage.SETTINGS.getName())) {
+            event.setCancelled(true);
+            if (!instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.CHANGE_POLITY)) {
+                player.sendMessage(Message.NO_PERMISSIONS.getMessage());
+                return;
+            }
+            if (event.getCurrentItem().getType().name().contains("STAINED_GLASS_PANE") && event.getSlot() == 0) {
+                List<String> listkp = new ArrayList<>();
+                for (Ideology ideology : Ideology.listFreeIdeologies()) {
+                    if (!ideology.getName().equalsIgnoreCase(instance.getPlayerData(player).getCurrentFactionData().getIdeology())) {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(ideology.getName()).build());
+                    } else {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setGlow().setDisplayName(ideology.getName()).build());
+                    }
+                    listkp.add(instance.generateKey(7));
+                }
+                if (instance.getFactionManager().hasPurchasedUpgrade(instance.getPlayerData(player).getCurrentFactionData(), FactionUpgrades.COMMUNISM)) {
+                    if (!Ideology.COMMUNIST.getName().equalsIgnoreCase(instance.getPlayerData(player).getCurrentFactionData().getIdeology())) {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(Ideology.COMMUNIST.getName()).build());
+                    } else {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setGlow().setDisplayName(Ideology.COMMUNIST.getName()).build());
+                    }
+                    listkp.add(instance.generateKey(7));
+                }
+                if (instance.getFactionManager().hasPurchasedUpgrade(instance.getPlayerData(player).getCurrentFactionData(), FactionUpgrades.FASCISM)) {
+                    if (!Ideology.FASCIST.getName().equalsIgnoreCase(instance.getPlayerData(player).getCurrentFactionData().getIdeology())) {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(Ideology.FASCIST.getName()).build());
+                    } else {
+                        event.getInventory().setItem(9 + listkp.size(), new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setGlow().setDisplayName(Ideology.FASCIST.getName()).build());
+                    }
+                    listkp.add(instance.generateKey(7));
+                }
+                return;
+            } else if (event.getCurrentItem().getType().name().contains("STAINED_GLASS_PANE") && event.getSlot() != 0) {
+                instance.getPlayerData(player).getCurrentFactionData().setIdeology(Ideology.getIdeologyByName(event.getCurrentItem().getItemMeta().getDisplayName()));
+                new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.SETTINGS).load();
+            }
+        }
         if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(" ")) return;
-        Player player = (Player) event.getWhoClicked();
         InventoryView view = player.getOpenInventory();
         if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§d§oFaction Discord")) {
             player.sendMessage("");
@@ -66,6 +117,11 @@ public class PlayerClickEventListener implements Listener {
                     if (FactionRank.getRankId(instance.getPlayerData(player).getFactionRank()) < 3) {
                         player.closeInventory();
                         player.sendMessage(Message.NO_PROMOTE_PERM.getMessage());
+                        return;
+                    }
+                    if (instance.getPlayerData(Bukkit.getPlayer(event.getCurrentItem().getItemMeta().getDisplayName())).getFactionRank().equals(FactionRank.ADMIN)) {
+                        player.closeInventory();
+                        player.sendMessage(Message.PROMOTION_NOT_POSSIBLE.getMessage());
                         return;
                     }
                     instance.getFactionManager().promotePlayer(Bukkit.getPlayer(event.getCurrentItem().getItemMeta().getDisplayName()));
@@ -124,9 +180,8 @@ public class PlayerClickEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NEED_MORE_TO_CLAIM.getMessage().replace("%need%", needString)));
                         return;
                     }
-                    instance.getFactionManager().claimChunk(player, chunk, instance.getChunkPlayer(player).getPlayerData().getFactionId());
-                    player.closeInventory();
-                    new FMapInventory(player.getUniqueId()).setChunks().load();
+                    instance.getFactionManager().claimChunk(player, chunk.getX(), chunk.getZ(), instance.getChunkPlayer(player).getPlayerData().getFactionId(), false);
+                    event.getInventory().setItem(event.getSlot(), new ItemBuilder(Material.CYAN_STAINED_GLASS_PANE).setDisplayName("§6" + x + "§7, §6" + z).addLoreLine("§7Claimed by: §b" + instance.getChunkManager().getFactionDataByChunk(chunk).getName()).build());
                     for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()))) {
                         if (Bukkit.getOnlinePlayers().contains(Bukkit.getOfflinePlayer(uuid))) {
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_CLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
@@ -178,27 +233,12 @@ public class PlayerClickEventListener implements Listener {
                     player.performCommand("factions accept " + event.getCurrentItem().getItemMeta().getDisplayName());
                     player.closeInventory();
                 }
-            } else if (view.getTitle().equals("§a§oFaction upgrades")) {
+            } else if (view.getTitle().equals("§a§oFaction shop")) {
                 if (event.getCurrentItem().getType().equals(Material.WHITE_STAINED_GLASS_PANE)) {
                     event.setCancelled(true);
-                    Double price = null;
-                    FactionUpgrades upgrade = null;
-                    if (event.getSlot() == 0) {
-                        price = (Double) Config.ONE_PUBLIC_WARP_PRICE.getData();
-                        upgrade = FactionUpgrades.ONEPUBLICWARP;
-                    } else if (event.getSlot() == 1) {
-                        price = (Double) Config.TWO_PUBLIC_WARPS_PRICE.getData();
-                        upgrade = FactionUpgrades.TWOPUBLICWARPS;
-                    } else if (event.getSlot() == 2) {
-                        price = (Double) Config.THREE_PUBLIC_WARPS_PRICE.getData();
-                        upgrade = FactionUpgrades.THREEPUBLICWARPS;
-                    } else if (event.getSlot() == 3) {
-                        price = (Double) Config.FACTION_FLY_PRICE.getData();
-                        upgrade = FactionUpgrades.FACTION_FLY;
-                    } else if (event.getSlot() == 4) {
-                        price = (Double) Config.DYNMAPCOLOUR_PRICE.getData();
-                        upgrade = FactionUpgrades.DYNMAPCOLOUR;
-                    }
+                    FactionUpgrades upgrade;
+                    upgrade = FactionUpgrades.getUpgradeByGUIName(event.getCurrentItem().getItemMeta().getDisplayName());
+                    Double price = upgrade.getPrice();
                     EconomyResponse r = Factions.econ.withdrawPlayer(player, price);
                     int checkmsg = 0;
                     if (r.transactionSuccess()) {
@@ -207,16 +247,10 @@ public class PlayerClickEventListener implements Listener {
                                 Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_PURCHASED_UPGRADE.getMessage().replace("%player%", player.getName()).replace("%upgrade%", event.getCurrentItem().getItemMeta().getDisplayName()));
                         checkmsg = 1;
                         instance.getFactionManager().addUpgradeToFaction(instance.getPlayerData(player).getCurrentFactionData(), upgrade);
-                        player.closeInventory();
                         new FactionInventory(player.getUniqueId()).setItems(FactionInventory.GUIPage.UPGRADES).load();
                     } else {
                         player.sendMessage(Message.TRANSACTION_ERROR.getMessage());
                     }
-                }
-            } else if (view.getTitle().equals("§a§oList")) {
-                if ((event.getCurrentItem().getType().name().contains("BANNER")) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
-                    player.performCommand("f apply " + event.getCurrentItem().getItemMeta().getDisplayName().replace("§c§l", ""));
-                    player.closeInventory();
                 }
             }
         }

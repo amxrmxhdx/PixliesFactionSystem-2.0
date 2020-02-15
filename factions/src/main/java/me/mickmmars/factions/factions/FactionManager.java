@@ -1,9 +1,11 @@
 package me.mickmmars.factions.factions;
 
 import com.google.gson.Gson;
+import io.papermc.lib.PaperLib;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.perms.ForeignFactionData;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.data.PlayerData;
@@ -17,21 +19,21 @@ import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.relations.FactionRelations;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.minecraft.server.v1_15_R1.MinecraftServer;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class FactionManager {
 
@@ -326,7 +328,7 @@ public class FactionManager {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NEED_MORE_TO_CLAIM.getMessage().replace("%need%", needString)));
                 return;
             }
-            instance.getFactionManager().claimChunk(player, chunk, instance.getChunkPlayer(player).getPlayerData().getFactionId());
+            instance.getFactionManager().claimChunk(player, chunk.getX(), chunk.getZ(), instance.getChunkPlayer(player).getPlayerData().getFactionId(), true);
             System.out.println("Chunk claimed at " + player.getLocation().toString() + " for player " + player.getName());
             //Player members = (Player) instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()));
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk claimed")));
@@ -340,7 +342,7 @@ public class FactionManager {
         claimable.remove(claimable);
     }
 
-    public void Neutralize(String faction1Id, String faction2Id, FactionData faction1Data, FactionData faction2Data) {
+    public void Neutralize(Player player, String faction1Id, String faction2Id, FactionData faction1Data, FactionData faction2Data) {
         if (faction1Data.getAllies().contains(faction2Id) ) {
             List<String> allies1 = faction1Data.getAllies();
             List<String> allies2 = faction2Data.getAllies();
@@ -351,14 +353,16 @@ public class FactionManager {
             updateFactionData(faction1Data);
             updateFactionData(faction2Data);
         } else if (faction1Data.getEnemies().contains(faction2Id) || faction2Data.getEnemies().contains(faction1Id)) {
-            List<String> enemies1 = faction1Data.getAllies();
-            List<String> enemies2 = faction2Data.getAllies();
+            List<String> enemies1 = faction1Data.getEnemies();
+            List<String> enemies2 = faction2Data.getEnemies();
             enemies1.remove(faction2Id);
             enemies2.remove(faction1Id);
             faction1Data.setEnemies(enemies1);
             faction2Data.setEnemies(enemies2);
             updateFactionData(faction1Data);
             updateFactionData(faction2Data);
+        } else {
+            player.sendMessage(Message.NO_RELATION.getMessage());
         }
     }
 
@@ -373,21 +377,17 @@ public class FactionManager {
         updateFactionData(faction2Data);
     }
 
-    public void claimChunk(Player player, Chunk chunk, String factionId) {
+    public void claimChunk(Player player, int x, int z, String factionId, Boolean ignoreUnconnected) {
         FactionData factionData = getFactionById(factionId);
-        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId())) {
+        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId()) && !ignoreUnconnected) {
             player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
             return;
         }
 
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
         if (factionData.getMoney() >= price) {
-            Location minLocation = instance.getChunkManager().getMinLocation(chunk);
-            Location maxLocation = instance.getChunkManager().getMaxLocation(chunk);
-            ChunkLocation minChunkLocation = new ChunkLocation(minLocation);
-            ChunkLocation maxChunkLocation = new ChunkLocation(maxLocation);
             String id = instance.generateKey(10);
-            ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, chunk.getX(), chunk.getZ());
+            ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), x, z);
             this.addChunk(factionData, chunkData);
             instance.getFactionManager().getFactionById(factionId).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) - price);
             instance.getChunkManager().getChunks().add(chunkData);
@@ -402,10 +402,8 @@ public class FactionManager {
     public void unclaimChunk(Player player, Chunk chunk, String factionid) {
         int price = (instance.getFactionManager().getFactionById(factionid).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionid)).size() : 5);
         FactionData factionData = getFactionById(factionid);
-        ChunkLocation minChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMinLocation();
-        ChunkLocation maxChunkLocation = instance.getChunkManager().getChunkDataByChunk(chunk).getMaxLocation();
         String id = instance.getChunkManager().getChunkDataByChunk(chunk).getId();
-        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), maxChunkLocation, minChunkLocation, chunk.getX(), chunk.getZ());
+        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), chunk.getX(), chunk.getZ());
         this.removeChunk(factionData, chunkData);
         instance.getFactionManager().getFactionById(factionid).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) + price);
         instance.getChunkManager().getChunks().remove(chunkData);
@@ -523,6 +521,8 @@ public class FactionManager {
         for (FactionData faction : this.factions)
             factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(faction)));
 
+        instance.getFactionFlags().put(factionData.getId(), instance.flags.getConfiguration().getItemStack(factionData.getId()));
+
         cfg.set("Factions", factions);
         try {
             cfg.save(file);
@@ -568,6 +568,7 @@ public class FactionManager {
         perms.add(FactionPerms.UNCLAIM);
         perms.add(FactionPerms.INTERACT);
         perms.add(FactionPerms.DEPOSIT);
+        perms.add(FactionPerms.CHANGE_POLITY);
         perms.add(FactionPerms.WITHDRAW);
         perms.add(FactionPerms.DESCRIPTION);
         perms.add(FactionPerms.DISCORD);
@@ -575,7 +576,9 @@ public class FactionManager {
         perms.add(FactionPerms.DYNMAPCOLOUR);
         perms.add(FactionPerms.EDITFLAGS);
         perms.add(FactionPerms.EDITCAPITAL);
+        perms.add(FactionPerms.MANAGEPUPPETS);
         perms.add(FactionPerms.RELATION);
+        perms.add(FactionPerms.CB_FACTIONS);
         perms.add(FactionPerms.EDITPERMS);
         perms.add(FactionPerms.SETWARP);
         perms.add(FactionPerms.PUPPET);
@@ -657,6 +660,12 @@ public class FactionManager {
         upgrades.add(FactionUpgrades.THREEPUBLICWARPS);
         upgrades.add(FactionUpgrades.FACTION_FLY);
         upgrades.add(FactionUpgrades.DYNMAPCOLOUR);
+        upgrades.add(FactionUpgrades.ONEPUPPET);
+        upgrades.add(FactionUpgrades.TWOPUPPETS);
+        upgrades.add(FactionUpgrades.THREEPUPPETS);
+        upgrades.add(FactionUpgrades.BIGGER_FCHEST);
+        upgrades.add(FactionUpgrades.COMMUNISM);
+        upgrades.add(FactionUpgrades.FASCISM);
         return upgrades;
     }
 
@@ -775,7 +784,7 @@ public class FactionManager {
             instance.getChunkPlayer(reciever.getUniqueId()).updatePlayerData(instance.getPlayerData(reciever.getUniqueId()));
             return;
         }
-        if (!instance.getChunkManager().getFactionDataByChunk(chunk).equals(instance.getPlayerData(requester).getCurrentFactionData())) {
+        if (!instance.getChunkManager().getFactionDataByChunk(chunk.getX(), chunk.getZ()).equals(instance.getPlayerData(requester).getCurrentFactionData())) {
             requester.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CANT_ACCESS_WHATS_NOT_YOURS.getMessage()));
             return;
         }
@@ -858,11 +867,12 @@ public class FactionManager {
         }
     }
 
-    public void claimFill(Set<Chunk> toClaim, Player player, FactionData faction) {
-            for (Chunk chunks : toClaim) {
-                claimChunk(player, chunks, faction.getId());
+    public void claimFill(Set<ChunkData> toClaim, Player player, FactionData faction) {
+            for (ChunkData chunks : toClaim) {
+                claimChunk(player, chunks.getMinecraftX(), chunks.getMinecraftZ(), faction.getId(), true);
             }
             player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
+            Bukkit.getLogger().info(player.getName() + " claim filled " + toClaim.size() + " chunks.");
     }
 
     public Boolean warpWithNameAlreadyExists(FactionData data, String name) {
@@ -872,40 +882,124 @@ public class FactionManager {
         return false;
     }
 
+    public void sendPlayerFactionInfo(Player player, FactionData faction) {
+        String factionName = faction.getName();
+        FactionData factionData = instance.getFactionManager().getFactionByName(factionName);
+        StringJoiner sj = new StringJoiner("§8, ");
+        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(factionData)) {
+            OfflinePlayer member = Bukkit.getOfflinePlayer(uuid);
+            if (Bukkit.getServer().getOnlinePlayers().contains(member)) {
+                sj.add(instance.getChunkPlayer(uuid).getRankPrefix() + member.getName());
+            }
+        }
+        int chunks = faction.getChunks().size();
+        StringJoiner sj1 = new StringJoiner("§8, ");
+        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(factionData)) {
+            OfflinePlayer member = Bukkit.getOfflinePlayer(uuid);
+            sj1.add(instance.getChunkPlayer(uuid).getRankPrefix() + member.getName());
+        }
+        player.sendMessage("§8-§b+§8---------------------------------------------§b+§8-");
+        player.sendMessage("§7Faction: §b" + faction.getName());
+        player.sendMessage("§7Land: §b" + chunks + "§7/§b" + faction.getPower());
+        player.sendMessage("§7Factionbank: §2§l$§a" + faction.getMoney());
+        player.sendMessage("§7Age (Days): §a" + faction.getAgeInDays());
+        player.sendMessage("§7Polity: " + faction.getIdeology());
+        player.sendMessage("§7Total landcost: §2§l$§a" + chunks * 5);
+        player.sendMessage("§7Online members: " + sj.toString());
+        player.sendMessage("§7All-members: " + sj1.toString());
+        player.sendMessage("§8-§b+§8---------------------------------------------§b+§8-");
+    }
+
+    public void addForeignPermission(FactionData hostfaction, ForeignFactionData foreignFactionData) {
+        if (hostfaction.getForeignPerms().contains(foreignFactionData)) {
+            return;
+        }
+        ArrayList<ForeignFactionData> foreignFactionData1 = new ArrayList<>(hostfaction.getForeignPerms());
+        foreignFactionData1.add(foreignFactionData);
+        hostfaction.setForeignPerms(foreignFactionData1);
+        updateFactionData(hostfaction);
+    }
+
+    public void removeForeignPermission(FactionData hostfaction, ForeignFactionData foreignFactionData) {
+        if (!hostfaction.getForeignPerms().contains(foreignFactionData)) {
+            return;
+        }
+        ArrayList<ForeignFactionData> foreignFactionData1 = new ArrayList<>(hostfaction.getForeignPerms());
+        foreignFactionData1.remove(foreignFactionData);
+        hostfaction.setForeignPerms(foreignFactionData1);
+        updateFactionData(hostfaction);
+    }
+
+    public Boolean checkForeignPermission(FactionData hostFaction, FactionData userFaction, FactionPerms permission) {
+        if (hostFaction.getForeignPerms().contains(new ForeignFactionData(userFaction.getId(), hostFaction.getId(), permission.getName()))) {
+            return true;
+        }
+        return false;
+    }
+
 
     // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
-    public void floodSearch(int x, int z, Set<Chunk> toClaim, Set<Chunk> alreadyChecked) throws ExecutionException, InterruptedException {
+    public void floodSearch(int x, int z, Set<ChunkData> toClaim, Set<Chunk> alreadyChecked) throws ExecutionException, InterruptedException {
 
-                // CHECK IF WE ALREADY CHECKED
-                if (alreadyChecked.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
+                ChunkData chunk = new ChunkData(null, null, x, z);
 
-                // MAX REACHED?
-                if (alreadyChecked.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
-
-                // ADD TO ALREADY CHECKED SET
-                alreadyChecked.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+                if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
 
                 // ALREADY CONTAINS CHUNK?
-                if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)))
+                if (toClaim.contains(chunk))
                     return;
 
                 // ALREADY CLAIMED?
-                if (!(instance.getChunkManager().getFactionDataByChunk(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z)) == null))
+                if (!(instance.getChunkManager().getFactionDataByChunk(x, z) == null))
                     return;
 
-                toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
+                toClaim.add(chunk);
 
                 // RECOURSE
                 floodSearch(x, z + 1, toClaim, alreadyChecked); // north
                 floodSearch(x, z - 1, toClaim, alreadyChecked); // south
                 floodSearch(x - 1, z, toClaim, alreadyChecked); // west
                 floodSearch(x + 1, z, toClaim, alreadyChecked); // east
-                floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
-                floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+                floodSearch(x + 1, z + 1, toClaim, alreadyChecked); // north-east
+                floodSearch(x - 1, z - 1, toClaim, alreadyChecked); // south-west
                 floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
                 floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
 
     }
+
+    public void TopBalance(Player player) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        ValueComparator bvc = new ValueComparator(map);
+        TreeMap<String, Integer> sorted_map = new TreeMap<String,Integer>(bvc);
+        for (FactionData facs : getFactions())
+            map.put(facs.getName(), facs.getMoney() + facs.getChunks().size() + facs.listMembers().size());
+        sorted_map.putAll(map);
+        List<String> ten = new ArrayList<String>();
+        player.sendMessage("§8---§b+§8-§7[ §aFaction-Top §7]§8-§b+§8---");
+        for (String s : sorted_map.keySet()) {
+            if (10 >= ten.size() && !s.equalsIgnoreCase("safezone")) {
+                ten.add(instance.generateKey(5));
+                player.sendMessage("§7" + ten.size() + "§8. §b" + s + "§7: §6" + map.get(s) + " score");
+            }
+        }
+    }
+
+    class ValueComparator implements Comparator<String> {
+
+        Map<String, Integer> base;
+        public ValueComparator(Map<String, Integer> base) {
+            this.base = base;
+        }
+
+        public int compare(String a, String b) {
+            if (base.get(a) >= base.get(b)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    }
+
 
     public List<FactionData> getFactions() {
         return factions;
@@ -914,4 +1008,5 @@ public class FactionManager {
     public String[] getRandomDescriptions() {
         return randomDescriptions;
     }
+
 }

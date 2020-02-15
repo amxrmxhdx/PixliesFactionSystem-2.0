@@ -1,6 +1,6 @@
 name: PixliesFactionSystem
 version: 1.0.1
-authors: [MickMMars, tylix]
+authors: [MickMMars]
 main: me.mickmmars.factions.Factions
 description: Rich faction system.
 
@@ -25,6 +25,14 @@ commands:
   factions:
     aliases:
       - f
+      - countries
+      - fac
   home:
     aliases:
       - phome
+  war:
+    description: war command.
+  cb:
+    description: cb command.
+    aliases:
+      - casusbelli

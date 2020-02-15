@@ -39,21 +39,21 @@ public class Placeholders extends PlaceholderExpansion {
                 if (plugin.getPlayerData(p).isInFaction()) {
                     return plugin.getPlayerData(p).getCurrentFactionData().getName();
                 } else {
-                    return "§cNONE";
+                    return "§cNone";
                 }
 
             case "description":
                 if (plugin.getPlayerData(p).isInFaction()) {
                     return plugin.getPlayerData(p).getCurrentFactionData().getDescription();
                 } else {
-                    return " ";
+                    return "§cNone";
                 }
 
             case "balance":
                 if (plugin.getPlayerData(p).isInFaction()) {
                     return "§2§l$§a" + String.valueOf(plugin.getPlayerData(p).getCurrentFactionData().getMoney());
                 } else {
-                    return " ";
+                    return "§c§cNone";
                 }
 
             case "maxpower":
@@ -80,7 +80,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (plugin.getPlayerData(p).isInFaction()) {
                     return String.valueOf(plugin.getPlayerData(p).getCurrentFactionData().getChunks().size());
                 } else {
-                    return " ";
+                    return "§cNone";
                 }
 
             case "onlinemembers":
@@ -93,11 +93,14 @@ public class Placeholders extends PlaceholderExpansion {
                 if (plugin.getPlayerData(p).isInFaction()) {
                     return String.valueOf(onlinemembers.size());
                 } else {
-                    return " ";
+                    return "§cNone";
                 }
 
             case "rankprefix":
-                return plugin.getPlayerData(p).getFactionRank().getPrefix();
+                return plugin.getChunkPlayer(p).getRankPrefix();
+
+            case "stateform":
+                return plugin.getPlayerData(p).getCurrentFactionData().getIdeology();
 
         }
         return " ";

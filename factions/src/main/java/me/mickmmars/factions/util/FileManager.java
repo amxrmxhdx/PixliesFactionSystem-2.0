@@ -55,6 +55,7 @@ public class FileManager {
         setDirectory(directory);
 
         file = new File(directory, name + ".yml");
+        file.mkdirs();
         if(!file.exists()) {
             plugin.saveResource(name + ".yml", false);
         }

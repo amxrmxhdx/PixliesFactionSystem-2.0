@@ -36,8 +36,9 @@ public class ChunkManager {
         chunks.remove(chunk);
     }
 
+    @Deprecated
     public boolean isFree(Chunk chunk) {
-        if (getFactionDataByChunk(chunk) != null)
+        if (getFactionDataByChunk(chunk.getX(), chunk.getZ()) != null)
             return false;
         return true;
     }
@@ -48,15 +49,23 @@ public class ChunkManager {
 
     public ChunkData getChunkDataByChunk(Chunk chunk) {
         for (ChunkData chunkData : chunks)
-            if (chunkData.getMaxLocation().getX() == getMaxLocation(chunk).getX() && chunkData.getMaxLocation().getZ() == getMaxLocation(chunk).getZ() && chunkData.getMinLocation().getX() == getMinLocation(chunk).getX() && chunkData.getMinLocation().getZ() == getMinLocation(chunk).getZ())
+            if (chunkData.getMinecraftX() == chunk.getX() && chunkData.getMinecraftZ() == chunk.getZ())
                 return chunkData;
+        return null;
+    }
+
+    public FactionData getFactionDataByChunk(int x, int z) {
+        for (FactionData faction : Factions.getInstance().getFactionManager().getFactions())
+            for (ChunkData factionChunk : faction.getChunks())
+                if (factionChunk.getMinecraftX() == x && factionChunk.getMinecraftZ() == z)
+                    return faction;
         return null;
     }
 
     public FactionData getFactionDataByChunk(Chunk chunk) {
         for (FactionData faction : Factions.getInstance().getFactionManager().getFactions())
             for (ChunkData factionChunk : faction.getChunks())
-                if (factionChunk.getMaxLocation().getX() == getMaxLocation(chunk).getX() && factionChunk.getMaxLocation().getZ() == getMaxLocation(chunk).getZ() && factionChunk.getMinLocation().getX() == getMinLocation(chunk).getX() && factionChunk.getMinLocation().getZ() == getMinLocation(chunk).getZ())
+                if (factionChunk.getMinecraftX() == chunk.getX() && factionChunk.getMinecraftZ() == chunk.getZ())
                     return faction;
         return null;
     }

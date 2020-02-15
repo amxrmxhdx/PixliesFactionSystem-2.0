@@ -22,6 +22,20 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>princepsrepo</id>
+            <url>http://princeps.biz:8081/nexus/content/repositories/princepsrepo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>me.mickmmars</groupId>
@@ -46,6 +60,13 @@
             <artifactId>spigot</artifactId>
             <version>1.15-R0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>3.0beta4</version>
+            <classifier>spigot</classifier>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

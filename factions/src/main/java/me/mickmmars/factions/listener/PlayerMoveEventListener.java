@@ -58,7 +58,7 @@ public class PlayerMoveEventListener implements Listener {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NEED_MORE_TO_CLAIM.getMessage().replace("%need%", needString)));
                         return;
                     }
-                    instance.getFactionManager().claimChunk(player, player.getLocation().getChunk(), instance.getChunkPlayer(player).getPlayerData().getFactionId());
+                    instance.getFactionManager().claimChunk(player, player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), instance.getChunkPlayer(player).getPlayerData().getFactionId(), false);
                     System.out.println("Chunk claimed at " + player.getLocation().toString() + " for player " + player.getName());
                     int x = event.getTo().getChunk().getX();
                     int z = event.getTo().getChunk().getZ();

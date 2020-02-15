@@ -17,7 +17,6 @@ public class FlagsListener implements Listener {
 
     private static Factions instance = Factions.getInstance();
 
-    //TODO
     @EventHandler
     public void onExplosion(ExplosionPrimeEvent e) {
         for (FactionData factions : instance.getFactionManager().getFactions()) {

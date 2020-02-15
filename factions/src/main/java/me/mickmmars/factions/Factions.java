@@ -4,25 +4,35 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import me.mickmmars.factions.chunk.ChunkManager;
-import me.mickmmars.factions.commands.ConstructTabCompleter;
-import me.mickmmars.factions.commands.FactionCommand;
-import me.mickmmars.factions.commands.HomeCommand;
+import me.mickmmars.factions.commands.*;
+import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.config.ConfigManager;
 import me.mickmmars.factions.factions.FactionManager;
+import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.listener.*;
 import me.mickmmars.factions.message.manager.MessageManager;
 import me.mickmmars.factions.placeholders.Placeholders;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.player.data.PlayerData;
 import me.mickmmars.factions.util.FileManager;
+import me.mickmmars.factions.war.WarManager;
+import me.mickmmars.factions.war.data.CasusBelli;
+import me.mickmmars.factions.war.listeners.CBInvListener;
+import me.mickmmars.factions.war.listeners.CappingListener;
+import me.mickmmars.factions.war.listeners.WarInvListener;
+import me.mickmmars.factions.war.listeners.WarKillListener;
+import me.mickmmars.minimick.bot;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -49,7 +59,12 @@ public class Factions extends JavaPlugin {
     private final List<UUID> factionfly = new ArrayList<>();
     private final List<UUID> teleportingPlayers = new ArrayList<>();
     private final List<UUID> fillClaimPlayers = new ArrayList<>();
+    private final List<UUID> allyChat = new ArrayList<UUID>();
+    private final List<UUID> cappingPlayers = new ArrayList<>();
+    public List<UUID> getAllyChat() { return allyChat; }
     public List<UUID> getFillClaimPlayers() { return fillClaimPlayers; }
+
+    public List<UUID> getCappingPlayers() { return cappingPlayers; }
 
     public List<UUID> getTeleportingPlayers() { return teleportingPlayers; }
 
@@ -64,11 +79,15 @@ public class Factions extends JavaPlugin {
 
     public FileManager flags;
     public FileManager factionchests;
+    public FileManager discordconf;
 
     private ChunkManager chunkManager;
     private FactionManager factionManager;
     private ConfigManager configManager;
     private MessageManager messageManager;
+
+    private Map<String, ItemStack> factionFlags = new HashMap<String, ItemStack>();
+    public Map<String, ItemStack> getFactionFlags() { return factionFlags; }
 
     private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -102,13 +121,23 @@ public class Factions extends JavaPlugin {
 
         instance = this;
 
-        this.init();
-
         flags = new FileManager(this, "flags", getDataFolder().getAbsolutePath());
         factionchests = new FileManager(this, "fchests", getDataFolder().getAbsolutePath());
+        discordconf = new FileManager(this, "discordconf", getDataFolder().getAbsolutePath());
         factionchests.save();
         flags.save();
+        discordconf.save();
+        if (Config.USE_WAR_BOT.getData().equals(true) && !discordconf.getConfiguration().getString("bot-token").equals("TOKEN_HERE")) {
+            new bot().startBot();
+        }
+
+        this.init();
+
     }
+
+    private me.mickmmars.factions.war.WarManager WarManager;
+
+    public WarManager getWarManager() { return WarManager; }
 
     @Override
     public void onDisable() {
@@ -133,8 +162,15 @@ public class Factions extends JavaPlugin {
         chunkManager = new ChunkManager();
         chunkManager.loadChunks();
 
+        WarManager = new WarManager();
+
+        for (FactionData facData : getFactionManager().getFactions()) {
+            factionFlags.put(facData.getId(), flags.getConfiguration().getItemStack(facData.getId()));
+        }
+
         this.registerListener(Bukkit.getPluginManager());
         this.registerCommands();
+
     }
 
     public void reloadPlugin() {
@@ -146,6 +182,8 @@ public class Factions extends JavaPlugin {
         this.getCommand("factions").setExecutor(new FactionCommand());
         this.getCommand("factions").setTabCompleter(new ConstructTabCompleter());
         this.getCommand("home").setExecutor(new HomeCommand());
+        this.getCommand("war").setExecutor(new WarCommand());
+        this.getCommand("cb").setExecutor(new CbCommand());
     }
 
     private void registerListener(PluginManager pluginManager) {
@@ -159,6 +197,13 @@ public class Factions extends JavaPlugin {
         pluginManager.registerEvents(new FlagsListener(), this);
         pluginManager.registerEvents(new TeleportationListeners(), this);
         pluginManager.registerEvents(new FInventoryListener(), this);
+        if (Config.USE_WAR_BOT.getData().equals(true)) {
+            pluginManager.registerEvents(new BotListener(), this);
+        }
+        pluginManager.registerEvents(new CBInvListener(), this);
+        pluginManager.registerEvents(new WarInvListener(), this);
+        pluginManager.registerEvents(new CappingListener(), this);
+        pluginManager.registerEvents(new WarKillListener(), this);
     }
 
     private void loadPlayers() {
@@ -174,6 +219,24 @@ public class Factions extends JavaPlugin {
             builder.append(alphabet.charAt(new Random().nextInt(alphabet.length())));
         return builder.toString();
     }
+
+    private Map<CasusBelli, BossBar> FactionsWarringBossbars = new HashMap<>();
+    public Map<CasusBelli, BossBar> getFactionsWarringBossbars() {
+        return FactionsWarringBossbars;
+    }
+
+    private Map<FactionData, Boolean> gracePeriod = new HashMap<>();
+    public Map<FactionData, Boolean> inGracePeriod() {
+        return gracePeriod;
+    }
+
+    private Map<FactionData, Integer> warKills = new HashMap<>();
+    public Map<FactionData, Integer> getWarKills() {
+        return warKills;
+    }
+
+    private Map<FactionData, CasusBelli> warCB = new HashMap<>();
+    public Map<FactionData, CasusBelli> getWarCB() { return warCB; }
 
     public ChunkPlayer getChunkPlayer(final UUID uuid) {
         boolean online = Bukkit.getPlayer(uuid) != null;

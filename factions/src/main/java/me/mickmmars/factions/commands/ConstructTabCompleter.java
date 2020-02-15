@@ -21,7 +21,7 @@ public class ConstructTabCompleter implements TabCompleter {
             if (commandSender instanceof Player) {
                 Player p = (Player) commandSender;
 
-                List<String> all = Arrays.asList("create", "invite", "menu", "kick", "desc", "description", "delete", "setdesc", "help", "leave", "sethome", "home", "delhome", "unclaim", "claim", "promote", "demote", "discord", "forcedisband", "staff", "override", "perms", "capital", "home", "setcapital", "sethome", "apply", "accept", "enemy", "ally");
+                List<String> all = Arrays.asList("war", "cb", "passport", "create", "invite", "menu", "kick", "desc", "description", "delete", "setdesc", "help", "leave", "sethome", "home", "delhome", "unclaim", "claim", "promote", "demote", "discord", "forcedisband", "staff", "override", "perms", "capital", "home", "setcapital", "sethome", "apply", "accept", "enemy", "ally", "rank", "chest", "join", "setflag", "top", "puppet", "release");
 
                 List<String> list = new ArrayList<>();
                 for (String string : all) {
@@ -35,11 +35,12 @@ public class ConstructTabCompleter implements TabCompleter {
         if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("create") && strings.length == 2) {
             List<String> namelist = new ArrayList<>();
             namelist.add("§c<name>");
+            return namelist;
         }
         if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("ally") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("enemy") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("neutral") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("home") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("delhome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("sethome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("apply")) {
             List<String> facnames = new ArrayList<>();
             for (FactionData factions : instance.getFactionManager().getFactions())
-                facnames.add(factions.getName());
+                facnames.add("§b" + factions.getName());
             return facnames;
         }
         return null;

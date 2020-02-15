@@ -11,6 +11,7 @@ import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.FactionManager;
 import me.mickmmars.factions.factions.data.FactionData;
+import me.mickmmars.factions.publicwarps.data.WarpData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -35,7 +36,8 @@ import org.dynmap.utils.TileFlags;
 
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br>Leader: %playerowners%<br>Members: %playermembers%</div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br><span style=\"font-weight:bold\">Leader:</span> %playerowners%<br><span style=\"font-weight:bold\">Members:</span> %playermembers% <br><span style=\"font-weight:bold\">Bank: </span>%money%<br><span style=\"font-weight:bold\">Age:</span> %age% Days <br><span style=\"font-weight:bold\">Polity:</span> %stateform%</div>";
+    private static final String SAFEZONE_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%; font-weight:bold;\">SafeZone</span><br>You are safe here! hopefully...</div>";
     Plugin dynmap;
     DynmapAPI api;
     MarkerAPI markerapi;
@@ -52,6 +54,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
     long updperiod;
     boolean use3d;
     String infowindow;
+    String safezoneinfowindow;
     AreaStyle defstyle;
     Map<String, AreaStyle> cusstyle;
     Set<String> visible;
@@ -72,9 +75,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         String homemarker;
         String warpmarker;
         MarkerIcon homeicon;
-        MarkerIcon warpicon1;
-        MarkerIcon warpicon2;
-        MarkerIcon warpicon3;
+        MarkerIcon warpicon;
         boolean boost;
 
         AreaStyle(FileConfiguration cfg, String path, AreaStyle def) {
@@ -195,9 +196,22 @@ public class DynmapFactionsPlugin extends JavaPlugin {
     private Map<String, Marker> resmark = new HashMap<String, Marker>();
 
     private String formatInfoWindow(FactionData fact) {
-        String v = "<div class=\"regioninfo\">"+infowindow+"</div>";
+        String v;
+        if (fact.getName().equalsIgnoreCase("safezone")) {
+            v = "<div class=\"regioninfo\">"+safezoneinfowindow+"</div>";
+            return v;
+        }
+        v = "<div class=\"regioninfo\">" + infowindow + "</div>";
+        if (fact.getName().equalsIgnoreCase("safezone")) {
+            v = v.replace("%regionname%", ChatColor.stripColor(fact.getName()));
+            v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
+            return v;
+        }
         v = v.replace("%regionname%", ChatColor.stripColor(fact.getName()));
         v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
+        v = v.replace("%age%", ChatColor.stripColor(String.valueOf(fact.getAgeInDays())));
+        v = v.replace("%money%", ChatColor.stripColor("$" + fact.getMoney()));
+        v = v.replace("%stateform%", ChatColor.stripColor(fact.getIdeology().replace("§b", "").replace("§2", "").replace("§c", "")));
 
         OfflinePlayer adm = Bukkit.getOfflinePlayer(Factions.getInstance().getFactionManager().getLeader(fact));
         if (adm != null) {
@@ -294,7 +308,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         int poly_index = 0; /* Index of polygon for given faction */
 
         /* Build popup */
-        String desc = formatInfoWindow(fact);
+            String desc = formatInfoWindow(fact);
 
         /* Handle areas */
         if(isVisible(factname, world)) {
@@ -523,6 +537,28 @@ public class DynmapFactionsPlugin extends JavaPlugin {
                 }
             }
 
+            for (WarpData warps : fact.getWarps()) {
+                if (warps != null) {
+                    String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "_" + warps.getName() + "__warp";
+                    MarkerIcon ico = getMarkerIcon(factname, fact);
+                    if (ico != null) {
+                        Marker warp = resmark.remove(markid);
+                        String lbl = factname + " [" + warps.getName() + "]";
+                        if (warp == null) {
+                            warp = set.createMarker(markid, lbl, warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ(), ico, false);
+                        } else {
+                            warp.setLocation(warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ());
+                            warp.setLabel(lbl);
+                            warp.setMarkerIcon(ico);
+                        }
+                        if (warp != null) {
+                            warp.setDescription(formatInfoWindow(fact));
+                            newmark.put(markid, warp);
+                        }
+                    }
+                }
+            }
+
         }
         blocks_by_faction.clear();
 
@@ -638,7 +674,8 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         set.setLayerPriority(cfg.getInt("layer.layerprio", 10));
         set.setHideByDefault(cfg.getBoolean("layer.hidebydefault", false));
         use3d = cfg.getBoolean("use3dregions", false);
-        infowindow = cfg.getString("infowindow", DEF_INFOWINDOW);
+        infowindow = DEF_INFOWINDOW;
+        safezoneinfowindow = SAFEZONE_INFOWINDOW;
 
         /* Get style information */
         defstyle = new AreaStyle(cfg, "regionstyle");

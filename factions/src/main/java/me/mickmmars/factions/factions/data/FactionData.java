@@ -4,17 +4,22 @@ import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.config.Config;
-import me.mickmmars.factions.factions.itemstacks.BannerData;
+import me.mickmmars.factions.factions.ideologies.Ideology;
 import me.mickmmars.factions.factions.perms.FactionPerms;
+import me.mickmmars.factions.factions.perms.ForeignFactionData;
+import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.publicwarps.data.WarpData;
+import me.mickmmars.factions.war.data.CasusBelli;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.entity.Player;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 
 public class FactionData {
 
+    private String overlord;
     private String name;
     private String id;
     private List<String> allowedFlags;
@@ -40,8 +45,19 @@ public class FactionData {
     private List<UUID> bannedplayer;
     private List<String> puppetrequests;
     private Boolean isInWar;
+    private String newbiePrefix;
+    private String memberPrefix;
+    private String adminPrefix;
+    private String leaderPrefix;
+    private LocalDate createdAt;
+    private List<String> allAccessFacs;
+    private String ideology;
+    private List<ForeignFactionData> foreignPerms;
+    private List<CasusBelli> Cbs;
+    private String opposingFactionId;
 
-    public FactionData(String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int powerboost, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer, List<String> puppetrequests, Boolean isInWar) {
+    public FactionData(String overlord, String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int powerboost, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer, List<String> puppetrequests, Boolean isInWar, String newbiePrefix, String memberPrefix, String adminPrefix, String leaderPrefix, LocalDate createdAt, List<String> allAccessFacs, String ideology, List<ForeignFactionData> foreignPerms, List<CasusBelli> Cbs, String opposingFactionId) {
+        this.overlord = overlord;
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
@@ -67,7 +83,54 @@ public class FactionData {
         this.bannedplayer = bannedplayer;
         this.puppetrequests = puppetrequests;
         this.isInWar = isInWar;
+        this.newbiePrefix = newbiePrefix;
+        this.memberPrefix = memberPrefix;
+        this.adminPrefix = adminPrefix;
+        this.leaderPrefix = leaderPrefix;
+        this.createdAt = createdAt;
+        this.allAccessFacs = allAccessFacs;
+        this.ideology = ideology;
+        this.foreignPerms = foreignPerms;
+        this.Cbs = Cbs;
+        this.opposingFactionId = opposingFactionId;
     }
+
+    public String getOpposingFactionId() { return opposingFactionId; }
+    public void setOpposingFactionId(String opposingFactionId) { this.opposingFactionId = opposingFactionId; }
+
+    public List<CasusBelli> listCbs() { return Cbs; }
+    public void setCbs(List<CasusBelli> Cbs) { this.Cbs = Cbs; }
+
+    public Player getOnlineLeader() { return Bukkit.getPlayer(Factions.getInstance().getFactionManager().getLeader(this)); }
+
+    public String getOverlord() { return overlord; }
+    public FactionData getOverlordData() { return Factions.getInstance().getFactionManager().getFactionById(overlord); }
+    public void setOverlord(String overlord) { this.overlord = overlord; }
+
+    public List<ForeignFactionData> getForeignPerms() { return foreignPerms; }
+    public void setForeignPerms(List<ForeignFactionData> foreignPerms) { this.foreignPerms = foreignPerms; }
+
+    public String getIdeology() { return ideology; }
+    public void setIdeology(Ideology ideology) { this.ideology = ideology.getName(); }
+
+    public List<String> getAllAccessFacs() { return allAccessFacs; }
+    public void setAllAccessFacs(List<String> allAccessFacs) { this.allAccessFacs = allAccessFacs; }
+
+    public String getNewbiePrefix() { return newbiePrefix; }
+    public void setNewbiePrefix(String newbiePrefix) { this.newbiePrefix = newbiePrefix; }
+
+    public int getAgeInDays() {
+        return Period.between(createdAt, LocalDate.now()).getDays();
+    }
+
+    public String getMemberPrefix() { return memberPrefix; }
+    public void setMemberPrefix(String memberPrefix) { this.memberPrefix = memberPrefix; }
+
+    public String getAdminPrefix() { return adminPrefix; }
+    public void setAdminPrefix(String adminPrefix) { this.adminPrefix = adminPrefix; }
+
+    public String getLeaderPrefix() { return leaderPrefix; }
+    public void setLeaderPrefix(String leaderPrefix) { this.leaderPrefix = leaderPrefix; }
 
     public Boolean isInWar() { return isInWar; }
     public void setIfIsInWar(Boolean isInWar) { this.isInWar = isInWar; }
@@ -263,4 +326,26 @@ public class FactionData {
         }
         return sj.toString();
     }
+
+    public void setRankPrefix(String prefix, FactionRank rank) {
+        if (rank == FactionRank.NEWBIE) {
+            this.setNewbiePrefix(prefix);
+            Factions.getInstance().getFactionManager().updateFactionData(this);
+        } else if (rank == FactionRank.MEMBER) {
+            this.setMemberPrefix(prefix);
+            Factions.getInstance().getFactionManager().updateFactionData(this);
+        } else if (rank == FactionRank.ADMIN) {
+            this.setAdminPrefix(prefix);
+            Factions.getInstance().getFactionManager().updateFactionData(this);
+        } else if (rank == FactionRank.LEADER) {
+            this.setLeaderPrefix(prefix);
+            Factions.getInstance().getFactionManager().updateFactionData(this);
+        }
+    }
+
+    public void setStateform(Ideology ideology) {
+        this.ideology = ideology.getName();
+        Factions.getInstance().getFactionManager().updateFactionData(this);
+    }
+
 }

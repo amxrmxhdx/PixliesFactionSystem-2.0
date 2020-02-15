@@ -23,11 +23,15 @@ public class ChunkProtectionListener implements Listener {
         Player player = event.getPlayer();
 
         // RETURN STATEMENTS
-        if (event.getClickedBlock().getChunk().equals(null)) return;
         if (event.getClickedBlock() == null) return;
         if (event.getClickedBlock().isEmpty()) return;
         if (event.getClickedBlock().getType().isAir()) return;
-        if (instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()).equals(null)) return;
+        if (event.getClickedBlock().getChunk().equals(null)) return;
+        if (instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()) == null) return;
+        if (instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()).equals(instance.getPlayerData(player).getCurrentFactionData())) return;
+        if (!instance.getPlayerData(player).isInFaction()) return;
+        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null)
+            if (BlockStorage.hasBlockInfo(event.getClickedBlock()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN) && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()))) return;
 
         // STAFFMODE EXCEPTION
         if (instance.getStaffmode().contains(player.getUniqueId())) {
@@ -44,12 +48,6 @@ public class ChunkProtectionListener implements Listener {
             event.setCancelled(false);
             return;
         }
-        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null) {
-            if (BlockStorage.hasBlockInfo(event.getClickedBlock()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN)) {
-                event.setCancelled(false);
-                return;
-            }
-        }
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessage()));
         event.setCancelled(true);
@@ -64,8 +62,10 @@ public class ChunkProtectionListener implements Listener {
         if (event.getBlockPlaced().getChunk().equals(null)) return;
         if (event.getBlockPlaced() == null) return;
         if (event.getBlockPlaced().isEmpty()) return;
-        if (event.getBlockPlaced().getType().isAir()) return;
-        if (instance.getChunkManager().getFactionDataByChunk(event.getBlockPlaced().getChunk()).equals(null)) return;
+        if (instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()) == null) return;
+        if (instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()).equals(instance.getPlayerData(player).getCurrentFactionData())) return;
+        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null)
+            if (BlockStorage.hasBlockInfo(event.getBlock()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN) && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()))) return;
         if (instance.getStaffmode().contains(player.getUniqueId())) {
             event.setCancelled(false);
             return;
@@ -87,14 +87,6 @@ public class ChunkProtectionListener implements Listener {
             return;
         }
 
-        // SLIMEFUN
-        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null) {
-            if (BlockStorage.hasBlockInfo(event.getBlockPlaced()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN)) {
-                event.setCancelled(false);
-                return;
-            }
-        }
-
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessage()));
         event.setCancelled(true);
 
@@ -109,7 +101,10 @@ public class ChunkProtectionListener implements Listener {
         if (event.getBlock() == null) return;
         if (event.getBlock().isEmpty()) return;
         if (event.getBlock().getType().isAir()) return;
-        if (instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()).equals(null)) return;
+        if (instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()) == null) return;
+        if (instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()).equals(instance.getPlayerData(player).getCurrentFactionData())) return;
+        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null)
+            if (BlockStorage.hasBlockInfo(event.getBlock()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN) && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()))) return;
         if (instance.getStaffmode().contains(player.getUniqueId())) {
             event.setCancelled(false);
             return;
@@ -129,14 +124,6 @@ public class ChunkProtectionListener implements Listener {
         if (instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD)) {
             event.setCancelled(false);
             return;
-        }
-
-        // SLIMEFUN
-        if (Bukkit.getPluginManager().getPlugin("Slimefun") != null) {
-            if (BlockStorage.hasBlockInfo(event.getBlock()) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.SLIMEFUN)) {
-                event.setCancelled(false);
-                return;
-            }
         }
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.NO_PERMISSION_TO_INTERACT.getMessage()));

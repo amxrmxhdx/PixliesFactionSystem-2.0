@@ -10,6 +10,7 @@
   <artifactId>factions</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
+    <finalName>PixliesFactionSystem</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -80,12 +81,6 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot</artifactId>
-      <version>1.15-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
@@ -111,11 +106,32 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.javacord</groupId>
+      <artifactId>javacord</artifactId>
+      <version>3.0.5</version>
+      <type>pom</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.mickmmars</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>C:/Users/Amir/Desktop/PixliesEarth reloaded/FactionSystemGithub/PixliesFactionSystem-2.0/factions/lib/repo/spigot-1.15.1.jar</systemPath>
+    </dependency>
+    <dependency>
       <groupId>me.mickmmars</groupId>
       <artifactId>pfsdynmap</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>system</scope>
-      <systemPath>C:/Users/Amir/Desktop/FactionSystemGithub/PixliesFactionSystem-2.0/PFSDynmap.jar</systemPath>
+      <systemPath>C:/Users/Amir/Desktop/PixliesEarth reloaded/FactionSystemGithub/PixliesFactionSystem-2.0/PFSDynmap.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>me.mickmmars</groupId>
+      <artifactId>slimefun</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>C:/Users/Amir/Desktop/PixliesEarth reloaded/FactionSystemGithub/PixliesFactionSystem-2.0/factions/lib/repo/Slimefun4 - DEV 408 (git 73b64).jar</systemPath>
     </dependency>
   </dependencies>
   <properties>

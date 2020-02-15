@@ -32,6 +32,7 @@ public class ChunkPlayer {
     private PlayerData playerData;
     private HomeObject homeObject;
 
+    @Deprecated
     public ChunkPlayer(UUID uuid) {
         this.uuid = uuid;
 
@@ -53,7 +54,7 @@ public class ChunkPlayer {
     public boolean createIfNotExists() {
         if (exists()) return true;
         new File("plugins/Factions/players").mkdirs();
-        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>(), new ArrayList<ChunkData>(), Bukkit.getPlayer(uuid).getName());
+        final PlayerData playerData = new PlayerData(false, "a", FactionRank.NONE, new ArrayList<String>(), new ArrayList<HomeData>(), new ArrayList<ChunkData>(), Bukkit.getPlayer(uuid).getName(), false);
 
         final JsonConfig jsonConfig = new JsonConfig(this.file);
         jsonConfig.set("userData", playerData);
@@ -106,6 +107,19 @@ public class ChunkPlayer {
         jsonConfig.saveConfig();
 
         this.playerData = playerData;
+    }
+
+    public String getRankPrefix() {
+        if (playerData.getFactionRank() == FactionRank.NEWBIE) {
+            return playerData.getCurrentFactionData().getNewbiePrefix();
+        } else if (playerData.getFactionRank().equals(FactionRank.MEMBER)) {
+            return playerData.getCurrentFactionData().getMemberPrefix();
+        } else if (playerData.getFactionRank().equals(FactionRank.ADMIN)) {
+            return playerData.getCurrentFactionData().getAdminPrefix();
+        } else if (playerData.getFactionRank() == FactionRank.LEADER) {
+            return playerData.getCurrentFactionData().getLeaderPrefix();
+        }
+        return null;
     }
 
     public PlayerData getPlayerData() {
