@@ -8,10 +8,9 @@ api-version: 1.15
 
 depend:
   - Vault
-loadbefore:
-  - Vault
 softdepend:
   - PlaceholderAPI
+  - Slimefun
 
 permissions:
   factions.host:
@@ -19,6 +18,8 @@ permissions:
   factions.staff:
     default: op
   factions.seeversion:
+    default: op
+  earth.vip:
     default: op
 
 commands:
@@ -36,3 +37,5 @@ commands:
     description: cb command.
     aliases:
       - casusbelli
+  treaty:
+    description: treaty command

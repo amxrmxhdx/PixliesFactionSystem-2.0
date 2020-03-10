@@ -95,7 +95,8 @@ public class PlayerMoveEventListener implements Listener {
                     int z = player.getLocation().getChunk().getZ();
                     //Player members = (Player) instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId()));
                     for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())))
-                        Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_UNCLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
+                        if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                            Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_UNCLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
                     int result = 5;
                     EconomyResponse r = Factions.econ.depositPlayer(player, result);
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk unclaimed")));
@@ -134,18 +135,25 @@ public class PlayerMoveEventListener implements Listener {
                             if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
                                 for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
                                     if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
-                                    Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
+                                        Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
                                 }
                             }
                         }
                     }
-                } else if (instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk()) && !instance.getPlayerData(player).isInFaction()) {
-                    player.sendTitle(data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
-                    instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
-                    if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
-                        for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
-                            if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
-                                Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
+                } else  {
+                    if (!instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() || instance.getChunkPlayer(player.getUniqueId()).isInFactionChunks() && instance.getChunkManager().getFactionDataByChunk(event.getFrom().getChunk()) != instance.getChunkManager().getFactionDataByChunk(event.getTo().getChunk())) {
+                        if (data.getId().equals("safezone")) {
+                            player.sendTitle("§aSafeZone", "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                        } else {
+                            player.sendTitle("§f" + data.getName(), "§7" + data.getDescription(), 20, 20 * 3, 20);
+                            instance.getChunkPlayer(player.getUniqueId()).setInFactionChunks(true);
+                            if (Config.INFORM_FACTION_WHEN_FOREIGNER_ENTERS.getData().equals(true)) {
+                                for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(data.getId()))) {
+                                    if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
+                                        Bukkit.getPlayer(uuid).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.PLAYER_ENTERED_TERRITORY.getMessageRaw().toString().replace("%player%", player.getName())));
+                                }
+                            }
                         }
                     }
                 }

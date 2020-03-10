@@ -1,0 +1,263 @@
+prefix: '§8» '
+no_permissions: §cInsufficient permissions!
+home_must_be_within_fac_territory: §cYour faction home must be within your faction
+  territory.
+invite_revoked: §7You §crevoked §7the invitation you sent to §6%player%§7.
+fac_home_successfully_set: §7You have §asuccessfully §7set your factions home at §c%loc%
+player_set_fac_home: §7Player §6%player% §7has set your factionhome at §c%loc%
+already_has_fac: §cYou already have a faction.
+already_in_fac: '&7You have to leave your current faction to join a new one. &c/f
+  leave'
+no_permission_to_interact: §cThis faction does not allow you to interact with their
+  territory.
+name_already_taken: '&cYou can''t use that name because it''s already taken.'
+unknown_error: §cUnknown error. Please contact your server administrator.
+faction_created: '&7You successfully created &b%faction_name%&7!'
+faction_creation_error: '&cError while creating new faction.'
+no_invite_perm: '&cYour faction does not allow you to invite members.'
+player_already_invited: '&cThis player has already been invited to your faction. &e/f
+  invite revoke &b%target%'
+successfully_invited: '&7You successfully invited &a&l%target% &7to your faction!'
+player_got_invited: '&b&l%faction% &7invited you to join their faction.'
+bank_balance: '&7Your faction has §2§l$&a%balance% &7in their bank.'
+player_already_has_fac: §cThis player already has a faction.
+cant_hit_fac_member: §cYou may not hit people from your faction.
+cant_invite_yourself: §cYou can't invite yourself.
+feature_not_finished: §cWe are still working on this feature.
+need_more_to_claim: §7Your faction needs §2§l$§a%need% §7more to claim this chunk.
+player_not_in_your_fac: §cThis player is not in your faction.
+noperm_kick: '&cYour faction does not allow you to kick players.'
+not_in_a_faction: §cYou are not in a faction.
+no_demotion_perm: §cYour faction does not allow you to demote people.
+promotion_not_possible: §cYou can't promote a player to a rank higher than Admin.
+  §e/f handover (player)
+player_got_demoted: §a%player% §7got demoted to %rank% §7in your faction.
+player_not_found: §a§l$player$ §7does not exist!
+player_not_in_your_faction: §a§l$player$ §7is not in your faction!
+player_got_promoted: §a%player% §7got promoted to %rank% §7in your faction!
+you_got_promoted: §7You got promoted to %rank% §7in your faction.
+you_got_demoted: §7You got demoted to %rank% §7in your faction.
+demotion_not_possible: §cThis player cannot be demoted.
+chunk_is_not_yours: §cYou can't unclaim what's not yours.
+no_unclaim_perm: §cYour faction does not allow you to unclaim territory.
+cant_leave: §cYou can't leave your faction if you are the leader. §e/f delete
+successfully_left_faction: §7You §asuccessfully §7left §b%faction%§7.
+player_unclaimed: §7Player §6%player% §7unclaimed at §b%location%
+faction_not_found: §cThis faction does not exist
+confirm_disband: §cAre you sure you want to delete that faction? All data will be
+  gone forever (That's a long time!)
+confirm_disband_hover: ' §c/f delete confirm'
+faction_disbanded: §b§l$faction$ §cgot disbanded!
+player_kicked: §a§l$player$ §7got kicked from your faction!
+already_claimed: §cThis chunk is already claimed.
+no_claiming_power: §cYour faction has no power left to claim this chunk.
+claim_questionmark: §c§lClaim?
+click_me_to_claim: §b§lClick me to claim!
+player_not_leader: §cOnly your faction-leader can perform this command.
+no_staff_online: §7There is no staff-member online at the moment. But they got notified
+  over discord, so they can come online as fast as possible!
+player_already_leader: §cYou can't handover the faction to yourself.
+leadership_transfered: §6%player% §7transferred §b%faction%§7's leadership to §6%target%§7.
+you_cant_kick_yourself: §cYou can't kick yourself out of your faction.
+you_kicked_player: §7You §asuccessfully §7kicked §6%player% §7from your faction.
+no_promote_perm: §cYour faction does not allow you to promote players.
+chunk_is_free: §aChunk is free
+you_got_kicked: §cYou got kicked from §b§l$faction$
+changed_fac_description: §7Player §a§l$player$ §7changed your faction description
+  to §b$desc$
+page_does_not_exists: §cThis page doesn't exists!
+faction_chat_enabled: §aEnabled §7factionchat.
+faction_chat_disabled: §cDisabled §7factionchat.
+not_a_number: §cPlease enter a number!
+home_set_successfully: §7Home §b%home% §7successfully set.
+home_remove_successfully: §7You §asuccessfully §7removed §b%home%§7.
+home_max: §cYou are only able to set {0} homes at the moment!
+home_already_exists: §cA home with this name already exists!
+home_does_not_exists: §cYou don't have a home with this name!
+homes_left: §7You have §a%left% §7home(s) left.
+player_claimed: §7Player §6%player% §7claimed at §b%location%
+home_list_format: '   §8- §e%home%'
+home_click_to_teleport: §7Click here to teleport to home §a%home%
+no_homes: §cYou don't have any homes at the moment.
+your_homes: '§7Your current homes §8(§a%size%§8):'
+bank_deposit: §aSuccessfully §7deposited §b$$deposit$§7.
+transaction_error: §cYou don't have enough money for this action.
+bank_withdraw: §aSuccessfully §7withdrew §b$withdraw$§7.
+not_enough_money_in_fac: §cYou don't have enough money in the faction.
+no_claim_perm: §cYour faction does not allow you to claim territory.
+faction_discord: §7Join your factions §dDiscord-server§7! §b%link%
+autoclaim_enabled: §7Autoclaim §aenabled§7.
+autoclaim_disabled: §7Autoclaim §cdisabled§7.
+autounclaim_enabled: §7Autounclaim §aenabled§7.
+autounclaim_disabled: §7Autounclaim §cdisabled§7.
+staffmode_enabled: §7Staffmode §aenabled§7.
+staffmode_disabled: §7Staffmode §cdisabled§7.
+max_member_count: §cYour faction already has the maximum amount of members.
+noperm_interact_fac: §cYour faction does not allow you to interact with territory.
+no_perm_changename: §cYour faction does not allow you to change its name.
+no_perm_changediscord: §cYour faciton does not allow you to change its discordlink.
+safezone_claimed: §7You §asuccessfully §7claimed §aSafeZone §7at §6%loc%§7.
+already_sent_allyrequest: §cYou already sent a ally-request to this faction.
+no_permission_to_ally: §cYour faction does not allow you ally factions.
+factions_allied: §7Your faction is now allied with §5%ally%§7.
+cant_hit_ally: §cYou can't hit an ally!
+cant_ally_safezone: §7You are not funny when you try to ally the §aSafeZone.
+cant_ally_wilderness: §7Allying the wilderness is not possible...
+already_allied: §7You already are §5allied §7with §d%ally%§7.
+no_permission_to_neutral: §cYour faction does not allow you to neutral factions.
+no_relation: §cYou have no relation to that nation.
+ally_request_revoked: §6%player% §7revoked your factions ally-request to §a%faction%§7.
+faction_revoked_ally_request: §a%faction% §7revoked their ally-request to your faction.
+faction_neutraled: §7Your faction now has neutral relations with §a%faction%§7.
+faction_doesnt_exist: §cThis faction does not exist.
+sent_ally_request: §6%player% §7sent an ally-request to §d%ally%§7.
+recieved_ally_request: §7You recieved an ally-request by §a%requester%§7.
+cant_ally_yourself: §cYou can't ally yourself!
+cant_damage_in_own_territory: §cYou can't damage people in their territory!
+created_safezone: §7You created the §aSafeZone §7faction.
+safezone_already_created: §cSafeZone faction already exists!
+changed_discordlink: §7Player §6%player% §7changed your discordlink to §b%link%§7.
+wrong_discord_link: '§cWrong formatting! §7Use this command like this: §a/f discord
+  discord.gg/YourInvite'
+player_changed_factionname: §7Player §6%player% §7changed your factions name to §b%name%§7.
+player_entered_territory: §c%player% §7entered your faction-territory!
+faction_doenst_allow_you_enemy: §cYour faction does not allow you to enemy people.
+already_enemied: §cYou are already enemied with this faction.
+enemied_factions: §7Your faction is now enemied with §4%faction%§7.
+enemy_safezone: §7You are not funny when you try to enemy the §aSafeZone§7.
+player_filled: §7Player §6%player% §7claimed §a%chunks% §7chunks for your faction.
+faction_forcedisbanded: §7Player §6%player% §7force-disbanded §c%faction%§7.
+cant_enemy_yourself: §cYou can't enemy yourself.
+home_has_to_be_in_territory: §cFaction-home cannot be outside of the faction-territory.
+player_setted_faction_home: §6%player% §7has set your faction-home in §a%loc%
+no_permission_to_sethome: §cYour faction does not allow you to set homes.
+faction_has_no_home: §cYour faction has not set a home.
+teleported_to_fac_home: §7You §asuccessfully §7teleported yourself to your factions
+  home.
+deleted_home: §6%player% §7deleted your factions home.
+cant_tp_home_because_no_ally: §cYou can only teleport to your allies homes.
+teleported_to_else_fac_home: §7You got teleported to §d%fac%§7's home.
+player_changed_flag: §6%player% §7changed the flag '%flag%§7' in your faction to %value%§7.
+no_flag_perm: §cYou faction does not allow you to edit flags.
+force_joined_fac: §7You §asuccessfully §7force-joined §b%fac%§7.
+relation_list_headline: §8-§b+§8-------§7[ §a§lRelations §7]§8------§b+§8-
+group_does_not_exist: '§7This group §cdoes not §7exist. Available groups: §c§lAdmin§8,
+  §a§lMember§8, §3Newbie§8, §d§lAlly§8, §4§lEnemy'
+permission_does_not_exist: §7This permission §cdoes not §7exist. §b/f perms list
+player_already_has_access_to_chunk: §6%player% §7already has access to this chunk.
+gave_chunkaccess_to_player: §6%player% §7now has access to this chunk.
+player_gained_chunk_access: '§7You §agained §7access to chunk: §a%loc%'
+no_permission_to_give_access_to_chunk: §cYour faction does not allow you to give players
+  access to faction-territory.
+no_permission_to_edit_permissions: §cYour faction does not allow you to edit permissions.
+rank_does_not_exist: '§7This rank §cdoes not §7exist. Available ranks: §c§lAdmin§8,
+  §a§lMember§8, §3Newbie'
+player_added_permission_to_group_fac: §6%player% §7added the permission §b%perm% §7to
+  %rank%§7.
+player_removed_permission_from_group_fac: §6%player% §7removed the permission §b%perm%
+  §7from %rank%§7.
+already_has_premission: §7This group §calready §7has that permission.
+rank_doesnt_have_permission: §7This group §cdoes not §7have that permission.
+no_permission_to_delete_capital: §cYour faction does not allow you to delete the capital.
+application_successfully_sent: §7You §asuccessfully §7sent an application to §b%faction%§7.
+player_sent_application: §6%player% §7sent an citizen-application to your faction.
+  §a/f accept <name>
+player_doesnt_exist: §7This player §cdoes not §7exist.
+application_doesnt_exist: §7This player never sent an application to your faction.
+player_joined_your_faction: §7Player §6%player% §7joined your faction.
+successfully_joined_faction: §7You §asuccessfully §7joined §b%faction%§7.
+no_perm_dynmapcolour: §cYour faction does not allow you to change the dynmap-colour.
+changed_dynmapcolour: §6%player% §7changed your factions dynmapcolour to %col%§7.
+available_colours_dyncol: '§7Usage: /f dynmapcolour <§b§lBlue§8/§4§lRed§8/§6§lOrange§8/§a§lGreen§7>'
+player_purchased_upgrade: §6%player% §7purchased the §a%upgrade% §7upgrade for your
+  faction.
+no_fly_upgrade: §cYour faction needs the Faction-Fly upgrade for you to use this command.
+ffly_activated: §7You §aactivated §7Faction-Fly.
+ffly_deactivated: §7You §cdeactivated §7Faction-Fly.
+no_perm_for_ffly: §cYour faction does not allow you to fly in your territory.
+player_was_never_invited: §7You §cdont have §7any open invitation by that faction.
+claim_filled_x_chunks: §7You §asuccessfully §7claim-filled §a%x% §7chunks.
+max_fill_reached: §7You §creached §7the maximum capacity of the fill function.
+player_fill_claimed_broadcastfac: §6%player% §7used the fill-claim tool to claim §a%x%
+  §7chunks.
+no_dynmap_upgrade: §7Your faction §cdoes not §7have the Dynmapcolour upgrade!
+no_1pw_upgrade: §7Your faction §cdoes not §7have the OnePublicWarp upgrade!
+no_2pw_upgrade: §7Your faction §cdoes not §7have the TwoPublicWarp upgrade!
+no_3pw_upgrade: §7Your faction §cdoes not §7have the ThreePublicWarp upgrade!
+no_1pt_upgrade: §7Your faction §cdoes not §7have the ONEPUPPET upgrade!
+no_2pt_upgrade: §7Your faction §cdoes not §7have the TWOPUPPET upgrade!
+no_3pt_upgrade: §7Your faction §cdoes not §7have the THREEPUPPET upgrade!
+too_many_puppets: §7Your faction §ccannot §7have more than 3 puppets.
+too_many_warps: §7Your faction §ccannot §7have more than 3 warps.
+no_perm_setwarp: §7Your faction §cdoes not §7allow you to update warps.
+warp_must_be_in_territory: §7Faciton warps must be located within faction territory.
+warp_already_exists: §7A warp with that name already exists.
+you_will_be_tpd_in_n_seconds: §7You will be teleported in §a%sec% §7seconds.
+warp_set: §6%player% §7set the warp §b%warp%§7.
+player_banned: §7You are §cbanned §7from this faction.
+warp_doesnt_exist: §7This warp §cdoes not §7exist.
+tpd_to_warp: §7You §asuccessfully §7teleported yourself to §a%warp%§7.
+removed_warp: §6%player% §7removed the warp §a%warp%§7.
+no_puppet_perm: §7Your faction §cdoes not §7allow you to puppet factions.
+already_puppeted: §7This faction §cis already §7a puppet of someone.
+no_setflag_perm: §7Your faction §cdoes not §7allow you to set their flag.
+item_is_not_a_banner: §7You can §conly §7set a banner as your faction-flag.
+set_flag: §6%player% §7changed your factions flag.
+no_ban_perm: §7Your faction §cdoes not §7allow you to ban people.
+no_unban_perm: §7Your faction §cdoes not §7allow you to unban people.
+player_got_banned: §6%player% §7got banned from your faction.
+player_got_unbanned: §6%player% §7got unbanned from your faction.
+no_banned_players: §7Your faction §cdoes not §7have any banned players.
+cmd_doesnt_exist: §7This command §cdoes not §7exist. §b/f help
+warp_help: §cInvalid usage. §b/f warp <name> §e<faction>§7, §b/f setwarp <name>§7,
+  §b/f delwarp <name>§7, §b/f warp list
+claims_must_be_connected: §7Unconnected claims are not allowed.
+powerboosted_faction: §b%faction% §7now has a powerboost of §a%boost%§7.
+cant_access_whats_not_yours: §7You §ccan't §7give access to a chunk that does not
+  belong to your faction.
+dev_version: '§bDEV #305'
+player_has_set_rankprefix: §6%player% §7has set your factions %rank%§7-prefix to §a%prefix%§7.
+allychat_enabled: §dAllychat §aenabled§7.
+allychat_disabled: §dAllychat §cdisabled§7.
+no_puppetmanage_perm: §7Your faction §cdoes not §7allow you to manage puppets.
+already_puppet: §7This faction is already a puppet.
+fac_puppeted: §7Faction §b%puppet% §7got puppeted by §b%overlord%§7.
+leader_not_online: §7The leader of that faction §cis not §7online.
+pup_req_denied: §7Denied puppet request.
+sent_puppet_req: §7You sent §b%faction% §7a puppeting request.
+puppet_released: §b%faction% §7released §b%puppet% §7as a puppet.
+fac_not_your_puppet: §7This faction §cis not §7your puppet.
+no_cb_perm: §7Your faction §cdoes not §7allow you to manage CB's.
+already_have_a_cb: §7You already sent a cb against that faction. §a/cb revoke <faction>
+cb_successfully_sent: §7Your CB has been sent. Please wait for a staffmember to review
+  your request.
+fac_member_sent_cb: §6%player% §7requested a CB for your faction against §b%faction%§7.
+fac_requested_cb_against_u: §b%faction% §7requested a CB against you for §c%cb%§7.
+cb_accepted: §7You accepted the CB with the Id §b%id%§7.
+cb_rejected: §7You rejected the CB with the Id §b%id%§7.
+cb_revoked: §7You revoked the CB with the Id §b%id%§7.
+cb_doesnt_exist: §7This CB does not exist.
+no_approved_cbs: §7Your faction does not have any approved CBs to start a war.
+no_open_cbs_atm: §7There are no open CBs at the moment.
+war_started: §7A war between §b%attacker% §7and §b%defender% §7started with the CB
+  §c%cb%§7.
+already_in_war: §7Your faction is already in a war.
+faction_home_needs_to_be_set: §7To start a war, you first need to set a faction home.
+enemy_needs_faction_home: §7To start the war, the enemy needs to set a faction home.
+home_help_pages:
+- |-
+  {
+    "help": [
+      " ",
+      "§7Home Commands §8[§e$page$§7/§e$max_pages$§8]",
+      "§8» §b/home set [name] §8- §7Set a home",
+      "§8» §b/home delete [name] §8- §7Delete a home",
+      "§8» §b/home list §8- §7List your homes",
+      "§8» §b/home (teleport) [name] §8- §7Teleport you to a home",
+      " "
+    ]
+  }
+player_failed_capping: ''
+war_won: §b%winner% §7won a war against §b%loser%§7!
+cb_accepted_fac: '§7Your CB against the faction §c%fac% §7got accepted. Id: §b%id%§7.'
+cb_denied_fac: '§7Your CB against the faction §c%fac% §7got rejected. Id: §b%id%§7.'

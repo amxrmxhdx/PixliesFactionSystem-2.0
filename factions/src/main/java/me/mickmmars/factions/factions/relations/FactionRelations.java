@@ -30,7 +30,7 @@ public enum FactionRelations {
     public Boolean pvpEnabled(String id1, String id2) {
         if (instance.getFactionManager().getFactionById(id1).getAllies().contains(id2)) {
             return ALLY.pvp;
-        } else if (instance.getFactionManager().getFactionById(id1).getEnemies().contains(id2)) {
+        } else if (instance.getFactionManager().getFactionById(id1).getEnemies().contains(id2) || instance.getFactionManager().getFactionById(id1).getOpposingFactionId().equals(id2)) {
             return ENEMY.pvp;
         } else {
             return NEUTRAL.pvp;

@@ -7,7 +7,6 @@ public enum FactionFlag {
 
     FRIENDLYFIRE("§cFriendly-fire", false),
     PVP("§cPvP", false),
-    INFPOWER("§cInfinite power", false),
     EXPLOSIONS("§cExplosions", true),
     OPEN("§cOpen/No-invitation", false),
     ANIMALS("§cAnimals", true),

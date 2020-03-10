@@ -36,6 +36,7 @@ public enum Config {
     MAX_FILL_SIZE(500),
     USE_AUTOMATED_WAR_SYSTEM(true),
     USE_WAR_BOT(true),
+    MAX_FACTION_POWER(3000),
     INFORM_FACTION_WHEN_FOREIGNER_ENTERS(true);
     private Object data;
 

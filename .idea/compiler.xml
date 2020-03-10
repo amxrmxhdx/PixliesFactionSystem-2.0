@@ -2,15 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile">
+      <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="factions" />
-        <module name="PixliesFactionSystem" />
-        <module name="pfsdynmap" />
         <module name="MiniMick" />
+        <module name="factions" />
         <module name="MickMLib" />
+        <module name="pfsdynmap" />
       </profile>
     </annotationProcessing>
   </component>

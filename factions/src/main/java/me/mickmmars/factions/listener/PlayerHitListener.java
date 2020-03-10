@@ -20,11 +20,11 @@ public class PlayerHitListener implements Listener {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player attacker = (Player) e.getDamager();
             Player target = (Player) e.getEntity();
-            if (instance.getPlayerData(attacker).getCurrentFactionData().getName().equals(instance.getPlayerData(target).getCurrentFactionData().getName()) && instance.getFactionManager().checkIfFacHasFlagEnabled(instance.getPlayerData(target).getCurrentFactionData(), FactionFlag.FRIENDLYFIRE)) {
+            if (instance.getPlayerData(attacker).isInFaction() && instance.getPlayerData(target).isInFaction() && instance.getPlayerData(attacker).getCurrentFactionData().getName().equals(instance.getPlayerData(target).getCurrentFactionData().getName()) && instance.getFactionManager().checkIfFacHasFlagEnabled(instance.getPlayerData(target).getCurrentFactionData(), FactionFlag.FRIENDLYFIRE) && !instance.getPlayerData(target).getCurrentFactionData().isInWar() && !instance.getPlayerData(attacker).getCurrentFactionData().isInWar()) {
                 e.setCancelled(true);
                 e.setDamage(0);
                 attacker.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Message.CANT_HIT_FAC_MEMBER.getMessageRaw().toString()));
-            } else if(instance.getPlayerData(attacker).getCurrentFactionData().getEnemies().contains(instance.getPlayerData(target).getFactionId())) {
+            } else if(instance.getPlayerData(attacker).getCurrentFactionData().getOpposingFactionId().equals(instance.getPlayerData(target).getFactionId()) && instance.getPlayerData(attacker).getCurrentFactionData().isInWar()) {
                 e.setCancelled(false);
             } else if (instance.getPlayerData(attacker).getCurrentFactionData().getAllies().contains(instance.getPlayerData(target).getCurrentFactionData().getId())) {
                 e.setCancelled(true);

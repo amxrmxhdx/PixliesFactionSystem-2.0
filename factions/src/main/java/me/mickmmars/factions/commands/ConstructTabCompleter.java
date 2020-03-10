@@ -17,11 +17,12 @@ public class ConstructTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        String[] factionNeedingCmds = {"ally", "enemy", "neutral", "apply"};
         if (command.getName().equalsIgnoreCase("factions") && strings.length == 1 || command.getName().equalsIgnoreCase("f") && strings.length == 1 ) {
             if (commandSender instanceof Player) {
                 Player p = (Player) commandSender;
 
-                List<String> all = Arrays.asList("war", "cb", "passport", "create", "invite", "menu", "kick", "desc", "description", "delete", "setdesc", "help", "leave", "sethome", "home", "delhome", "unclaim", "claim", "promote", "demote", "discord", "forcedisband", "staff", "override", "perms", "capital", "home", "setcapital", "sethome", "apply", "accept", "enemy", "ally", "rank", "chest", "join", "setflag", "top", "puppet", "release");
+                List<String> all = Arrays.asList("forcedisband", "handover", "passport", "create", "invite", "menu", "kick", "desc", "description", "delete", "setdesc", "help", "leave", "sethome", "home", "delhome", "unclaim", "claim", "promote", "demote", "discord", "forcedisband", "staff", "override", "perms", "capital", "home", "setcapital", "sethome", "apply", "accept", "enemy", "ally", "rank", "chest", "join", "setflag", "top", "puppet", "release");
 
                 List<String> list = new ArrayList<>();
                 for (String string : all) {
@@ -37,12 +38,15 @@ public class ConstructTabCompleter implements TabCompleter {
             namelist.add("§c<name>");
             return namelist;
         }
-        if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("ally") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("enemy") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("neutral") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("home") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("delhome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("sethome") || command.getName().equalsIgnoreCase("me/mickmmars/factions") && strings[0].equalsIgnoreCase("apply")) {
-            List<String> facnames = new ArrayList<>();
-            for (FactionData factions : instance.getFactionManager().getFactions())
-                facnames.add("§b" + factions.getName());
-            return facnames;
-        }
+        for (String sss : factionNeedingCmds)
+            if (command.getName().equalsIgnoreCase("factions") && sss.startsWith(strings[0])) {
+                List<String> facnames = new ArrayList<>();
+                for (FactionData factions : instance.getFactionManager().getFactions())
+                    facnames.add("§b" + factions.getName());
+                return facnames;
+            }
+
+
         return null;
     }
 }

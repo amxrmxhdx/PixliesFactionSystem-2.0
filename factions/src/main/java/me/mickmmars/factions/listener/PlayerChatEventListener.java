@@ -1,5 +1,6 @@
 package me.mickmmars.factions.listener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.rank.FactionRank;
@@ -37,9 +38,17 @@ public class PlayerChatEventListener implements Listener {
         if (Config.USE_INTEGRATED_CHAT.getData().equals(true)) {
             String message = ChatColor.translateAlternateColorCodes('&', event.getMessage()).replace("%", "%%");
             if (instance.getPlayerData(player).isInFaction()) {
-                event.setFormat(Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "").replace("%player%", player.getName()).replace("%message%", message));
+                if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "").replace("%player%", player.getName()).replace("%message%", message)));
+                } else {
+                    event.setFormat(Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "").replace("%player%", player.getName()).replace("%message%", message));
+                }
             } else {
-                event.setFormat(Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message));
+                if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message)));
+                } else {
+                    event.setFormat(Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message));
+                }
             }
         }
 

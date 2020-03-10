@@ -36,7 +36,7 @@ import org.dynmap.utils.TileFlags;
 
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br><span style=\"font-weight:bold\">Leader:</span> %playerowners%<br><span style=\"font-weight:bold\">Members:</span> %playermembers% <br><span style=\"font-weight:bold\">Bank: </span>%money%<br><span style=\"font-weight:bold\">Age:</span> %age% Days <br><span style=\"font-weight:bold\">Polity:</span> %stateform%</div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br><span style=\"font-weight:bold\">Leader:</span> %playerowners%<br><span style=\"font-weight:bold\">Members:</span> %playermembers% <br><span style=\"font-weight:bold\">Bank: </span>%money%<br><span style=\"font-weight:bold\">Age:</span> %age% Days <br><span style=\"font-weight:bold\">Ideology:</span> %stateform%</div>";
     private static final String SAFEZONE_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%; font-weight:bold;\">SafeZone</span><br>You are safe here! hopefully...</div>";
     Plugin dynmap;
     DynmapAPI api;

@@ -84,7 +84,7 @@ public enum Message {
     HOME_CLICK_TO_TELEPORT("§7Click here to teleport to home §a%home%", ""),
     NO_HOMES("§cYou don't have any homes at the moment.", ""),
     YOUR_HOMES("§7Your current homes §8(§a%size%§8):", ""),
-    BANK_DEPOSIT("§aSuccessfully §7deposited §b$$deposit$§7.", ""),
+    BANK_DEPOSIT("§aSuccessfully §7deposited §b$$deposit$ §7to §b%faction%§7.", ""),
     TRANSACTION_ERROR("§cYou don't have enough money for this action.", ""),
     BANK_WITHDRAW("§aSuccessfully §7withdrew §b$withdraw$§7.", ""),
     NOT_ENOUGH_MONEY_IN_FAC("§cYou don't have enough money in the faction.", ""),
@@ -161,6 +161,7 @@ public enum Message {
     PLAYER_DOESNT_EXIST("§7This player §cdoes not §7exist.", ""),
     APPLICATION_DOESNT_EXIST("§7This player never sent an application to your faction.", ""),
     PLAYER_JOINED_YOUR_FACTION("§7Player §6%player% §7joined your faction.", ""),
+    ALLY_JOINED_DURING_WAR("§7Player §6%player% joined your faction to support you during war.", ""),
     SUCCESSFULLY_JOINED_FACTION("§7You §asuccessfully §7joined §b%faction%§7.", ""),
     NO_PERM_DYNMAPCOLOUR("§cYour faction does not allow you to change the dynmap-colour.", ""),
     CHANGED_DYNMAPCOLOUR("§6%player% §7changed your factions dynmapcolour to %col%§7.", ""),
@@ -235,15 +236,20 @@ public enum Message {
     FACTION_HOME_NEEDS_TO_BE_SET("§7To start a war, you first need to set a faction home.", ""),
     ENEMY_NEEDS_FACTION_HOME("§7To start the war, the enemy needs to set a faction home.", ""),
     WAR_WON("§b%winner% §7won a war against §b%loser%§7!", ""),
-    HOME_HELP_PAGES(Lists.newArrayList(Factions.getInstance().getPrettyGson().toJson(new Gson().toJsonTree(new HelpPage(Lists.newArrayList(
-            " "
-            , "§7Home Commands §8[§e$page$§7/§e$max_pages$§8]",
-            "§8» §b/home set [name] §8- §7Set a home",
-            "§8» §b/home delete [name] §8- §7Delete a home",
-            "§8» §b/home list §8- §7List your homes",
-            "§8» §b/home (teleport) [name] §8- §7Teleport you to a home",
-            " "
-    ))))), ""),
+    CB_ACCEPTED_FAC("§7Your CB against the faction §c%fac% §7got accepted. Id: §b%id%§7.", ""),
+    CB_DENIED_FAC("§7Your CB against the faction §c%fac% §7got rejected. Id: §b%id%§7.", ""),
+    CMD_DISABLED_DURING_WAR("§7This command is §cdisabled §7during wars & treaties.", ""),
+    NOT_IN_A_WAR("§7Your faction not in a war.", ""),
+    FACTION_SURRENDERED("§c%loser% §7just surrendered in a war against §a%winner%§7.", ""),
+    MAX_CLAIMING_REACHED("§7You already reached the max-claiming size.", ""),
+    TREATY_TIME_STARTED("§7The war has ended, you should now decide over a treaty. Please follow the CB/War rules in the discord. Then call a staffmember, so he can approve your demands.", ""),
+    TREATY_TIME_ENDED("§7The treaty has been approved.", ""),
+    HOME_HELP_PAGES(
+            "§7Home Commands\n" +
+            "§8» §b/home set [name] §8- §7Set a home\n" +
+            "§8» §b/home delete [name] §8- §7Delete a home\n" +
+            "§8» §b/home list §8- §7List your homes\n" +
+            "§8» §b/home (teleport) [name] §8- §7Teleport you to a home", ""),
     ;
 
 

@@ -297,6 +297,15 @@ public class FactionManager {
         lines.add(line5chunk7);
         lines.add(line5chunk8);
         lines.add(line5chunk9);
+        boolean unconnected = true;
+        for (Chunk chunks : lines) {
+            if (checkIfClaimIsConnected(chunks, instance.getPlayerData(player).getCurrentFactionData()))
+                unconnected = false;
+        }
+        if (unconnected) {
+            player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
+            return;
+        }
         List<Chunk> claimable = new ArrayList<Chunk>();
         for (Chunk chunks : lines) {
             if (instance.getChunkManager().isFree(chunks)) {
@@ -379,11 +388,14 @@ public class FactionManager {
 
     public void claimChunk(Player player, int x, int z, String factionId, Boolean ignoreUnconnected) {
         FactionData factionData = getFactionById(factionId);
-        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId()) && !ignoreUnconnected) {
+        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId()) && !ignoreUnconnected && !getFactionById(factionId).getName().equals("SafeZone")) {
             player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
             return;
         }
-
+        if (getFactionById(factionId).getPower() + 1 > (int) Config.MAX_FACTION_POWER.getData() && !getFactionById(factionId).getName().equals("SafeZone")) {
+            player.sendMessage(Message.MAX_CLAIMING_REACHED.getMessage());
+            return;
+        }
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
         if (factionData.getMoney() >= price) {
             String id = instance.generateKey(10);
@@ -616,6 +628,7 @@ public class FactionManager {
         instance.flags.getConfiguration().set(fac1.getId(), flag);
         instance.flags.save();
         instance.flags.reload();
+        updateFactionData(fac1);
     }
 
     public Boolean checkIfClaimIsConnected(Chunk start, FactionData fac1) {
@@ -688,7 +701,6 @@ public class FactionManager {
         flags.add(FactionFlag.PVP);
         flags.add(FactionFlag.MONSTER);
         flags.add(FactionFlag.FRIENDLYFIRE);
-        flags.add(FactionFlag.INFPOWER);
         flags.add(FactionFlag.EXPLOSIONS);
         flags.add(FactionFlag.OPEN);
         flags.add(FactionFlag.ANIMALS);

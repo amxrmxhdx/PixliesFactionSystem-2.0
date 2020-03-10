@@ -80,6 +80,7 @@ public class Factions extends JavaPlugin {
     public FileManager flags;
     public FileManager factionchests;
     public FileManager discordconf;
+    public FileManager passports;
 
     private ChunkManager chunkManager;
     private FactionManager factionManager;
@@ -124,9 +125,11 @@ public class Factions extends JavaPlugin {
         flags = new FileManager(this, "flags", getDataFolder().getAbsolutePath());
         factionchests = new FileManager(this, "fchests", getDataFolder().getAbsolutePath());
         discordconf = new FileManager(this, "discordconf", getDataFolder().getAbsolutePath());
+        passports = new FileManager(this, "passports", getDataFolder().getAbsolutePath());
         factionchests.save();
         flags.save();
         discordconf.save();
+        passports.save();
         if (Config.USE_WAR_BOT.getData().equals(true) && !discordconf.getConfiguration().getString("bot-token").equals("TOKEN_HERE")) {
             new bot().startBot();
         }
@@ -179,11 +182,12 @@ public class Factions extends JavaPlugin {
     }
 
     private void registerCommands() {
-        this.getCommand("factions").setExecutor(new FactionCommand());
-        this.getCommand("factions").setTabCompleter(new ConstructTabCompleter());
-        this.getCommand("home").setExecutor(new HomeCommand());
-        this.getCommand("war").setExecutor(new WarCommand());
-        this.getCommand("cb").setExecutor(new CbCommand());
+        getCommand("factions").setExecutor(new FactionCommand());
+        getCommand("factions").setTabCompleter(new ConstructTabCompleter());
+        getCommand("home").setExecutor(new HomeCommand());
+        getCommand("war").setExecutor(new WarCommand());
+        getCommand("cb").setExecutor(new CbCommand());
+        getCommand("treaty").setExecutor(new TreatyCommand());
     }
 
     private void registerListener(PluginManager pluginManager) {
@@ -204,6 +208,10 @@ public class Factions extends JavaPlugin {
         pluginManager.registerEvents(new WarInvListener(), this);
         pluginManager.registerEvents(new CappingListener(), this);
         pluginManager.registerEvents(new WarKillListener(), this);
+        pluginManager.registerEvents(new WarCommandsListener(), this);
+        pluginManager.registerEvents(new ExplosionListener(), this);
+        pluginManager.registerEvents(new EntityDamageListener(), this);
+        pluginManager.registerEvents(new HowToCBListener(), this);
     }
 
     private void loadPlayers() {

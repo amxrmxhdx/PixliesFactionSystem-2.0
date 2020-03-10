@@ -52,22 +52,6 @@ public class FactionInventory {
         return this;
     }
 
-    public FactionInventory CreateFaction() {
-        inventory = Bukkit.createInventory(null, 9 * 3, "Create a new faction?");
-
-        inventory.setItem(0, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(1, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(2, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(3, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(4, new ItemBuilder(Material.CRAFTING_TABLE).setDisplayName("§aCreate").build());
-        inventory.setItem(5, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(6, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(7, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(8, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        player.openInventory(inventory);
-        return this;
-    }
-
     public FactionInventory setItems(GUIPage page) {
         inventory = Bukkit.createInventory(null, 9 * 5, page.getName());
         FactionData data = instance.getPlayerData(player).getCurrentFactionData();
