@@ -24,8 +24,8 @@ public class PuppetManager {
         FactionData faction = instance.getPlayerData(player).getCurrentFactionData();
         Inventory inventory = Bukkit.createInventory(null, 9 * 3, "§bPuppets");
         for (FactionData puppet : listPuppets(faction)) {
-            ItemStack item = new ItemStack(instance.flags.getConfiguration().getItemStack(puppet.getId()).getType());
-            BannerMeta meta = (BannerMeta) instance.flags.getConfiguration().getItemStack(puppet.getId()).getItemMeta();
+            ItemStack item = new ItemStack(instance.getFactionManager().getFactionFlag(puppet).getType());
+            BannerMeta meta = (BannerMeta) instance.getFactionManager().getFactionFlag(puppet).getItemMeta();
             meta.setDisplayName("§c§l" + puppet.getName());
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);

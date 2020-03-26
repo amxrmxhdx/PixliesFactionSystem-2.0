@@ -203,7 +203,7 @@ public enum Message {
     PLAYER_GOT_BANNED("§6%player% §7got banned from your faction.", ""),
     PLAYER_GOT_UNBANNED("§6%player% §7got unbanned from your faction.", ""),
     NO_BANNED_PLAYERS("§7Your faction §cdoes not §7have any banned players.", ""),
-    CMD_DOESNT_EXIST("§7This command §cdoes not §7exist. §b/f help", ""),
+    CMD_DOESNT_EXIST("§7This command §cdoes not §7exist or wrong syntax. §b/f help", ""),
     WARP_HELP("§cInvalid usage. §b/f warp <name> §e<faction>§7, §b/f setwarp <name>§7, §b/f delwarp <name>§7, §b/f warp list", ""),
     CLAIMS_MUST_BE_CONNECTED("§7Unconnected claims are not allowed.", ""),
     POWERBOOSTED_FACTION("§b%faction% §7now has a powerboost of §a%boost%§7.", ""),
@@ -221,7 +221,7 @@ public enum Message {
     PUPPET_RELEASED("§b%faction% §7released §b%puppet% §7as a puppet.", ""),
     FAC_NOT_YOUR_PUPPET("§7This faction §cis not §7your puppet.", ""),
     NO_CB_PERM("§7Your faction §cdoes not §7allow you to manage CB's.", ""),
-    ALREADY_HAVE_A_CB("§7You already sent a cb against that faction. §a/cb revoke <faction>", ""),
+    ALREADY_HAVE_A_CB("§7You already sent a cb against that faction.", ""),
     CB_SUCCESSFULLY_SENT("§7Your CB has been sent. Please wait for a staffmember to review your request.", ""),
     FAC_MEMBER_SENT_CB("§6%player% §7requested a CB for your faction against §b%faction%§7.", ""),
     FAC_REQUESTED_CB_AGAINST_U("§b%faction% §7requested a CB against you for §c%cb%§7.", ""),
@@ -243,7 +243,13 @@ public enum Message {
     FACTION_SURRENDERED("§c%loser% §7just surrendered in a war against §a%winner%§7.", ""),
     MAX_CLAIMING_REACHED("§7You already reached the max-claiming size.", ""),
     TREATY_TIME_STARTED("§7The war has ended, you should now decide over a treaty. Please follow the CB/War rules in the discord. Then call a staffmember, so he can approve your demands.", ""),
-    TREATY_TIME_ENDED("§7The treaty has been approved.", ""),
+    TREATY_TIME_ENDED("§cWar ended", ""),
+    NO_CHUNKS_IN_CACHE("§7Your faction has no lately-claimed chunks.", ""),
+    UNCLAIMED_FROM_CACHE("§7You just undid §b%n% §7claims from the cache.", ""),
+    NO_HITTING_IN_GRACE("§7You can't hit people during the grace period.", ""),
+    CANT_CLAIM_IN_THIS_WORLD("§7You can't claim in that world.", ""),
+    CHANGED_RELIGION("§7Player §6%player% §7changed your factions religion to %religion%§7.", ""),
+    CHANGED_IDEOLOGY("§7Player §6%player% §7changed yoru factions ideology to %ideology%§7.", ""),
     HOME_HELP_PAGES(
             "§7Home Commands\n" +
             "§8» §b/home set [name] §8- §7Set a home\n" +

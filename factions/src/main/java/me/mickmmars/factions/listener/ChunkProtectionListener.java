@@ -24,7 +24,7 @@ public class ChunkProtectionListener implements Listener {
 
         // RETURN STATEMENTS
         if (event.getClickedBlock() == null) return;
-        if (event.getClickedBlock().getType().isAir()) return;
+        if (event.getClickedBlock().getType().isTransparent()) return;
         if (event.getClickedBlock().getChunk() == null) return;
         if (instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()) == null) return;
         if (instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk()).equals(instance.getPlayerData(player).getCurrentFactionData())) return;
@@ -38,12 +38,17 @@ public class ChunkProtectionListener implements Listener {
             return;
         }
 
+        if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().isInWar() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).isInTreaty() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).inGracePeriod() && instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getChunks().containsKey(instance.getChunkManager().getChunkDataByChunk(event.getClickedBlock().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+
         // SET EVENT FALSE STATEMENTS
         if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getClickedBlock().getChunk()))) {
             event.setCancelled(false);
             return;
         }
-        if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT) && event.getClickedBlock().getType().isInteractable()) {
+        if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().equals(instance.getChunkManager().getFactionDataByChunk(event.getClickedBlock().getChunk())) && instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.INTERACT)) {
             event.setCancelled(false);
             return;
         }
@@ -75,6 +80,11 @@ public class ChunkProtectionListener implements Listener {
             return;
         }
 
+        if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().isInWar() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).isInTreaty() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).inGracePeriod() && instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getChunks().containsKey(instance.getChunkManager().getChunkDataByChunk(event.getBlock().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+
         // SET EVENT FALSE
         if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlockPlaced().getChunk()))) {
             event.setCancelled(false);
@@ -97,7 +107,6 @@ public class ChunkProtectionListener implements Listener {
         // RETURN STATEMENTS
         if (event.getBlock().getChunk().equals(null)) return;
         if (event.getBlock() == null) return;
-        if (event.getBlock().getType().isAir()) return;
         if (instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()) == null) return;
         if (instance.getFactionManager().checkForPlayergroupPermission(player, FactionPerms.BUILD) && instance.getPlayerData(player).isInFaction() && instance.getChunkManager().getFactionDataByChunk(event.getBlock().getChunk()).equals(instance.getPlayerData(player).getCurrentFactionData())) return;
         if (Bukkit.getPluginManager().getPlugin("Slimefun") != null)
@@ -107,8 +116,12 @@ public class ChunkProtectionListener implements Listener {
             return;
         }
 
-        // SET EVENT TRUE
         if (!instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getAccessableChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getBlock().getChunk()))) {
+            event.setCancelled(false);
+            return;
+        }
+
+        if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().isInWar() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).isInTreaty() && !instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).inGracePeriod() && instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getChunks().containsKey(instance.getChunkManager().getChunkDataByChunk(event.getBlock().getChunk()))) {
             event.setCancelled(false);
             return;
         }

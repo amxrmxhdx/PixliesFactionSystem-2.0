@@ -2,7 +2,7 @@ package me.mickmmars.factions.commands;
 
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.message.Message;
-import me.mickmmars.factions.war.WarManager;
+import me.mickmmars.factions.war.data.CasusBelli;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,17 +17,21 @@ public class TreatyCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        if (!instance.getStaffmode().contains(player.getUniqueId())) {
-            player.sendMessage(Message.NO_PERMISSIONS.getMessage());
-            return false;
-        }
-        if (new WarManager().getCbById(strings[1]) == null) {
-            player.sendMessage(Message.CB_DOESNT_EXIST.getMessage());
-            return false;
-        }
-        if (strings[0].equalsIgnoreCase("finished")) {
-            new WarManager().announceWarPlayers(new WarManager().getCbById(strings[1]), Message.TREATY_TIME_ENDED.getMessage());
-            new WarManager().endWar(new WarManager().getCbById(strings[1]), instance.getFactionManager().getFactionById(strings[2]));
+        switch (strings.length) {
+            case 2:
+            if (strings[0].equalsIgnoreCase("finished")) {
+                if (!instance.getStaffmode().contains(player.getUniqueId())) {
+                    player.sendMessage(Message.NO_PERMISSIONS.getMessage());
+                    return false;
+                }
+                if (CasusBelli.getCbById(strings[1]) == null) {
+                    player.sendMessage(Message.CB_DOESNT_EXIST.getMessage());
+                    return false;
+                }
+                instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).announceWarPlayers(Message.TREATY_TIME_ENDED.getMessage());
+                instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).end();
+            }
+            break;
         }
 
         return false;

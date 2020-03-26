@@ -1,3 +1,4 @@
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\listeners\WarHitListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\home\data\HomeData.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\puppets\PuppetManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\config\JsonConfig.java
@@ -22,16 +23,22 @@ C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSy
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\events\WarStartEvent.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\listeners\CBInvListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\events\StaffNeededEvent.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\sqlite\SQLiteManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\util\StaticTypeAdapter.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\upgrades\FactionUpgrades.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\chunk\ChunkManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\flags\FactionFlag.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\placeholders\Placeholders.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\EntityDamageListener.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\HowToCBListener.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\religion\Religion.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\util\FileManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\FactionManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\listeners\WarKillListener.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\ExplosionListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\FlagsListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\PlayerHitListener.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\util\KVCache.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\events\TerritoryClaimEvent.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\TeleportationListeners.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\publicwarps\data\WarpData.java
@@ -39,7 +46,6 @@ C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSy
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\data\FactionData.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\events\CBRequestEvent.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\message\HelpPage.java
-C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\WarManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\data\CasusBelli.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\rank\FactionRank.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\util\SkullBuilder.java
@@ -49,8 +55,10 @@ C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSy
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\listeners\WarInvListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\relations\FactionRelations.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\events\WarEndEvent.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\listeners\BotListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\WarCommandsListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\util\FlickerlessScoreboard.java
+C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\data\War.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\config\ConfigManager.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\inventory\FMapInventory.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\passport\PassportConstructor.java
@@ -64,7 +72,6 @@ C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSy
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\war\events\PlayerCappingFailedEvent.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\factions\perms\FactionPerms.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\chunk\data\ChunkData.java
-C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\BotListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\commands\CbCommand.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\listener\PlayerQuitEventListener.java
 C:\Users\Amir\Desktop\PixliesEarth reloaded\FactionSystemGithub\PixliesFactionSystem-2.0\factions\src\main\java\me\mickmmars\factions\message\Message.java

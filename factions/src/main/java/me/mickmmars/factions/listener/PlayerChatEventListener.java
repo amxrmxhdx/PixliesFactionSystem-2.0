@@ -39,13 +39,13 @@ public class PlayerChatEventListener implements Listener {
             String message = ChatColor.translateAlternateColorCodes('&', event.getMessage()).replace("%", "%%");
             if (instance.getPlayerData(player).isInFaction()) {
                 if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "").replace("%player%", player.getName()).replace("%message%", message)));
+                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "%vault_prefix%").replace("%player%", player.getName()).replace("%message%", message).replace("&", "§")));
                 } else {
                     event.setFormat(Config.CHATFORMAT_WITHFACTION.getData().toString().replace("%prefix%", instance.getChunkPlayer(player).getRankPrefix()).replace("%faction%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%rank%", "").replace("%player%", player.getName()).replace("%message%", message));
                 }
             } else {
                 if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message)));
+                    event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message).replace("&", "§")));
                 } else {
                     event.setFormat(Config.CHATFORMAT_NOFACTION.getData().toString().replace("%player%", player.getName()).replace("%rank%", "").replace("%message%", message));
                 }

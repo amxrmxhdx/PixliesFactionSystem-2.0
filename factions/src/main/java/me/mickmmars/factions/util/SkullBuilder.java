@@ -23,11 +23,11 @@ public class SkullBuilder {
     public SkullBuilder(String signature, String value) {
         this.signature = signature;
         this.value = value;
-        this.skull = new ItemStack(Material.PLAYER_HEAD, 1);
+        this.skull = new ItemStack(Material.SKULL_ITEM, 1);
         this.skullMeta = (SkullMeta) this.skull.getItemMeta();
 
         try {
-            this.skullMetaClass = Class.forName("org.bukkit.craftbukkit.v1_15_R1.inventory.CraftMetaSkull");
+            this.skullMetaClass = Class.forName("org.bukkit.craftbukkit.v1_12_R1.inventory.CraftMetaSkull");
         } catch (ClassNotFoundException var4) {
             var4.printStackTrace();
         }
@@ -74,6 +74,7 @@ public class SkullBuilder {
         }
 
         this.skull.setItemMeta(this.skullMeta);
+        this.skull.setDurability((short) 3);
         return this.skull;
     }
 

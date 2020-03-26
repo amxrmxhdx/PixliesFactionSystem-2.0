@@ -1,0 +1,578 @@
+ORE_CRUSHER:
+  double-ores: true
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ore-Crusher
+GRANDMAS_WALKING_STICK:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Walking-Sticks
+GRANDMAS_WALKING_STICK2:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: true
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+GRANDPAS_WALKING_STICK:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Walking-Sticks
+GRANDPAS_WALKING_STICK2:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: true
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+PORTABLE_CRAFTER:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Portable-Crafter
+FORTUNE_COOKIE:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Fortune-Cookie
+ENHANCED_CRAFTING_TABLE:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Crafting-Table
+PORTABLE_DUSTBIN:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Portable-Dustbin
+BEEF_JERKY:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  Saturation: 20
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Beef-Jerky
+GRIND_STONE:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Grind-Stone
+ARMOR_FORGE:
+  enabled: true
+  can-be-used-in-workbenches: false
+  hide-in-guide: false
+  allow-enchanting: true
+  allow-disenchanting: true
+  required-permission: ''
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Armor-Forge
+ANCIENT_ALTAR:
+  youtube: https://youtu.be/mx2Y5DP8uZI
+ANCIENT_PEDESTAL:
+  youtube: https://youtu.be/mx2Y5DP8uZI
+BLISTERING_INGOT:
+  youtube: https://youtu.be/mPhKUv4JR_Y
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+BLISTERING_INGOT_2:
+  youtube: https://youtu.be/mPhKUv4JR_Y
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+BLISTERING_INGOT_3:
+  youtube: https://youtu.be/mPhKUv4JR_Y
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+INFERNAL_BONEMEAL:
+  youtube: https://youtu.be/gKxWqMlJDXY
+RAINBOW_WOOL:
+  youtube: https://youtu.be/csvb0CxofdA
+RAINBOW_GLASS:
+  youtube: https://youtu.be/csvb0CxofdA
+RAINBOW_CLAY:
+  youtube: https://youtu.be/csvb0CxofdA
+RAINBOW_GLASS_PANE:
+  youtube: https://youtu.be/csvb0CxofdA
+RAINBOW_WOOL_XMAS:
+  youtube: https://youtu.be/l4pKk4SDE
+RAINBOW_GLASS_XMAS:
+  youtube: https://youtu.be/l4pKk4SDE
+RAINBOW_CLAY_XMAS:
+  youtube: https://youtu.be/l4pKk4SDE
+RAINBOW_GLASS_PANE_XMAS:
+  youtube: https://youtu.be/l4pKk4SDE
+OIL_PUMP:
+  youtube: https://youtu.be/_XmJ6hrv9uY
+GPS_GEO_SCANNER:
+  youtube: https://youtu.be/_XmJ6hrv9uY
+REFINERY:
+  youtube: https://youtu.be/_XmJ6hrv9uY
+BUCKET_OF_OIL:
+  youtube: https://youtu.be/_XmJ6hrv9uY
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Oil
+BUCKET_OF_FUEL:
+  youtube: https://youtu.be/_XmJ6hrv9uY
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Oil
+GPS_TELEPORTER_PYLON:
+  youtube: https://youtu.be/ZnEhG8Kw6zU
+GPS_TELEPORTATION_MATRIX:
+  youtube: https://youtu.be/ZnEhG8Kw6zU
+PROGRAMMABLE_ANDROID_WOODCUTTER:
+  youtube: https://youtu.be/AGLsWSMs6A0
+PROGRAMMABLE_ANDROID_BUTCHER:
+  youtube: https://youtu.be/G-re3qV-LJQ
+PROGRAMMABLE_ANDROID_2_BUTCHER:
+  youtube: https://youtu.be/G-re3qV-LJQ
+INFUSED_HOPPER:
+  youtube: https://youtu.be/_H2HGwkfBh8
+ELEVATOR_PLATE:
+  youtube: https://youtu.be/OdKMjo6vNIs
+ENERGY_REGULATOR:
+  youtube: https://youtu.be/QvSUfBYagXk
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Regulator
+COMBUSTION_REACTOR:
+  youtube: https://youtu.be/QvSUfBYagXk
+MULTIMETER:
+  youtube: https://youtu.be/QvSUfBYagXk
+FOOD_FABRICATOR:
+  youtube: https://youtu.be/qJdFfvTGOmI
+AUTO_BREEDER:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_MELON:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_WHEAT:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_APPLE:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_CARROT:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_SEEDS:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_BEETROOT:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ORGANIC_FOOD_POTATO:
+  youtube: https://youtu.be/qJdFfvTGOmI
+ANIMAL_GROWTH_ACCELERATOR:
+  youtube: https://youtu.be/bV4wEaSxXFw
+FOOD_COMPOSTER:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_WHEAT:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_APPLE:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_POTATO:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_CARROT:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_SEEDS:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_BEETROOT:
+  youtube: https://youtu.be/LjzUlFKAHCI
+FERTILIZER_MELON:
+  youtube: https://youtu.be/LjzUlFKAHCI
+CROP_GROWTH_ACCELERATOR:
+  youtube: https://youtu.be/LjzUlFKAHCI
+XP_COLLECTOR:
+  youtube: https://youtu.be/fHtJDPeLMlg
+ELECTRIC_ORE_GRINDER:
+  youtube: https://youtu.be/A6OuK7sfnaI
+ELECTRIC_GOLD_PAN:
+  youtube: https://youtu.be/A6OuK7sfnaI
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Gold-Pan
+ELECTRIC_DUST_WASHER:
+  youtube: https://youtu.be/A6OuK7sfnaI
+ELECTRIC_INGOT_FACTORY:
+  youtube: https://youtu.be/A6OuK7sfnaI
+AUTOMATED_CRAFTING_CHAMBER:
+  youtube: https://youtu.be/FZj7nu9sOYA
+CARGO_MANAGER:
+  youtube: https://youtu.be/Lt2aGw5lQPI
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Manager
+CARGO_NODE_INPUT:
+  youtube: https://youtu.be/Lt2aGw5lQPI
+CARGO_NODE_OUTPUT:
+  youtube: https://youtu.be/Lt2aGw5lQPI
+GPS_CONTROL_PANEL:
+  youtube: https://youtu.be/kOopBkiRzjs
+GPS_TRANSMITTER:
+  youtube: https://youtu.be/kOopBkiRzjs
+GPS_TRANSMITTER_2:
+  youtube: https://youtu.be/kOopBkiRzjs
+GPS_TRANSMITTER_3:
+  youtube: https://youtu.be/kOopBkiRzjs
+GPS_TRANSMITTER_4:
+  youtube: https://youtu.be/kOopBkiRzjs
+SOLAR_GENERATOR:
+  youtube: https://youtu.be/kOopBkiRzjs
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Solar-Generator
+SOLAR_GENERATOR_2:
+  youtube: https://youtu.be/kOopBkiRzjs
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Solar-Generator
+SOLAR_GENERATOR_3:
+  youtube: https://youtu.be/kOopBkiRzjs
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Solar-Generator
+SOLAR_GENERATOR_4:
+  youtube: https://youtu.be/kOopBkiRzjs
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Solar-Generator
+SWORD_OF_BEHEADING:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Sword-of-Beheading
+BLADE_OF_VAMPIRES:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Blade-of-Vampires
+SEISMIC_AXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Seismic-Axe
+SOULBOUND_SWORD:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Weapons
+SOULBOUND_BOW:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Weapons
+EXPLOSIVE_BOW:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Special-Bows
+ICY_BOW:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Special-Bows
+ENDER_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ender-Backpack
+RAG:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Medical-Supplies
+BANDAGE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Medical-Supplies
+SPLINT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Medical-Supplies
+VITAMINS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Medical-Supplies
+MEDICINE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Medical-Supplies
+SMALL_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+MEDIUM_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+LARGE_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+WOVEN_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+GILDED_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+BOUND_BACKPACK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Backpacks
+COOLER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cooler
+COMPRESSOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Compressor
+SMELTERY:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Smeltery
+PRESSURE_CHAMBER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Pressure-Chamber
+MAGIC_WORKBENCH:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Magic-Workbench
+ORE_WASHER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ore-Washer
+SAW_MILL:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Saw-Mill
+DIGITAL_MINER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Digital-Miners
+ADVANCED_DIGITAL_MINER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Digital-Miners
+JUICER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juicer
+COMPOSTER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Composter
+CRUCIBLE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Crucible
+ENHANCED_FURNACE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_2:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_3:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_4:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_5:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_6:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_7:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_8:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_9:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_10:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+ENHANCED_FURNACE_11:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+REINFORCED_FURNACE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+CARBONADO_EDGED_FURNACE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Enhanced-Furnaces
+GOLD_PAN:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gold-Pan
+GRAPPLING_HOOK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Grappling-Hook
+SMELTERS_PICKAXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Smelters-Pickaxe
+LUMBER_AXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Lumber-Axe
+PICKAXE_OF_CONTAINMENT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Pickaxe-Of-Containment
+HERCULES_PICKAXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Hercules-Pickaxe
+EXPLOSIVE_PICKAXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Explosive-Pickaxe
+PICKAXE_OF_THE_SEEKER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Pickaxe-Of-The-Seeker
+PICKAXE_OF_VEIN_MINING:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Pickaxe-Of-Vein-Mining
+SOULBOUND_PICKAXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Tools
+SOULBOUND_AXE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Tools
+SOULBOUND_SHOVEL:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Tools
+SOULBOUND_HOE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Soulbound-Tools
+MAGIC_SUGAR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Magic-Sugar
+MONSTER_JERKY:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Monster-Jerky
+APPLE_JUICE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juices
+CARROT_JUICE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juices
+MELON_JUICE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juices
+PUMPKIN_JUICE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juices
+GOLDEN_APPLE_JUICE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Juices
+CHAIN_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Chain-Armor
+CHAIN_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Chain-Armor
+CHAIN_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Chain-Armor
+CHAIN_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Chain-Armor
+DAMASCUS_STEEL_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Damascus-Steel-Armor
+DAMASCUS_STEEL_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Damascus-Steel-Armor
+DAMASCUS_STEEL_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Damascus-Steel-Armor
+DAMASCUS_STEEL_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Damascus-Steel-Armor
+GOLD_12K_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gold-Armor
+GOLD_12K_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gold-Armor
+GOLD_12K_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gold-Armor
+GOLD_12K_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gold-Armor
+REINFORCED_ALLOY_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Reinforced-Armor
+REINFORCED_ALLOY_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Reinforced-Armor
+REINFORCED_ALLOY_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Reinforced-Armor
+REINFORCED_ALLOY_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Reinforced-Armor
+GILDED_IRON_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gilded-Iron-Armor
+GILDED_IRON_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gilded-Iron-Armor
+GILDED_IRON_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gilded-Iron-Armor
+GILDED_IRON_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Gilded-Iron-Armor
+SCUBA_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Hazmat-Suit
+HAZMAT_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Hazmat-Suit
+HAZMAT_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Hazmat-Suit
+RUBBER_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Hazmat-Suit
+CACTUS_HELMET:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cactus-Armor
+CACTUS_CHESTPLATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cactus-Armor
+CACTUS_LEGGINGS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cactus-Armor
+CACTUS_BOOTS:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cactus-Armor
+COPPER_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+TIN_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+SILVER_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+LEAD_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+ALUMINUM_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+ZINC_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+MAGNESIUM_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_4K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_6K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_8K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_10K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_12K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_14K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_16K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_18K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_20K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_22K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GOLD_24K:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+REINFORCED_ALLOY_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+HARDENED_METAL:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+GILDED_IRON:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+REDSTONE_ALLOY_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+FERROSILICON:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+DAMASCUS_STEEL_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+STEEL_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+ALUMINUM_BRONZE_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+ALUMINUM_BRASS_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+CORINTHIAN_BRONZE_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+BRASS_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+BRONZE_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+BILLON_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+DURALUMIN_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+NICKEL_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+COBALT_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+SOLDER_INGOT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Ingots
+IRON_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+GOLD_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+ALUMINUM_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+ZINC_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+TIN_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+COPPER_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+MAGNESIUM_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+LEAD_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+SILVER_DUST:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Dusts
+SYNTHETIC_DIAMOND:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+SYNTHETIC_SAPPHIRE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+SYNTHETIC_EMERALD:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+RAW_CARBONADO:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+CARBONADO:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+CARBON_CHUNK:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+SULFATE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+CARBON:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+COMPRESSED_CARBON:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+SILICON:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Valuables
+URANIUM:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Radioactive-Materials
+NEPTUNIUM:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Radioactive-Materials
+PLUTONIUM:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Radioactive-Materials
+BOOSTED_URANIUM:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Radioactive-Materials
+CHARGING_BENCH:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Charging-Station
+SMALL_CAPACITOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Capacitor
+MEDIUM_CAPACITOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Capacitor
+BIG_CAPACITOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Capacitor
+LARGE_CAPACITOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Capacitor
+CARBONADO_EDGED_CAPACITOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Energy-Capacitor
+ELECTRIC_FURNACE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Furnace
+ELECTRIC_FURNACE_2:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Furnace
+ELECTRIC_FURNACE_3:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Furnace
+ELECTRIC_GOLD_PAN_2:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Gold-Pan
+ELECTRIC_GOLD_PAN_3:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Electric-Gold-Pan
+AUTO_ENCHANTER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Auto-Enchanter
+AUTO_DISENCHANTER:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Auto-Disenchanter
+CARGO_MOTOR:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Motor
+CARGO_NODE:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Nodes
+CARGO_INPUT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Nodes
+CARGO_OUTPUT:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Nodes
+CARGO_OUTPUT_ADVANCED:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Cargo-Nodes
+TRASH_CAN:
+  wiki: https://github.com/TheBusyBiscuit/Slimefun4/wiki/Trash-Can

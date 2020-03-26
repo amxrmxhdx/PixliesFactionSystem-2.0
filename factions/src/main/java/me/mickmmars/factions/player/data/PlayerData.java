@@ -17,9 +17,9 @@ public class PlayerData {
     private List<String> factionInvites;
     private List<HomeData> homes;
     private List<ChunkData> AccessableChunks;
-    private Boolean isCapping;
+    private Boolean capping;
 
-    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes, List<ChunkData> AccessableChunks, String lastKnownName, Boolean isCapping) {
+    public PlayerData(boolean isInFaction, String factionId, FactionRank factionRank, List<String> factionInvites, List<HomeData> homes, List<ChunkData> AccessableChunks, String lastKnownName, Boolean capping) {
         this.isInFaction = isInFaction;
         this.factionId = factionId;
         this.factionRank = factionRank;
@@ -27,11 +27,11 @@ public class PlayerData {
         this.homes = homes;
         this.AccessableChunks = AccessableChunks;
         this.lastKnownName = lastKnownName;
-        this.isCapping = isCapping;
+        this.capping = capping;
     }
 
-    public Boolean getIsCappingisCapping() { return isCapping; }
-    public void setIsCapping(Boolean isCapping) { this.isCapping = isCapping; }
+    public Boolean isCapping() { return capping; }
+    public void setIsCapping(Boolean isCapping) { this.capping = isCapping; }
 
     public String getLastKnownName() { return lastKnownName; }
 

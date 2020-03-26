@@ -62,7 +62,7 @@ public class HomeCommand implements CommandExecutor {
                             if (instance.getTeleportingPlayers().contains(player.getUniqueId())) {
                                 instance.getTeleportingPlayers().remove(player.getUniqueId());
                                 player.teleport(instance.getChunkPlayer(player).getHomeObject().getHomeDataByName(home).getLocation().toBukkitLocation());
-                                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
+                                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 2);
                             }
                         }
                     }, 100L);
@@ -101,7 +101,7 @@ public class HomeCommand implements CommandExecutor {
                             if (instance.getTeleportingPlayers().contains(player.getUniqueId())) {
                                 instance.getTeleportingPlayers().remove(player.getUniqueId());
                                 player.teleport(instance.getChunkPlayer(player).getHomeObject().getHomeDataByName(strings[1]).getLocation().toBukkitLocation());
-                                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
+                                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 2);
                             }
                         }
                     }, 100L);

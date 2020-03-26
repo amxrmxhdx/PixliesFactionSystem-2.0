@@ -76,12 +76,12 @@ public class MetricsLite {
     private final Plugin plugin;
 
     /**
-     * The plugin configuration file
+     * The plugin me.mickmmars.minimick.configuration file
      */
     private final YamlConfiguration configuration;
 
     /**
-     * The plugin configuration file
+     * The plugin me.mickmmars.minimick.configuration file
      */
     private final File configurationFile;
 

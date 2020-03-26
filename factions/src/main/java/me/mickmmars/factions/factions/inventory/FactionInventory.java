@@ -1,17 +1,19 @@
 package me.mickmmars.factions.factions.inventory;
 
+import com.github.stefvanschie.inventoryframework.Gui;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import me.mickmmars.factions.factions.data.FactionData;
 import me.mickmmars.factions.factions.flags.FactionFlag;
 import me.mickmmars.factions.factions.ideologies.Ideology;
+import me.mickmmars.factions.factions.religion.Religion;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.player.ChunkPlayer;
 import me.mickmmars.factions.util.ItemBuilder;
 import me.mickmmars.factions.util.ItemStackSerializer;
 import me.mickmmars.factions.util.SkullBuilder;
 import me.mickmmars.factions.Factions;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -27,6 +29,7 @@ public class FactionInventory {
 
     private final UUID uuid;
     private Inventory inventory;
+    private Gui gui;
     private Player player;
 
     private final int[] slots = {19, 21, 23, 25, 28, 30, 32, 34,49};
@@ -40,7 +43,7 @@ public class FactionInventory {
         inventory = Bukkit.createInventory(null, 9 * 6, "§a§lYour faction");
 
         for (int i = 0; i < inventory.getSize(); i++)
-            inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
+            inventory.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
 
         for (int i = 0; i < slots.length; i++) {
             GUIPage page = GUIPage.values()[i];
@@ -58,100 +61,115 @@ public class FactionInventory {
 
         switch (page) {
             case LIST:
+
+                gui = new Gui(instance, 6, "§a§oList");
+
+                gui.setOnTopClick(event ->  {
+                    if ((event.getCurrentItem().getType().name().contains("BANNER")) && !event.getCurrentItem().getItemMeta().getDisplayName().equals("§c§lSafeZone")) {
+                        player.performCommand("f apply " + event.getCurrentItem().getItemMeta().getDisplayName().replace("§c§l", ""));
+                        player.closeInventory();
+                    }
+                });
+
+                PaginatedPane pane = new PaginatedPane(0, 0, 9, 6);
+
+                List<ItemStack> factionItems = new ArrayList<>();
+
                 for (FactionData faction : instance.getFactionManager().getFactions()) {
                     if (!faction.getName().equalsIgnoreCase("SafeZone")) {
-                        ItemStack item = new ItemStack(instance.getFactionFlags().get(faction.getId()).getType());
-                        BannerMeta meta = (BannerMeta) instance.getFactionFlags().get(faction.getId()).getItemMeta();
+                        ItemStack item = new ItemStack(instance.getFactionManager().getFactionFlag(faction).getType());
+                        BannerMeta meta = (BannerMeta) instance.getFactionManager().getFactionFlag(faction).getItemMeta();
                         meta.setDisplayName("§c§l" + faction.getName());
                         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                         meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
                         meta.setLore(Arrays.asList("§7Leader: §b§l" + Bukkit.getOfflinePlayer(instance.getFactionManager().getLeader(faction)).getName(), "§7Description: §b§o" + faction.getDescription(), "§7Balance: §2§l$§a" + faction.getMoney(), "§7Polity: " + faction.getIdeology(),  " ", "§8§l(§7§l!§8§l) §7§oClick to send §a§ojoin-request"));
                         item.setItemMeta(meta);
-                        inventory.addItem(item);
+                        item.setDurability(instance.getFactionManager().getFactionFlag(faction).getDurability());
+                        factionItems.add(item);
                     }
-                    for (int i = instance.getFactionManager().getFactions().size() - 1; i < inventory.getSize(); i++)
-                        if (i != 40)
-                            inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
                 }
+
+                pane.populateWithItemStacks(factionItems);
+
+                gui.addPane(pane);
+
+                gui.show(player);
                 break;
             case UPGRADES:
                 for (FactionUpgrades upgrade : instance.getFactionManager().listUpgrades()) {
                     if (instance.getPlayerData(player).getCurrentFactionData().getUpgrades().contains(upgrade.getName().toUpperCase())) {
-                        inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou already purchased this upgrade.").build());
+                        inventory.addItem(new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.LIME).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou already purchased this upgrade.").build());
                     } else {
-                        inventory.addItem(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou need to purchase that upgrade to use it.").addLoreLine(" ").addLoreLine("§7Price: §2§l$§a" + upgrade.getPrice()).build());
+                        inventory.addItem(new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.WHITE).setDisplayName(upgrade.getGuiname()).addLoreLine("§7§oYou need to purchase that upgrade to use it.").addLoreLine(" ").addLoreLine("§7Price: §2§l$§a" + upgrade.getPrice()).build());
                     }
                 }
-                for (int i = instance.getFactionManager().listUpgrades().size(); i < inventory.getSize(); i++)
+                double chunkUpgradeprice = 25000D * (instance.getPlayerData(player).getCurrentFactionData().getChunksPurchased() * 2);
+                inventory.addItem(new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.WHITE).setDisplayName("§b250+ power").addLoreLine("§7Price multiplies with each purchase.").addLoreLine(" ").addLoreLine("§7Price: §2§l$§a" + chunkUpgradeprice).build());
+                for (int i = instance.getFactionManager().listUpgrades().size() + 1; i < inventory.getSize(); i++)
                     if (i != 40)
-                        inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
+                        inventory.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
                 break;
             case MEMBERS:
                 String factionName = instance.getPlayerData(player).getCurrentFactionData().getName();
                 FactionData factionData = instance.getFactionManager().getFactionByName(factionName);
                 for (UUID uuid : instance.getFactionManager().getMembersFromFaction(factionData)) {
-                    OfflinePlayer member = Bukkit.getOfflinePlayer(uuid);
-                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(member.getName()).setDisplayName(member.getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(uuid).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
+                    inventory.addItem(new ItemBuilder(Material.SKULL_ITEM).setSkullOwner(uuid).setDisplayName(Bukkit.getOfflinePlayer(uuid).getName()).addLoreArray(new String[]{"§3Rank: §a" + instance.getPlayerData(uuid).getFactionRank().getName(), "§8§l(§7§l!§8§l) §7§oLeftclick to promote", "§8§l(§7§l!§8§l) §7§oRightclick to demote"}).build());
                 }
                 break;
             case APPLICATIONS:
                 for (String uuids : instance.getPlayerData(player).getCurrentFactionData().getApplications()) {
                     UUID uuid = UUID.fromString(uuids);
-                    inventory.addItem(new ItemBuilder(Material.PLAYER_HEAD).setSkullOwner(Bukkit.getOfflinePlayer(uuid).getName()).setDisplayName(Bukkit.getOfflinePlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
+                    inventory.addItem(new ItemBuilder(Material.SKULL_ITEM).setSkullOwner(Bukkit.getOfflinePlayer(uuid).getName()).setDisplayName(Bukkit.getOfflinePlayer(uuid).getName()).addLoreLine("§8§l(§7§l!§8§l) §7Left-click to accept.").build());
                 }
                 break;
             case FINANCE:
                 int money = instance.getPlayerData(player).getCurrentFactionData().getMoney();
                 String moneystring = String.valueOf(money);
                 inventory.addItem( new ItemBuilder(Material.EMERALD).setDisplayName("§7Balance§8: §2§l$§a" + moneystring).build());
-                inventory.addItem( new ItemBuilder(Material.GRASS_BLOCK).setDisplayName("§7Landcost§8: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getChunks().size() * 5).build());
+                inventory.addItem( new ItemBuilder(Material.GRASS).setDisplayName("§7Landcost§8: §2§l$§a" + instance.getPlayerData(player).getCurrentFactionData().getChunks().size() * 5).build());
                 break;
             case FLAGS:
                 for (FactionFlag flags : instance.getFactionManager().listFlags()) {
                     if (instance.getPlayerData(player).getCurrentFactionData().getAllowedFlags().contains(flags.getName())) {
-                        inventory.addItem(new ItemBuilder(Material.GREEN_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §aYes", " ", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
+                        inventory.addItem(new ItemBuilder(Material.BANNER).setColor(DyeColor.LIME).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §aYes", " ", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
                     } else {
-                        inventory.addItem(new ItemBuilder(Material.RED_BANNER).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §cNo", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
+                        inventory.addItem(new ItemBuilder(Material.BANNER).setColor(DyeColor.RED).setDisplayName(flags.getName()).addLoreArray(new String[]{"§7Enabled:" + " §cNo", "§8§l(§7§l!§8§l) §7Click to toggle"}).build());
                     }
                 }
                 break;
             case SETTINGS:
-                if (instance.getPlayerData(player).getCurrentFactionData().getIdeology().equals(Ideology.DEMOCRATIC.getName())) {
-                    inventory.addItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE).setDisplayName("§7Polity: §aDemocratic").addLoreLine("§7§oLeftclick to change").build());
-                } else if (instance.getPlayerData(player).getCurrentFactionData().getIdeology().equals(Ideology.THEOCRACY.getName())) {
-                    inventory.addItem(new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).setDisplayName("§7Polity: §2Theocracy").addLoreLine("§7§oLeftclick to change").build());
-                } else if (instance.getPlayerData(player).getCurrentFactionData().getIdeology().equals(Ideology.MONARCHY.getName())) {
-                    inventory.addItem(new ItemBuilder(Material.YELLOW_STAINED_GLASS_PANE).setDisplayName("§7Polity: §6Monarchy").addLoreLine("§7§oLeftclick to change").build());
-                } else if (instance.getPlayerData(player).getCurrentFactionData().getIdeology().equals(Ideology.COMMUNIST.getName())) {
-                    inventory.addItem(new ItemBuilder(Material.RED_STAINED_GLASS_PANE).setDisplayName("§7Polity: §4Communist").addLoreLine("§7§oLeftclick to change").build());
-                } else if (instance.getPlayerData(player).getCurrentFactionData().getIdeology().equals(Ideology.FASCIST.getName())) {
-                    inventory.addItem(new ItemBuilder(Material.BLUE_STAINED_GLASS_PANE).setDisplayName("§7Polity: §9Fascist").addLoreLine("§7§oLeftclick to change").build());
-                }
+                Ideology ideology = Ideology.getIdeologyByName(instance.getPlayerData(player).getCurrentFactionData().getIdeology());
+                Religion religion = Religion.getByName(instance.getPlayerData(player).getCurrentFactionData().getReligion());
+                inventory.setItem(0, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(ideology.getColor()).setDisplayName("§7Ideology: " + ideology.getName()).addLoreLine("§7§oClick to change...").build());
+                inventory.setItem(1, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(religion.getColor()).setDisplayName("§7Religion: " + religion.getName()).addLoreLine("§7§oClick to change...").build());
                 break;
         }
-        inventory.setItem(36, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(37, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(38, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(39, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(41, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(42, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(43, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(44, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(40, new SkullBuilder(Factions.Skulls.BACK_ITEM[1], Factions.Skulls.BACK_ITEM[0]).setDisplayname("§cBack").build());
+        if (!inventory.getTitle().equals(GUIPage.LIST.getName())) {
+            inventory.setItem(36, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(37, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(38, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(39, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(41, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(42, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(43, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(44, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+            inventory.setItem(40, new SkullBuilder(Factions.Skulls.BACK_ITEM[1], Factions.Skulls.BACK_ITEM[0]).setDisplayname("§cBack").build());
+        }
+
 
         return this;
     }
 
     public FactionInventory removeBackItem() {
-        inventory.setItem(36, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(37, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(38, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(39, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(40, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(41, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(42, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(43, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
-        inventory.setItem(44, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
+        inventory.setItem(36, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(37, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(38, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(39, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(40, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(41, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(42, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(43, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
+        inventory.setItem(44, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
         return this;
     }
 
@@ -160,15 +178,15 @@ public class FactionInventory {
     }
 
     public enum GUIPage {
-        LIST("§a§oList", Material.PLAYER_HEAD, "{display:{Name:\\\"Papers\\\"},SkullOwner:{Id:\\\"08a21c84-663b-4638-a31e-2f0423a3853f\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0="),
-        MEMBERS("§a§oMembers", Material.PLAYER_HEAD),
-        FMAP("§a§oFMap", Material.PLAYER_HEAD, "{display:{Name:\\\"Grass Block (alpha)\\\"},SkullOwner:{Id:\\\"e2e44b3b-e45b-45ae-82ce-2ed4208184a2\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19"),
-        SETTINGS("§a§oSettings", Material.PLAYER_HEAD, "{display:{Name:\\\"Command Block (impulse)\\\"},SkullOwner:{Id:\\\"a36e6694-fa87-48d2-abdb-62eaf2b6711d\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19"),
-        APPLICATIONS("§a§oApplications", Material.PLAYER_HEAD, "{display:{Name:\\\"Old Manuscript\\\"},SkullOwner:{Id:\\\"82929274-58b4-4a75-8e00-46f4e1aa85f9\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ==\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ=="),
-        UPGRADES("§a§oFaction shop", Material.PLAYER_HEAD, "{display:{Name:\\\"Minecraft Earth Shop\\\"},SkullOwner:{Id:\\\"8df67171-1b9a-4eae-b35d-b03a56f8dacb\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0="),
-        FINANCE("§a§oFinance", Material.PLAYER_HEAD, "{display:{Name:\\\"Monitor\\\"},SkullOwner:{Id:\\\"bbc26eae-6689-4c28-846a-6908baf83d12\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0="),
-        FLAGS("§a§oFlags", Material.PLAYER_HEAD, "{display:{Name:\\\"Icon (Flag)\\\"},SkullOwner:{Id:\\\"5ec8b668-ed18-40ed-8aaa-b93f169ee0b4\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0="),
-        DISCORD("§d§oFaction Discord", Material.PLAYER_HEAD, "{display:{Name:\\\"Discord\\\"},SkullOwner:{Id:\\\"df774cf8-eb17-48b5-b990-1304d4fc43ea\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0=");
+        LIST("§a§oList", Material.SKULL_ITEM, "{display:{Name:\\\"Papers\\\"},SkullOwner:{Id:\\\"08a21c84-663b-4638-a31e-2f0423a3853f\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY2OTJmOTljYzZkNzgyNDIzMDQxMTA1NTM1ODk0ODQyOThiMmU0YTAyMzNiNzY3NTNmODg4ZTIwN2VmNSJ9fX0="),
+        MEMBERS("§a§oMembers", Material.SKULL_ITEM),
+        FMAP("§a§oFMap", Material.SKULL_ITEM, "{display:{Name:\\\"Grass Block (alpha)\\\"},SkullOwner:{Id:\\\"e2e44b3b-e45b-45ae-82ce-2ed4208184a2\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19"),
+        SETTINGS("§a§oSettings", Material.SKULL_ITEM, "{display:{Name:\\\"Command Block (impulse)\\\"},SkullOwner:{Id:\\\"a36e6694-fa87-48d2-abdb-62eaf2b6711d\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWY0YzIxZDE3YWQ2MzYzODdlYTNjNzM2YmZmNmFkZTg5NzMxN2UxMzc0Y2Q1ZDliMWMxNWU2ZTg5NTM0MzIifX19"),
+        APPLICATIONS("§a§oApplications", Material.SKULL_ITEM, "{display:{Name:\\\"Old Manuscript\\\"},SkullOwner:{Id:\\\"82929274-58b4-4a75-8e00-46f4e1aa85f9\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ==\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTgxOGQxY2M1M2MyNzVjMjk0ZjVkZmI1NTkxNzRkZDkzMWZjNTE2YTg1YWY2MWExZGUyNTZhZWQ4YmNhNWU3In19fQ=="),
+        UPGRADES("§a§oFaction shop", Material.SKULL_ITEM, "{display:{Name:\\\"Minecraft Earth Shop\\\"},SkullOwner:{Id:\\\"8df67171-1b9a-4eae-b35d-b03a56f8dacb\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0="),
+        FINANCE("§a§oFinance", Material.SKULL_ITEM, "{display:{Name:\\\"Monitor\\\"},SkullOwner:{Id:\\\"bbc26eae-6689-4c28-846a-6908baf83d12\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE5MjljNzE2NTQ0MmJmYTcwNGVlYTBmNTM2YTk3YzI3MDE5NzY3NzAyNDY5ZjA2YmY2MGJiYTkwMjBjZDIyNCJ9fX0="),
+        FLAGS("§a§oFlags", Material.SKULL_ITEM, "{display:{Name:\\\"Icon (Flag)\\\"},SkullOwner:{Id:\\\"5ec8b668-ed18-40ed-8aaa-b93f169ee0b4\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhmZDcxMjZjZDY3MGM3OTcxYTI4NTczNGVkZmRkODAyNTcyYTcyYTNmMDVlYTQxY2NkYTQ5NDNiYTM3MzQ3MSJ9fX0="),
+        DISCORD("§d§oFaction Discord", Material.SKULL_ITEM, "{display:{Name:\\\"Discord\\\"},SkullOwner:{Id:\\\"df774cf8-eb17-48b5-b990-1304d4fc43ea\\\",Properties:{textures:[{Value:\\\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0=\\\"}]}}}", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ0MjMzN2JlMGJkY2EyMTI4MDk3ZjFjNWJiMTEwOWU1YzYzM2MxNzkyNmFmNWZiNmZjMjAwMDAwMTFhZWI1MyJ9fX0=");
 
         private final String name;
         private final Material material;

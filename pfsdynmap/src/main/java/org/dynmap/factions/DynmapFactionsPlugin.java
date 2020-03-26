@@ -1,23 +1,29 @@
 package org.dynmap.factions;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
 import me.mickmmars.factions.factions.FactionManager;
 import me.mickmmars.factions.factions.data.FactionData;
+import me.mickmmars.factions.factions.sqlite.SQLiteManager;
 import me.mickmmars.factions.publicwarps.data.WarpData;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,12 +37,9 @@ import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PlayerSet;
 
-
-import org.dynmap.utils.TileFlags;
-
 public class DynmapFactionsPlugin extends JavaPlugin {
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br><span style=\"font-weight:bold\">Leader:</span> %playerowners%<br><span style=\"font-weight:bold\">Members:</span> %playermembers% <br><span style=\"font-weight:bold\">Bank: </span>%money%<br><span style=\"font-weight:bold\">Age:</span> %age% Days <br><span style=\"font-weight:bold\">Ideology:</span> %stateform%</div>";
+    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%;\"><span style=\"font-weight:bold;\">%nation%</span></span><br>%description%<br><span style=\"font-weight:bold\">Leader:</span> <br><span style=\"font-weight:bold\">Members:</span>  <br><span style=\"font-weight:bold\">Bank: </span>%money%<br><span style=\"font-weight:bold\">Age:</span> %age% Days <br><span style=\"font-weight:bold\">Ideology:</span> %stateform%<br><span style=\"font-weight:bold\">Religion:</span> %religion%</div>";
     private static final String SAFEZONE_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:160%; font-weight:bold;\">SafeZone</span><br>You are safe here! hopefully...</div>";
     Plugin dynmap;
     DynmapAPI api;
@@ -124,7 +127,12 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         public boolean runonce;
         public void run() {
             if(!stop) {
-                updateFactions();
+                Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        updateFactions();
+                    }
+                });
                 if(!runonce) {
                     getServer().getScheduler().scheduleSyncDelayedTask(DynmapFactionsPlugin.this, this, updperiod);
                 }
@@ -146,21 +154,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         }
     }
 
-    private void requestUpdatePlayerSet(String factid) {
-        if(playersets)
-            getServer().getScheduler().scheduleSyncDelayedTask(this, new PlayerSetUpdate(factid));
-    }
-
     private FactionsUpdate pending = null;
-
-    private void requestUpdateFactions() {
-        if(pending == null) {
-            FactionsUpdate upd = new FactionsUpdate();
-            upd.runonce = true;
-            pending = upd;
-            getServer().getScheduler().scheduleSyncDelayedTask(this, upd, 20);
-        }
-    }
 
     private void updatePlayerSet(String factid) {
         /* If Wilderness or other unassociated factions (guid-style ID), skip */
@@ -207,15 +201,15 @@ public class DynmapFactionsPlugin extends JavaPlugin {
             v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
             return v;
         }
+        v = v.replace("%religion%", ChatColor.stripColor(fact.getReligion()));
         v = v.replace("%regionname%", ChatColor.stripColor(fact.getName()));
         v = v.replace("%description%", ChatColor.stripColor(fact.getDescription()));
         v = v.replace("%age%", ChatColor.stripColor(String.valueOf(fact.getAgeInDays())));
         v = v.replace("%money%", ChatColor.stripColor("$" + fact.getMoney()));
         v = v.replace("%stateform%", ChatColor.stripColor(fact.getIdeology().replace("§b", "").replace("§2", "").replace("§c", "")));
 
-        OfflinePlayer adm = Bukkit.getOfflinePlayer(Factions.getInstance().getFactionManager().getLeader(fact));
-        if (adm != null) {
-            v = v.replace("%playerowners%", adm.getName());
+        if (Bukkit.getPlayer(Factions.getInstance().getFactionManager().getLeader(fact)) != null) {
+            v = v.replace("%playerowners%", Bukkit.getOfflinePlayer(Factions.getInstance().getFactionManager().getLeader(fact)).getName());
         } else {
             v = v.replace("%playerowners%", " ");
         }
@@ -470,109 +464,117 @@ public class DynmapFactionsPlugin extends JavaPlugin {
 
     /* Update Factions information */
     public void updateFactions() {
-        Map<String,AreaMarker> newmap = new HashMap<String,AreaMarker>(); /* Build new map */
-        Map<String,Marker> newmark = new HashMap<String,Marker>(); /* Build new map */
+                Map<String, AreaMarker> newmap = new HashMap<String, AreaMarker>(); /* Build new map */
+                Map<String, Marker> newmark = new HashMap<String, Marker>(); /* Build new map */
 
-        /* Parse into faction centric mapping, split by world */
-        Map<String, FactionBlocks> blocks_by_faction = new HashMap<String, FactionBlocks>();
+                /* Parse into faction centric mapping, split by world */
+                Map<String, FactionBlocks> blocks_by_faction = new HashMap<String, FactionBlocks>();
 
-        FactionManager fc = Factions.getInstance().getFactionManager();
-        Collection<FactionData> facts = fc.getFactions();
-        for (FactionData fact : facts) {
-            List<ChunkData> chunks = fact.getChunks();
-            String fid = Config.FACTION_WORLD.getData().toString() + "_" + fact.getId();
-            FactionBlocks factblocks = blocks_by_faction.get(fid); /* Look up faction */
-            if(factblocks == null) {    /* Create faction block if first time */
-                factblocks = new FactionBlocks();
-                blocks_by_faction.put(fid, factblocks);
-            }
+                FactionManager fc = Factions.getInstance().getFactionManager();
+                Collection<FactionData> facts = fc.getFactions();
+                for (FactionData fact : facts) {
+//                  Set<ChunkData> chunks = fact.getChunks();
 
-            for (ChunkData cc : chunks) {
-                String world = Config.FACTION_WORLD.getData().toString();
+                    SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + fact.getId() + ".db");
+                    String sql = "SELECT * FROM data";
 
-                /* Get block set for given world */
-                LinkedList<FactionBlock> blocks = factblocks.blocks.get(world);
-                if(blocks == null) {
-                    blocks = new LinkedList<FactionBlock>();
-                    factblocks.blocks.put(world, blocks);
-                }
-                FactionBlock fb = new FactionBlock();
-                fb.x = cc.getMinecraftX();
-                fb.z = cc.getMinecraftZ();
-                blocks.add(fb); /* Add to list */
-            }
-        }
-        /* Loop through factions */
-        for(FactionData fact : facts) {
-            String factname = ChatColor.stripColor(fact.getName());
-            String fid = Config.FACTION_WORLD.getData().toString() + "_" + fact.getId();
-            FactionBlocks factblocks = blocks_by_faction.get(fid); /* Look up faction */
-            if (factblocks == null) continue;
 
-            /* Loop through each world that faction has blocks on */
-            for(Map.Entry<String, LinkedList<FactionBlock>>  worldblocks : factblocks.blocks.entrySet()) {
-                handleFactionOnWorld(factname, fact, worldblocks.getKey(), worldblocks.getValue(), newmap, newmark);
-            }
-            factblocks.blocks.clear();
-
-            ChunkLocation homeloc = fact.getCapitalLocation();
-            if(homeloc != null) {
-                String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "__home";
-                MarkerIcon ico = getMarkerIcon(factname, fact);
-                if (ico != null) {
-                    Marker home = resmark.remove(markid);
-                    String lbl = factname + " [capital]";
-                    if (home == null) {
-                        home = set.createMarker(markid, lbl, homeloc.getWorld(),
-                                homeloc.getX(), homeloc.getY(), homeloc.getZ(), ico, false);
-                    } else {
-                        home.setLocation(homeloc.getWorld(), homeloc.getX(), homeloc.getY(), homeloc.getZ());
-                        home.setLabel(lbl);   /* Update label */
-                        home.setMarkerIcon(ico);
+                    String fid = Config.FACTION_WORLD.getData().toString() + "_" + fact.getId();
+                    FactionBlocks factblocks = blocks_by_faction.get(fid); /* Look up faction */
+                    if (factblocks == null) {    /* Create faction block if first time */
+                        factblocks = new FactionBlocks();
+                        blocks_by_faction.put(fid, factblocks);
                     }
-                    if (home != null) {
-                        home.setDescription(formatInfoWindow(fact)); /* Set popup */
-                        newmark.put(markid, home);
-                    }
-                }
-            }
 
-            for (WarpData warps : fact.getWarps()) {
-                if (warps != null) {
-                    String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "_" + warps.getName() + "__warp";
-                    MarkerIcon ico = getMarkerIcon(factname, fact);
-                    if (ico != null) {
-                        Marker warp = resmark.remove(markid);
-                        String lbl = factname + " [" + warps.getName() + "]";
-                        if (warp == null) {
-                            warp = set.createMarker(markid, lbl, warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ(), ico, false);
-                        } else {
-                            warp.setLocation(warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ());
-                            warp.setLabel(lbl);
-                            warp.setMarkerIcon(ico);
+                    for (ChunkData chunk : fact.getChunks().keySet()) {
+                        int chunkx = chunk.getMinecraftX();
+                        int chunkz = chunk.getMinecraftZ();
+                        String world = Config.FACTION_WORLD.getData().toString();
+
+                        /* Get block set for given world */
+                        LinkedList<FactionBlock> blocks = factblocks.blocks.get(world);
+                        if (blocks == null) {
+                            blocks = new LinkedList<FactionBlock>();
+                            factblocks.blocks.put(world, blocks);
                         }
-                        if (warp != null) {
-                            warp.setDescription(formatInfoWindow(fact));
-                            newmark.put(markid, warp);
+                        FactionBlock fb = new FactionBlock();
+                        fb.x = chunkx;
+                        fb.z = chunkz;
+                        blocks.add(fb); /* Add to list */
+                    }
+                }
+
+                for (FactionData fact : facts) {
+
+                    String factname = ChatColor.stripColor(fact.getName());
+                    String fid = me.mickmmars.factions.config.Config.FACTION_WORLD.getData().toString() + "_" + fact.getId();
+                    FactionBlocks factblocks = blocks_by_faction.get(fid); /* Look up faction */
+                    if (factblocks == null) continue;
+
+                    /* Loop through each world that faction has blocks on */
+                    for (Map.Entry<String, LinkedList<FactionBlock>> worldblocks : factblocks.blocks.entrySet()) {
+                        handleFactionOnWorld(factname, fact, worldblocks.getKey(), worldblocks.getValue(), newmap, newmark);
+                    }
+                    factblocks.blocks.clear();
+
+
+                    ChunkLocation homeloc = fact.getCapitalLocation();
+                    if (homeloc != null) {
+                        String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "__home";
+                        MarkerIcon ico = getMarkerIcon(factname, fact);
+                        if (ico != null) {
+                            Marker home = resmark.remove(markid);
+                            String lbl = factname + " [capital]";
+                            if (home == null) {
+                                home = set.createMarker(markid, lbl, homeloc.getWorld(),
+                                        homeloc.getX(), homeloc.getY(), homeloc.getZ(), ico, false);
+                            } else {
+                                home.setLocation(homeloc.getWorld(), homeloc.getX(), homeloc.getY(), homeloc.getZ());
+                                home.setLabel(lbl);   /* Update label */
+                                home.setMarkerIcon(ico);
+                            }
+                            if (home != null) {
+                                home.setDescription(formatInfoWindow(fact)); /* Set popup */
+                                newmark.put(markid, home);
+                            }
                         }
                     }
+
+                    for (WarpData warps : fact.getWarps()) {
+                        if (warps != null) {
+                            String markid = Config.FACTION_WORLD.getData().toString() + "_" + factname + "_" + warps.getName() + "__warp";
+                            MarkerIcon ico = getMarkerIcon(factname, fact);
+                            if (ico != null) {
+                                Marker warp = resmark.remove(markid);
+                                String lbl = factname + " [" + warps.getName() + "]";
+                                if (warp == null) {
+                                    warp = set.createMarker(markid, lbl, warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ(), ico, false);
+                                } else {
+                                    warp.setLocation(warps.getLocation().getWorld(), warps.getLocation().getX(), warps.getLocation().getY(), warps.getLocation().getZ());
+                                    warp.setLabel(lbl);
+                                    warp.setMarkerIcon(ico);
+                                }
+                                if (warp != null) {
+                                    warp.setDescription(formatInfoWindow(fact));
+                                    newmark.put(markid, warp);
+                                }
+                            }
+                        }
+                    }
+
                 }
-            }
+                blocks_by_faction.clear();
 
-        }
-        blocks_by_faction.clear();
-
-        /* Now, review old map - anything left is gone */
-        for(AreaMarker oldm : resareas.values()) {
-            oldm.deleteMarker();
-        }
-        for(Marker oldm : resmark.values()) {
-            oldm.deleteMarker();
-        }
-        /* And replace with new map */
-        resareas = newmap;
-        resmark = newmark;
-
+                /* Now, review old map - anything left is gone */
+                for(AreaMarker oldm : resareas.values()) {
+                    oldm.deleteMarker();
+                }
+                for(Marker oldm : resmark.values()) {
+                    oldm.deleteMarker();
+                }
+                /* And replace with new map */
+                resareas = newmap;
+                resmark = newmark;
     }
 
     private void updatePlayerSets() {
@@ -639,7 +641,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
 
         blocksize = 16; /* Fixed at 16 */
 
-        /* Load configuration */
+        /* Load me.mickmmars.minimick.configuration */
         if(reload) {
             this.reloadConfig();
             if(set != null) {
@@ -712,7 +714,7 @@ public class DynmapFactionsPlugin extends JavaPlugin {
         updatePlayerSets();
 
         /* Set up update job - based on periond */
-        int per = cfg.getInt("update.period", 100);
+        int per = 30;
         if(per < 15) per = 15;
         updperiod = (per*20);
         stop = false;

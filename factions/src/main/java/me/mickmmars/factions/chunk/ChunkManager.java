@@ -9,65 +9,107 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ChunkManager {
 
-    private final List<ChunkData> chunks;
+    private final Map<ChunkData, FactionData> chunks;
 
     public ChunkManager() {
-        chunks = new ArrayList<>();
+        chunks = new HashMap<>();
     }
 
     public void loadChunks() {
         for (FactionData factionData : Factions.getInstance().getFactionManager().getFactions())
-            chunks.addAll(factionData.getChunks());
+            for (ChunkData chunk : factionData.getDBChunks())
+                chunks.put(chunk, factionData);
         System.out.println("§cFactions added " + chunks.size() + " chunks.");
-    }
-
-    public void reloadChunks() {
-        chunks.clear();
-        for (FactionData factioNData : Factions.getInstance().getFactionManager().getFactions())
-            chunks.addAll(factioNData.getChunks());
     }
 
     public void removeChunkFromColl(ChunkData chunk) {
         chunks.remove(chunk);
     }
 
-    @Deprecated
-    public boolean isFree(Chunk chunk) {
-        if (getFactionDataByChunk(chunk.getX(), chunk.getZ()) != null)
-            return false;
-        return true;
+    public Map<ChunkData, String> getChunkMap(FactionData data) {
+        Map<ChunkData, String> map = new HashMap<>();
+        for (ChunkData chDat : chunks.keySet())
+            if (chunks.get(chDat) == data)
+                map.put(chDat, "");
+        return map;
     }
 
-    public List<ChunkData> getChunks() {
+    public boolean isFree(Chunk chunk) {
+        return getFactionDataByChunk(chunk.getX(), chunk.getZ()) == null;
+    }
+
+    public Map<ChunkData, FactionData> getChunks() {
         return chunks;
     }
 
     public ChunkData getChunkDataByChunk(Chunk chunk) {
-        for (ChunkData chunkData : chunks)
+        for (ChunkData chunkData : chunks.keySet())
             if (chunkData.getMinecraftX() == chunk.getX() && chunkData.getMinecraftZ() == chunk.getZ())
                 return chunkData;
         return null;
     }
 
-    public FactionData getFactionDataByChunk(int x, int z) {
-        for (FactionData faction : Factions.getInstance().getFactionManager().getFactions())
-            for (ChunkData factionChunk : faction.getChunks())
-                if (factionChunk.getMinecraftX() == x && factionChunk.getMinecraftZ() == z)
-                    return faction;
+    public ChunkData getChunkDataByChunk(int x, int z) {
+        for (ChunkData chunkData : chunks.keySet())
+            if (chunkData.getMinecraftX() == x && chunkData.getMinecraftZ() == z)
+                return chunkData;
         return null;
     }
 
+    public FactionData getFactionDataByChunk(int x, int z) {
+        FactionData data = null;
+                for (ChunkData chunk : chunks.keySet())
+                    if (chunk.getMinecraftX() == x)
+                        if (chunk.getMinecraftZ() == z)
+                            data = chunks.get(chunk);
+        return data;
+    }
+
     public FactionData getFactionDataByChunk(Chunk chunk) {
-        for (FactionData faction : Factions.getInstance().getFactionManager().getFactions())
-            for (ChunkData factionChunk : faction.getChunks())
-                if (factionChunk.getMinecraftX() == chunk.getX() && factionChunk.getMinecraftZ() == chunk.getZ())
-                    return faction;
-        return null;
+        FactionData data = null;
+                for (ChunkData chunk1 : chunks.keySet())
+                    if (chunk1.getMinecraftX() == chunk.getX())
+                        if (chunk1.getMinecraftZ() == chunk.getZ())
+                            data = chunks.get(chunk1);
+        return data;
+    }
+
+    public void addChunk(ChunkData chunk, FactionData fac) {
+        chunks.put(chunk, fac);
+    }
+
+    public void removeChunk(ChunkData chunk) {
+        chunks.remove(getChunkDataByChunk(chunk.getMinecraftX(), chunk.getMinecraftZ()));
+    }
+
+    public void removeFactionChunks(FactionData fac) {
+
+        Set<Map.Entry<ChunkData, FactionData>> entrySet = chunks.entrySet();
+
+        Iterator<Map.Entry<ChunkData, FactionData>> itr = entrySet.iterator();
+
+        while(itr.hasNext()) {
+            Map.Entry<ChunkData, FactionData> entry = itr.next();
+            FactionData val = entry.getValue();
+
+            if (val == fac) {
+                itr.remove();
+            }
+
+        }
+
+    }
+
+    public Set<ChunkData> getFactionsChunks(FactionData fac) {
+        Set<ChunkData> chunkDatas = new HashSet<>();
+        for (ChunkData chunk : chunks.keySet())
+            if (chunks.get(chunk) == fac)
+                chunkDatas.add(chunk);
+        return chunkDatas;
     }
 
     public Location getMaxLocation(final Chunk chunk) {

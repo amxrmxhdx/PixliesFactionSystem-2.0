@@ -1,10 +1,8 @@
 name: PixliesFactionSystem
 version: 1.0.1
-authors: [MickMMars]
+authors: [MickMMars, PixliesEarthCommunity]
 main: me.mickmmars.factions.Factions
 description: Rich faction system.
-
-api-version: 1.15
 
 depend:
   - Vault

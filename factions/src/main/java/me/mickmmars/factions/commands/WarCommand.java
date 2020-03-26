@@ -4,12 +4,10 @@ import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.util.ItemBuilder;
-import me.mickmmars.factions.war.CBReason;
-import me.mickmmars.factions.war.WarManager;
 import me.mickmmars.factions.war.data.CasusBelli;
-import me.mickmmars.factions.war.events.PlayerCappingFailedEvent;
-import me.mickmmars.factions.war.events.WarStartEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -53,12 +51,12 @@ public class WarCommand implements CommandExecutor {
                 Inventory cbinv = Bukkit.createInventory(null, 9 * 5, "§cWhich CB do you want to use?");
                 for (CasusBelli cbobj : instance.getPlayerData(player).getCurrentFactionData().listCbs()) {
                     if (cbobj.getAccepted()) {
-                        cbinv.addItem(new ItemBuilder(Material.CAMPFIRE).setDisplayName("§b" + cbobj.getId()).addLoreLine("§7§oRequester: §b§o" + instance.getFactionManager().getFactionById(cbobj.getAttackerId()).getName()).addLoreLine("§7§oAgainst: §b§o" + instance.getFactionManager().getFactionById(cbobj.getDefenderId()).getName()).addLoreLine("§7§oReason: §c§l§o" + cbobj.getReason()).addLoreLine(" ").addLoreLine("§7§oWaiting for review: " + cbobj.isPending().toString().replace("true", "§ayes").replace("false", "§cno")).addLoreLine("§7§oRejected: " + cbobj.isRejected().toString().replace("true", "§cyes").replace("false", "§ano")).addLoreLine("§7§oAccepted: " + cbobj.isPending().toString().replace("true", "§ayes").replace("false", "§cno")).addLoreLine("§7§oLeft-click to accept").build());
+                        cbinv.addItem(new ItemBuilder(Material.HAY_BLOCK).setDisplayName("§b" + cbobj.getId()).addLoreLine("§7§oRequester: §b§o" + instance.getFactionManager().getFactionById(cbobj.getAttackerId()).getName()).addLoreLine("§7§oAgainst: §b§o" + instance.getFactionManager().getFactionById(cbobj.getDefenderId()).getName()).addLoreLine("§7§oReason: §c§l§o" + cbobj.getReason()).addLoreLine(" ").addLoreLine("§7§oWaiting for review: " + cbobj.isPending().toString().replace("true", "§ayes").replace("false", "§cno")).addLoreLine("§7§oRejected: " + cbobj.isRejected().toString().replace("true", "§cyes").replace("false", "§ano")).addLoreLine("§7§oAccepted: " + cbobj.isPending().toString().replace("true", "§ayes").replace("false", "§cno")).addLoreLine("§7§oLeft-click to accept").build());
                         cbSize.add(instance.generateKey(5));
                     }
                 }
                 for (int i = cbSize.size(); i < cbinv.getSize(); i++)
-                    cbinv.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setNoName().build());
+                    cbinv.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE).setColor(DyeColor.BLACK).setNoName().build());
                 player.openInventory(cbinv);
                 break;
             case 1:
@@ -76,13 +74,9 @@ public class WarCommand implements CommandExecutor {
                         return false;
                     }
                     Bukkit.broadcastMessage(Message.FACTION_SURRENDERED.getMessage().replace("%loser%", instance.getPlayerData(player).getCurrentFactionData().getName()).replace("%winner%", instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getName()));
-                    new WarManager().endWar(instance.getWarCB().get(instance.getPlayerData(player).getCurrentFactionData()), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()));
+                    instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).end();
                 }
                 break;
-            case 2:
-                if (strings[0].equalsIgnoreCase("testwar")) {
-                    new WarManager().startTestWar(new WarManager().getCbById(strings[1]));
-                }
         }
 
         return false;

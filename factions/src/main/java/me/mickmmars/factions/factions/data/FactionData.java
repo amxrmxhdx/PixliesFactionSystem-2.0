@@ -8,11 +8,18 @@ import me.mickmmars.factions.factions.ideologies.Ideology;
 import me.mickmmars.factions.factions.perms.FactionPerms;
 import me.mickmmars.factions.factions.perms.ForeignFactionData;
 import me.mickmmars.factions.factions.rank.FactionRank;
+import me.mickmmars.factions.factions.religion.Religion;
+import me.mickmmars.factions.factions.sqlite.SQLiteManager;
 import me.mickmmars.factions.publicwarps.data.WarpData;
 import me.mickmmars.factions.war.data.CasusBelli;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectHeaps;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -23,7 +30,6 @@ public class FactionData {
     private String name;
     private String id;
     private List<String> allowedFlags;
-    private List<ChunkData> chunks;
     private int powerboost;
     private String description;
     private List<FactionPerms> perms;
@@ -55,13 +61,14 @@ public class FactionData {
     private List<ForeignFactionData> foreignPerms;
     private List<CasusBelli> Cbs;
     private String opposingFactionId;
+    private int chunksPurchased;
+    private String religion;
 
-    public FactionData(String overlord, String name, String id, List<String> allowedFlags, List<ChunkData> chunks, int powerboost, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer, List<String> puppetrequests, Boolean isInWar, String newbiePrefix, String memberPrefix, String adminPrefix, String leaderPrefix, LocalDate createdAt, List<String> allAccessFacs, String ideology, List<ForeignFactionData> foreignPerms, List<CasusBelli> Cbs, String opposingFactionId) {
+    public FactionData(String overlord, String name, String id, List<String> allowedFlags, int powerboost, String description, List<FactionPerms> perms, String discordlink, List<String> allies, List<String> allyrequests, List<String> enemies, ChunkLocation capital, List<String> adminperms, List<String> memberperms, List<String> newbieperms, List<String> allyperms, List<String> enemyperms, List<String> applications, List<String> upgrades, List<WarpData> warps, int money, List<String> puppets, List<UUID> bannedplayer, List<String> puppetrequests, Boolean isInWar, String newbiePrefix, String memberPrefix, String adminPrefix, String leaderPrefix, LocalDate createdAt, List<String> allAccessFacs, String ideology, List<ForeignFactionData> foreignPerms, List<CasusBelli> Cbs, String opposingFactionId, int chunksPurchased, String religion) {
         this.overlord = overlord;
         this.name = name;
         this.id = id;
         this.allowedFlags = allowedFlags;
-        this.chunks = chunks;
         this.powerboost = powerboost;
         this.description = description;
         this.perms = perms;
@@ -93,7 +100,54 @@ public class FactionData {
         this.foreignPerms = foreignPerms;
         this.Cbs = Cbs;
         this.opposingFactionId = opposingFactionId;
+        this.chunksPurchased = chunksPurchased;
+        this.religion = religion;
     }
+
+    public Set<ChunkData> getDBChunks() {
+        SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + id + ".db");
+        String sql = "SELECT * FROM data";
+        Set<ChunkData> returnable = new HashSet<>();
+
+        try (Connection conn = manager.connect()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int chunkx = Integer.parseInt(rs.getString("chunkx"));
+                int chunkz = Integer.parseInt(rs.getString("chunkz"));
+                returnable.add(new ChunkData(id, null, chunkx, chunkz));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return returnable;
+    }
+
+    public Map<ChunkData, String> getChunks() {
+        Factions instance = Factions.getInstance();
+        return instance.getChunkManager().getChunkMap(this);
+    }
+
+    public void addChunk(ChunkData chunkData) {
+        SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + id + ".db");
+        manager.makeStatement("INSERT INTO data (id, chunkx, chunkz) VALUES('" + chunkData.getId() + "', '" + chunkData.getMinecraftX() + "', '" + chunkData.getMinecraftZ() + "');");
+    }
+
+    public void removeChunk(ChunkData chunkData) {
+        SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + id + ".db");
+        manager.makeStatement("DELETE FROM data WHERE id = '" + chunkData.getId() + "'");
+    }
+
+    public String getReligion() { return religion; }
+    public void setReligion(String religion) { this.religion = religion; }
+
+    public void setReligion(Religion religion) { this.religion = religion.getName(); }
+
+    public int getChunksPurchased() { return chunksPurchased; }
+    public void setChunksPurchased(int chunksPurchased) { this.chunksPurchased = chunksPurchased; }
 
     public String getOpposingFactionId() { return opposingFactionId; }
     public void setOpposingFactionId(String opposingFactionId) { this.opposingFactionId = opposingFactionId; }
@@ -156,6 +210,10 @@ public class FactionData {
             }
         }
         return members;
+    }
+
+    public void updateData() {
+        Factions.getInstance().getFactionManager().updateFactionData(this);
     }
 
     public void broadcastMessage(String Message) {
@@ -260,14 +318,6 @@ public class FactionData {
         this.allowedFlags = allowedFlags;
     }
 
-    public List<ChunkData> getChunks() {
-        return chunks;
-    }
-
-    public void setChunks(List<ChunkData> chunks) {
-        this.chunks = chunks;
-    }
-
     public int getPowerboost() {
         return powerboost;
     }
@@ -276,7 +326,13 @@ public class FactionData {
         this.powerboost = powerboost;
     }
 
-    public int getPower() { return (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData()) + powerboost; }
+    public int getPower() {
+        if (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData() >= 3000 && powerboost == 0) {
+            return 3000;
+        } else {
+            return (listMembers().size() * (int) Config.DEFAULT_PLAYER_POWER.getData()) + powerboost;
+        }
+    }
 
     public String getDescription() {
         return description;

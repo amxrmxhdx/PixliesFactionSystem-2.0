@@ -1,8 +1,10 @@
 package me.mickmmars.minimick;
 
 import me.mickmmars.factions.Factions;
+import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.config.ConfigManager;
 import me.mickmmars.factions.message.Message;
-import me.mickmmars.factions.war.WarManager;
+import me.mickmmars.factions.war.data.CasusBelli;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.javacord.api.DiscordApi;
@@ -12,11 +14,10 @@ import org.javacord.api.entity.channel.TextChannel;
 public class bot {
 
     public static DiscordApi api;
-    public FileConfiguration discordconf = Factions.getInstance().discordconf.getConfiguration();
     private Factions instance = Factions.getInstance();
 
     public void startBot() {
-        String token = discordconf.getString("bot-token");
+        String token = Config.BOT_TOKEN.getData().toString();
 
         if (!token.equals("TOKEN_HERE")) {
             api = new DiscordApiBuilder().setToken(token).login().join();
@@ -29,33 +30,31 @@ public class bot {
                 String[] msgsplit = event.getMessageContent().split(" ");
                 if (event.getMessageContent().equalsIgnoreCase("$setcbchannel")) {
                     if (event.getMessageAuthor().isServerAdmin()) {
-                        discordconf.set("cbnotify-channel", event.getChannel().getId());
-                        Factions.getInstance().discordconf.save();
-                        Factions.getInstance().discordconf.reload();
+                        Config.CB_NOTIFICATION_CHANNEL.setData(event.getChannel().getIdAsString());
+                        instance.getConfigManager().reload();
                         event.getChannel().sendMessage("Changed CB-notify channel.");
                     }
                 } else if (event.getMessageContent().equalsIgnoreCase("$setwarchannel")) {
                     if (event.getMessageAuthor().isServerAdmin()) {
-                        discordconf.set("notification-channel", event.getChannel().getId());
-                        Factions.getInstance().discordconf.save();
-                        Factions.getInstance().discordconf.reload();
+                        Config.WAR_NOTIFICATION_CHANNEL.setData(event.getChannel().getIdAsString());
+                        instance.getConfigManager().reload();
                         event.getChannel().sendMessage("Changed warchannel.");
                     }
                 }
-                TextChannel cbnotify = api.getTextChannelById(discordconf.getLong("cbnotify-channel")).get();
+                TextChannel cbnotify = api.getTextChannelById(Config.CB_NOTIFICATION_CHANNEL.getData().toString()).get();
                 if (msgsplit[0].equalsIgnoreCase("$cbaccept") && event.getChannel().equals(cbnotify)) {
-                    if (new WarManager().exists(new WarManager().getCbById(msgsplit[1]))) {
-                        new WarManager().acceptCb(new WarManager().getCbById(msgsplit[1]));
+                    if (CasusBelli.exists(CasusBelli.getCbById(msgsplit[1]))) {
+                        CasusBelli.acceptCb(CasusBelli.getCbById(msgsplit[1]));
                         event.getChannel().sendMessage("I accepted the CB with the Id **" + msgsplit[1] + "**");
-                        instance.getFactionManager().getFactionById(new WarManager().getCbById(msgsplit[1]).getAttackerId()).sendMessageToMembers(Message.CB_ACCEPTED_FAC.getMessage().replace("%fac%", instance.getFactionManager().getFactionById(new WarManager().getCbById(msgsplit[1]).getDefenderId()).getName()).replace("%id%", new WarManager().getCbById(msgsplit[1]).getId()));
+                        instance.getFactionManager().getFactionById(CasusBelli.getCbById(msgsplit[1]).getAttackerId()).sendMessageToMembers(Message.CB_ACCEPTED_FAC.getMessage().replace("%fac%", instance.getFactionManager().getFactionById(CasusBelli.getCbById(msgsplit[1]).getDefenderId()).getName()).replace("%id%", CasusBelli.getCbById(msgsplit[1]).getId()));
                     } else {
                         event.getChannel().sendMessage("This CB does not exist.");
                     }
                 } else if (msgsplit[0].equalsIgnoreCase("$cbdeny") && event.getChannel().equals(cbnotify)) {
-                    if (new WarManager().exists(new WarManager().getCbById(msgsplit[1]))) {
-                        new WarManager().rejectCb(new WarManager().getCbById(msgsplit[1]));
+                    if (CasusBelli.exists(CasusBelli.getCbById(msgsplit[1]))) {
+                        CasusBelli.rejectCb(CasusBelli.getCbById(msgsplit[1]));
                         event.getChannel().sendMessage("I rejected the CB with the Id **" + msgsplit[1] + "**");
-                        instance.getFactionManager().getFactionById(new WarManager().getCbById(msgsplit[1]).getAttackerId()).sendMessageToMembers(Message.CB_DENIED_FAC.getMessage().replace("%fac%", instance.getFactionManager().getFactionById(new WarManager().getCbById(msgsplit[1]).getDefenderId()).getName()).replace("%id%", new WarManager().getCbById(msgsplit[1]).getId()));
+                        instance.getFactionManager().getFactionById(CasusBelli.getCbById(msgsplit[1]).getAttackerId()).sendMessageToMembers(Message.CB_DENIED_FAC.getMessage().replace("%fac%", instance.getFactionManager().getFactionById(CasusBelli.getCbById(msgsplit[1]).getDefenderId()).getName()).replace("%id%", CasusBelli.getCbById(msgsplit[1]).getId()));
                     } else {
                         event.getChannel().sendMessage("This CB does not exist.");
                     }

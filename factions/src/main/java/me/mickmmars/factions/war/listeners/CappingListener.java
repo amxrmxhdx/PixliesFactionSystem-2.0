@@ -1,10 +1,8 @@
 package me.mickmmars.factions.war.listeners;
 
 import me.mickmmars.factions.Factions;
-import me.mickmmars.factions.war.WarManager;
 import me.mickmmars.factions.war.data.CasusBelli;
 import me.mickmmars.factions.war.events.PlayerCappingEvent;
-import me.mickmmars.factions.war.events.PlayerCappingFailedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class CappingListener implements Listener {
 
@@ -24,15 +21,18 @@ public class CappingListener implements Listener {
         boolean active = true;
 
         if (instance.getPlayerData(player).isInFaction() && instance.getPlayerData(player).getCurrentFactionData().isInWar()) {
+            if (instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).isInTreaty()) {
+                return;
+            }
             for (UUID uuid : instance.getPlayerData(player).getCurrentFactionData().listOnlineMembers())
-                if (instance.getPlayerData(Bukkit.getPlayer(uuid)).getIsCappingisCapping())
+                if (instance.getPlayerData(uuid).isCapping())
                     active = false;
-            if (!instance.inGracePeriod().get(instance.getPlayerData(player).getCurrentFactionData()) && active) {
+            if (!instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).inGracePeriod() && active) {
                 if (instance.getPlayerData(player).getCurrentFactionData().isInWar()) {
-                    CasusBelli cb = instance.getWarCB().get(instance.getPlayerData(player).getCurrentFactionData());
-                    if (event.getFrom().getChunk() != event.getTo().getChunk() && instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getCapitalLocation().toBukkitLocation().getChunk() == event.getTo().getChunk() && !instance.getPlayerData(player).getIsCappingisCapping()) {
-                        Bukkit.getPluginManager().callEvent(new PlayerCappingEvent(player, new WarManager().getUsed(instance.getPlayerData(player).getCurrentFactionData()), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId())));
-                        new WarManager().showCappingBossBar(cb, instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()), player);
+                    CasusBelli cb = instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).getCB();
+                    if (event.getFrom().getChunk() != event.getTo().getChunk() && instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()).getCapitalLocation().toBukkitLocation().getChunk() == event.getTo().getChunk() && !instance.getPlayerData(player).isCapping()) {
+                        Bukkit.getPluginManager().callEvent(new PlayerCappingEvent(player, CasusBelli.getUsed(instance.getPlayerData(player).getCurrentFactionData()), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId())));
+                        instance.getWarFactions().get(instance.getPlayerData(player).getCurrentFactionData()).showCappingBossBar(player, instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getOpposingFactionId()));
                         instance.getPlayerData(player).setIsCapping(true);
                         instance.getChunkPlayer(player).updatePlayerData(instance.getPlayerData(player));
                         return;

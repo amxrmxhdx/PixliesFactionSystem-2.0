@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,15 +98,13 @@ public class PlayerMoveEventListener implements Listener {
                     for (UUID uuid : instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(instance.getPlayerData(player).getFactionId())))
                         if (Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(uuid)))
                             Bukkit.getPlayer(uuid).sendMessage(Message.PLAYER_UNCLAIMED.getMessage().replace("%player%", player.getName()).replace("%location%", x + ", " + z));
-                    int result = 5;
-                    EconomyResponse r = Factions.econ.depositPlayer(player, result);
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Factions.col("&a&oChunk unclaimed")));
                 }
             }
         }
 
         if (instance.getFactionfly().contains(player.getUniqueId())) {
-            if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().contains(instance.getChunkManager().getChunkDataByChunk(event.getTo().getChunk()))) {
+            if (!instance.getPlayerData(player).getCurrentFactionData().getChunks().containsKey(instance.getChunkManager().getChunkDataByChunk(event.getTo().getChunk()))) {
                 player.setAllowFlight(false);
                 player.setFlying(false);
             } else {

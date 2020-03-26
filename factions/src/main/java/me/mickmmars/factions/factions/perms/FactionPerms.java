@@ -26,7 +26,8 @@ public enum FactionPerms {
     SLIMEFUN("Slimefun", "Access slimefun machines"),
     MANAGEPUPPETS("ManagePuppets", "Manage the factions puppets"),
     CB_FACTIONS("CBFactions", "Manage CB's of the faction."),
-    EDITPERMS("Edit_permissions", "Edit the factions permission-system");
+    EDITPERMS("Edit_permissions", "Edit the factions permission-system"),
+    CHANGE_RELIGION("change_religion", "Change the factions religion");
 
     private final String name;
     private final String description;

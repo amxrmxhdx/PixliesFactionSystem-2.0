@@ -2,6 +2,7 @@ package me.mickmmars.factions.commands;
 
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.factions.data.FactionData;
+import me.mickmmars.factions.factions.perms.FactionPerms;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -17,7 +18,7 @@ public class ConstructTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        String[] factionNeedingCmds = {"ally", "enemy", "neutral", "apply"};
+        String[] factionNeedingCmds = {"ally", "enemy", "neutral", "apply", "info"};
         if (command.getName().equalsIgnoreCase("factions") && strings.length == 1 || command.getName().equalsIgnoreCase("f") && strings.length == 1 ) {
             if (commandSender instanceof Player) {
                 Player p = (Player) commandSender;
@@ -32,6 +33,17 @@ public class ConstructTabCompleter implements TabCompleter {
                 }
                 return list;
             }
+        }
+        if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("perms") && strings[1].equals("")) {
+            List<String> permSubs = Arrays.asList("add", "remove");
+
+            return permSubs;
+        }
+        if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("perms") && strings[1].equalsIgnoreCase("add") || command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("perms") && strings[1].equalsIgnoreCase("remove") ) {
+            List<String> returnlist = new ArrayList<>();
+            for (FactionPerms perms : instance.getFactionManager().listPerms())
+                    returnlist.add(perms.getName());
+            return returnlist;
         }
         if (command.getName().equalsIgnoreCase("factions") && strings[0].equalsIgnoreCase("create") && strings.length == 2) {
             List<String> namelist = new ArrayList<>();

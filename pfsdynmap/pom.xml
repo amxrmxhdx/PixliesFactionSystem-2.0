@@ -15,10 +15,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
+                <me.mickmmars.minimick.configuration>
                     <source>8</source>
                     <target>8</target>
-                </configuration>
+                </me.mickmmars.minimick.configuration>
             </plugin>
         </plugins>
     </build>
@@ -67,6 +67,18 @@
             <version>3.0beta4</version>
             <classifier>spigot</classifier>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>3.0beta4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>3.0beta4</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

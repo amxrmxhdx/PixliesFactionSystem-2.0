@@ -27,8 +27,6 @@ public class PlayerJoinEventListener implements Listener {
 
         instance.getPlayers().add(new ChunkPlayer(player.getUniqueId()));
 
-        boolean exists = instance.getChunkPlayer(player).createIfNotExists();
-
         if (player.hasPermission("factions.host")) {
             if (Config.AUTO_UPDATE.getData().equals(true)) {
                 player.sendMessage("§7§oThank you for using §b§lPixlies§fFaction§cSystem§7! \n §7No updates available...");

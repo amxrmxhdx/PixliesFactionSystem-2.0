@@ -2,6 +2,8 @@ package me.mickmmars.factions.factions.upgrades;
 
 import me.mickmmars.factions.Factions;
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.factions.ideologies.Ideology;
+import org.bukkit.DyeColor;
 
 public enum FactionUpgrades {
 
@@ -14,8 +16,15 @@ public enum FactionUpgrades {
     TWOPUPPETS("twopuppets", "Have two puppets", (Double) Config.TWOPUPPET_PRICE.getData()),
     THREEPUPPETS("threepuppets", "Have three puppets", (Double) Config.THREEPUPPET_PRICE.getData()),
     BIGGER_FCHEST("biggerfchest", "Have a bigger F-Chest", (Double) Config.BIGGERFCHEST_PRICE.getData()),
-    COMMUNISM("communism", "Communist government", (Double) Config.COMMUNISM_PRICE.getData()),
-    FASCISM("fascism", "Fascist government", (Double) Config.FASCISM_PRICE.getData());
+    COMMUNISM("communism", "Communist government", Ideology.COMMUNISM.getPrice()),
+    FASCISM("fascism", "Fascist government", Ideology.FASCISM.getPrice()),
+    ANARCHOCAPITALISM("anarchocapitalism", "AnarchoCapitalist government", Ideology.ANARCHOCAPITALISM.getPrice()),
+    ENVIRONMENTALISM("environmentalism", "Environmentalist government", Ideology.ENVIRONMENTALISM.getPrice()),
+    FEMINISM("feminism", "Feminist government", Ideology.FEMINISM.getPrice()),
+    PROGRESSIVISM("progressive", "Progressive government", Ideology.PROGRESSIVISM.getPrice()),
+    CONSERVATIVISM("conservative", "Conservative government", Ideology.CONSERVATIVISM.getPrice()),
+    SOCIALISM("socialism", "Socialist government", Ideology.SOCIALISM.getPrice()),
+    OLIGARCHY("oligarchy", "Oligarch government", Ideology.OLIGARCHY.getPrice());
 
     private Factions instance = Factions.getInstance();
 
@@ -36,6 +45,14 @@ public enum FactionUpgrades {
     public static FactionUpgrades getUpgradeByGUIName(String GUIName) {
         for (FactionUpgrades upgrades : Factions.getInstance().getFactionManager().listUpgrades())
             if (upgrades.getGuiname().equals(GUIName))
+                return upgrades;
+
+        return null;
+    }
+
+    public static FactionUpgrades getByName(String name) {
+        for (FactionUpgrades upgrades : Factions.getInstance().getFactionManager().listUpgrades())
+            if (upgrades.getName().equals(name))
                 return upgrades;
 
         return null;

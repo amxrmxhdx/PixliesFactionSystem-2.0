@@ -5,8 +5,8 @@ import java.util.List;
 
 public enum FactionFlag {
 
-    FRIENDLYFIRE("§cFriendly-fire", false),
-    PVP("§cPvP", false),
+    //FRIENDLYFIRE("§cFriendly-fire", false),
+    //PVP("§cPvP", false),
     EXPLOSIONS("§cExplosions", true),
     OPEN("§cOpen/No-invitation", false),
     ANIMALS("§cAnimals", true),

@@ -1,1 +1,0 @@
-screen -AmdS minimick bash -c "npm start bot.js; exec bash"

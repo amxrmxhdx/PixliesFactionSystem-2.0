@@ -32,7 +32,6 @@ public class ChunkPlayer {
     private PlayerData playerData;
     private HomeObject homeObject;
 
-    @Deprecated
     public ChunkPlayer(UUID uuid) {
         this.uuid = uuid;
 
@@ -45,6 +44,23 @@ public class ChunkPlayer {
 
             homeObject = new HomeObject(uuid);
         }
+    }
+
+    public static List<UUID> getAllRegisteredPlayers() {
+        List<UUID> returnable = new ArrayList<>();
+        for (File files : new File("plugins/Factions/players/").listFiles()) {
+            returnable.add(UUID.fromString(files.getName().replace(".yml", "")));
+        }
+        return returnable;
+    }
+
+    public static PlayerData getRegisteredPlayerFromName(String name) {
+        for (UUID uuid : getAllRegisteredPlayers())
+            if (Bukkit.getPlayer(uuid).getName().equalsIgnoreCase(name)) {
+                JsonConfig jsonConfig = new JsonConfig(new File("plugins/Factions/players/" + uuid.toString() + ".yml"));
+                return jsonConfig.get("userData", PlayerData.class);
+            }
+        return null;
     }
 
     private boolean exists() {

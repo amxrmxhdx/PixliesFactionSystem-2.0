@@ -15,8 +15,8 @@ public class WarKillListener implements Listener {
         Player target = event.getEntity();
         Player killer = event.getEntity().getKiller();
 
-        if (instance.getPlayerData(target).isInFaction() && instance.getPlayerData(target).getCurrentFactionData().isInWar() && instance.getPlayerData(killer).isInFaction() && instance.getPlayerData(target).getCurrentFactionData().isInWar()) {
-            instance.getWarKills().put(instance.getPlayerData(killer).getCurrentFactionData(), instance.getWarKills().get(instance.getPlayerData(killer).getCurrentFactionData()) + 1);
+        if (target instanceof Player && killer instanceof Player && instance.getPlayerData(target).isInFaction() && instance.getPlayerData(target).getCurrentFactionData().isInWar() && instance.getPlayerData(killer).isInFaction() && instance.getPlayerData(target).getCurrentFactionData().isInWar()) {
+            instance.getWarFactions().get(instance.getPlayerData(killer).getCurrentFactionData()).getKills().put(instance.getPlayerData(killer).getCurrentFactionData(), instance.getWarFactions().get(instance.getPlayerData(killer).getCurrentFactionData()).getKills().get(instance.getPlayerData(killer).getCurrentFactionData()) + 1);
         }
 
     }

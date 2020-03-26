@@ -3,6 +3,7 @@ package me.mickmmars.factions.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.meta.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class ItemBuilder {
 
@@ -46,11 +48,6 @@ public class ItemBuilder {
 
     public ItemBuilder setAmount(int value) {
         item.setAmount(value);
-        return this;
-    }
-
-    public ItemBuilder setDurability(short value) {
-        ((Damageable) this.meta).setDamage(value);
         return this;
     }
 
@@ -94,12 +91,19 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setSkullOwner(String owner) {
+        item.setDurability((short) 3);
         ((SkullMeta) meta).setOwningPlayer(Bukkit.getPlayer(owner));
         return this;
     }
 
-    public ItemBuilder setColor(Color c) {
-        ((LeatherArmorMeta) meta).setColor(c);
+    public ItemBuilder setSkullOwner(UUID uuid) {
+        this.item.setDurability((short) 3);
+        ((SkullMeta) meta).setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        return this;
+    }
+
+    public ItemBuilder setColor(DyeColor c) {
+        item.setDurability(c.getWoolData());
         return this;
     }
 

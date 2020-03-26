@@ -5,7 +5,9 @@ import io.papermc.lib.PaperLib;
 import me.mickmmars.factions.chunk.data.ChunkData;
 import me.mickmmars.factions.chunk.location.ChunkLocation;
 import me.mickmmars.factions.config.Config;
+import me.mickmmars.factions.config.JsonConfig;
 import me.mickmmars.factions.factions.perms.ForeignFactionData;
+import me.mickmmars.factions.factions.sqlite.SQLiteManager;
 import me.mickmmars.factions.factions.upgrades.FactionUpgrades;
 import me.mickmmars.factions.message.Message;
 import me.mickmmars.factions.player.data.PlayerData;
@@ -19,7 +21,7 @@ import me.mickmmars.factions.factions.rank.FactionRank;
 import me.mickmmars.factions.factions.relations.FactionRelations;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.MinecraftServer;
+import net.minecraft.server.v1_12_R1.MinecraftServer;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -31,6 +33,7 @@ import org.dynmap.factions.DynmapFactionsPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -51,6 +54,10 @@ public class FactionManager {
 
     private final List<FactionData> factions;
 
+    private Map<FactionData, List<ChunkData>> claims;
+
+    public Map<FactionData, List<ChunkData>> getClaims() { return claims; }
+
     public FactionManager() {
         file = new File("plugins/Factions/factions.yml");
         cfg = YamlConfiguration.loadConfiguration(file);
@@ -59,17 +66,97 @@ public class FactionManager {
     }
 
     public void loadFactions() {
-        for (String s : cfg.getStringList("Factions")) {
+/*       for (String s : cfg.getStringList("Factions")) {
             final FactionData data = new Gson().fromJson(s, FactionData.class);
             if (getFactionByName(data.getName()) == null)
                 factions.add(data);
+        }*/
+
+        for (File f : new File("plugins/Factions/factions/").listFiles()) {
+            YamlConfiguration facConf = YamlConfiguration.loadConfiguration(f);
+            FactionData data = new Gson().fromJson(facConf.getString("data"), FactionData.class);
+            if (getFactionByName(data.getName()) == null)
+                factions.add(data);
+
         }
+
+    }
+
+/*    public void migrateChunksToSQL() throws IOException {
+        Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
+            @Override
+            public void run() {
+                for (FactionData data : getFactions()) {
+*//*            File facFile = new File("plugins/Factions/factions/" + data.getId() + ".yml");
+                facFile.createNewFile();
+                YamlConfiguration facConf = YamlConfiguration.loadConfiguration(facFile);
+                facConf.set("data", instance.getPrettyGson().toJson(new Gson().toJsonTree(data)));
+                facConf.save(facFile);*//*
+                    SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + data.getId() + ".db");
+                    manager.create();
+                    manager.makeStatement("CREATE TABLE IF NOT EXISTS data (id TEXT, chunkx TEXT, chunkz TEXT);");
+                    manager.makeStatement("CREATE UNIQUE INDEX idx_chunks_id ON data (id, chunkx, chunkz);");
+                    for (ChunkData chunkData : data.getChunks())
+                        manager.makeStatement("INSERT INTO data (id, chunkx, chunkz) VALUES('" + chunkData.getId() + "', '" + chunkData.getMinecraftX() + "', '" + chunkData.getMinecraftZ() + "');");
+                }
+            }
+        });
+    }*/
+
+    public void updateFactionData(FactionData factionData) {
+        this.factions.remove(getFactionById(factionData.getId()));
+        this.factions.add(factionData);
+
+/*        final List<String> factions = new ArrayList<>();
+        for (FactionData faction : this.factions)
+            factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(faction)));
+
+        cfg.set("Factions", factions);
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
+           @Override
+           public void run() {
+               File facFile = new File("plugins/Factions/factions/" + factionData.getId() + ".yml");
+               YamlConfiguration facConf = YamlConfiguration.loadConfiguration(facFile);
+               facConf.set("data", instance.getPrettyGson().toJson(new Gson().toJsonTree(factionData)));
+               try {
+                   facConf.save(facFile);
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+        });
+
+    }
+
+    public void createNewFaction(FactionData data) throws IOException {
+
+/*        final List<String> factions = cfg.getStringList("Factions");
+        factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(data)));
+        cfg.set("Factions", factions);
+        cfg.save(file);*/
+
+        File facFile = new File("plugins/Factions/factions/" + data.getId() + ".yml");
+        facFile.createNewFile();
+        YamlConfiguration facConf = YamlConfiguration.loadConfiguration(facFile);
+        facConf.set("data", instance.getPrettyGson().toJson(new Gson().toJsonTree(data)));
+        facConf.save(facFile);
+        factions.add(data);
+        SQLiteManager manager = new SQLiteManager("plugins/Factions/claims/" + data.getId() + ".db");
+        manager.create();
+        manager.makeStatement("CREATE TABLE IF NOT EXISTS data (id TEXT, chunkx TEXT, chunkz TEXT);");
+        manager.makeStatement("CREATE UNIQUE INDEX idx_chunks_id ON data (id, chunkx, chunkz);");
     }
 
     public UUID getLeader(FactionData faction) {
         UUID owner = null;
         for (UUID uuid : getMembersFromFaction(faction)) {
-            if (instance.getPlayerData(uuid).getFactionRank().equals(FactionRank.LEADER)) {
+            if (instance.getChunkPlayer(uuid).getPlayerData().getFactionRank().equals(FactionRank.LEADER)) {
                 owner = uuid;
             }
         }
@@ -160,15 +247,6 @@ public class FactionManager {
 
     private List<FactionData> allies;
     private List<FactionData> allyrequests;
-
-    public void createNewFaction(FactionData data) throws IOException {
-        factions.add(data);
-
-        final List<String> factions = cfg.getStringList("Factions");
-        factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(data)));
-        cfg.set("Factions", factions);
-        cfg.save(file);
-    }
 
     public void addAllyRequest(String factionId, FactionData factionData) {
         FactionData factiondata = factionData;
@@ -297,15 +375,15 @@ public class FactionManager {
         lines.add(line5chunk7);
         lines.add(line5chunk8);
         lines.add(line5chunk9);
-        boolean unconnected = true;
-        for (Chunk chunks : lines) {
+/*        boolean unconnected = true;
+*//*        for (Chunk chunks : lines) {
             if (checkIfClaimIsConnected(chunks, instance.getPlayerData(player).getCurrentFactionData()))
                 unconnected = false;
-        }
+        }*//*
         if (unconnected) {
             player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
             return;
-        }
+        }*/
         List<Chunk> claimable = new ArrayList<Chunk>();
         for (Chunk chunks : lines) {
             if (instance.getChunkManager().isFree(chunks)) {
@@ -388,22 +466,28 @@ public class FactionManager {
 
     public void claimChunk(Player player, int x, int z, String factionId, Boolean ignoreUnconnected) {
         FactionData factionData = getFactionById(factionId);
-        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId()) && !ignoreUnconnected && !getFactionById(factionId).getName().equals("SafeZone")) {
+/*        if (!instance.getFactionManager().checkIfClaimIsConnected(player.getLocation().getChunk(), instance.getFactionManager().getFactionById(instance.getPlayerData(player).getCurrentFactionData().getId())) && Config.ALLOW_UNCONNECTED_CLAIMS.getData().equals(false) && !instance.getStaffmode().contains(player.getUniqueId()) && !instance.getFillClaimPlayers().contains(player.getUniqueId()) && !ignoreUnconnected && !getFactionById(factionId).getName().equals("SafeZone")) {
             player.sendMessage(Message.CLAIMS_MUST_BE_CONNECTED.getMessage());
             return;
+        }*/
+        if (!player.getLocation().getWorld().getName().equals(Config.FACTION_WORLD.getData().toString()) && !instance.getStaffmode().contains(player.getUniqueId())) {
+            player.sendMessage(Message.CANT_CLAIM_IN_THIS_WORLD.getMessage());
+            return;
         }
-        if (getFactionById(factionId).getPower() + 1 > (int) Config.MAX_FACTION_POWER.getData() && !getFactionById(factionId).getName().equals("SafeZone")) {
-            player.sendMessage(Message.MAX_CLAIMING_REACHED.getMessage());
+        if (instance.getChunkManager().getFactionDataByChunk(x, z) != null) {
+            player.sendMessage(Message.ALREADY_CLAIMED.getMessage());
             return;
         }
         int price = (instance.getFactionManager().getFactionById(factionId).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionId)).size() : 5);
         if (factionData.getMoney() >= price) {
             String id = instance.generateKey(10);
-            ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), x, z);
-            this.addChunk(factionData, chunkData);
+            ChunkData chunkData = new ChunkData(id, null, x, z);
+            factionData.addChunk(chunkData);
             instance.getFactionManager().getFactionById(factionId).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) - price);
-            instance.getChunkManager().getChunks().add(chunkData);
-            updateFactionData(getFactionById(factionId));
+            Set<ChunkData> cache = new HashSet<>();
+            cache.add(chunkData);
+            instance.getClaimingCache().put(getFactionById(factionId), cache);
+            instance.getChunkManager().addChunk(chunkData, factionData);
         } else {
             int need = (price - instance.getFactionManager().getFactionById(factionId).getMoney());
             String needString = instance.asDecimal(need);
@@ -414,12 +498,10 @@ public class FactionManager {
     public void unclaimChunk(Player player, Chunk chunk, String factionid) {
         int price = (instance.getFactionManager().getFactionById(factionid).getChunks().size() >= 100 ? 5 * instance.getFactionManager().getMembersFromFaction(instance.getFactionManager().getFactionById(factionid)).size() : 5);
         FactionData factionData = getFactionById(factionid);
-        String id = instance.getChunkManager().getChunkDataByChunk(chunk).getId();
-        ChunkData chunkData = new ChunkData(id, new ArrayList<UUID>(), chunk.getX(), chunk.getZ());
-        this.removeChunk(factionData, chunkData);
+        ChunkData chunkData = instance.getChunkManager().getChunkDataByChunk(chunk.getX(), chunk.getZ());
+        getFactionById(factionid).removeChunk(chunkData);
         instance.getFactionManager().getFactionById(factionid).setMoney(instance.getFactionManager().getMoneyFromFaction(factionData) + price);
-        instance.getChunkManager().getChunks().remove(chunkData);
-        updateFactionData(factionData);
+        instance.getChunkManager().removeChunk(chunkData);
     }
 
     public List<UUID> getMembersFromFaction(FactionData data) {
@@ -486,32 +568,12 @@ public class FactionManager {
         instance.getChunkPlayer(player).updatePlayerData(instance.getPlayerData(player));
     }
 
-    private void addChunk(FactionData factionData, ChunkData chunkData) {
-        final List<ChunkData> chunks = factionData.getChunks();
-        chunks.add(chunkData);
-        factionData.setChunks(chunks);
-        updateFactionData(factionData);
-    }
-
-    private void removeChunk(FactionData factionData, ChunkData chunkData) {
-        final List<String> factionDatas = new ArrayList<>();
-        final List<ChunkData> chunks = factionData.getChunks();
-        for (ChunkData chunk : chunks)
-            factionDatas.add(new Gson().toJson(chunk));
-        factionDatas.remove(new Gson().toJson(chunkData));
-        chunks.clear();
-        for (String data : factionDatas)
-            chunks.add(new Gson().fromJson(data, ChunkData.class));
-        factionData.setChunks(chunks);
-        updateFactionData(factionData);
-        instance.getChunkManager().reloadChunks();
-    }
-
     public void removeFaction(FactionData data) {
         for (UUID uuid : getMembersFromFaction(data))
             instance.getChunkPlayer(uuid).removeFromFaction();
+        instance.getChunkManager().removeFactionChunks(data);
         this.factions.remove(getFactionById(data.getId()));
-
+/*
         final List<String> factions = new ArrayList<>();
         for (FactionData faction : this.factions)
             factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(faction)));
@@ -522,34 +584,29 @@ public class FactionManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        instance.getChunkManager().reloadChunks();
+        instance.getChunkManager().reloadChunks();*/
+
+        File facFile = new File("plugins/Factions/factions/" + data.getId() + ".yml");
+        facFile.delete();
+        File facDb = new File("plugins/Factions/claims/" + data.getId() + ".yml");
+        facDb.delete();
     }
 
-    public void updateFactionData(FactionData factionData) {
-        this.factions.remove(getFactionById(factionData.getId()));
-        this.factions.add(factionData);
-
-        final List<String> factions = new ArrayList<>();
-        for (FactionData faction : this.factions)
-            factions.add(instance.getPrettyGson().toJson(new Gson().toJsonTree(faction)));
-
-        instance.getFactionFlags().put(factionData.getId(), instance.flags.getConfiguration().getItemStack(factionData.getId()));
-
-        cfg.set("Factions", factions);
+    public ItemStack getFactionFlag(FactionData faction) {
         try {
-            cfg.save(file);
-        } catch (IOException e) {
+            return cfg.getItemStack("Flags." + faction.getId());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
     public void createRelInv(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 9 * 5, "§8-= §bYour factions relations §8=-");
         for (String ids : instance.getPlayerData(player).getCurrentFactionData().getAllies())
-            inventory.addItem(new ItemBuilder(Material.MAGENTA_CONCRETE).addEnchantment(Enchantment.LOYALTY, 1).setDisplayName("§d§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
+            inventory.addItem(new ItemBuilder(Material.CONCRETE).setColor(DyeColor.PURPLE).addEnchantment(Enchantment.DIG_SPEED, 1).setDisplayName("§d§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
         for (String ids : instance.getPlayerData(player).getCurrentFactionData().getEnemies())
-            inventory.addItem(new ItemBuilder(Material.RED_CONCRETE).addEnchantment(Enchantment.SWEEPING_EDGE, 1).setDisplayName("§4§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
+            inventory.addItem(new ItemBuilder(Material.CONCRETE).setColor(DyeColor.RED).addEnchantment(Enchantment.SWEEPING_EDGE, 1).setDisplayName("§4§l" + instance.getFactionManager().getFactionById(ids).getName()).addLoreLine("§7Description: §f" + instance.getFactionManager().getFactionById(ids).getDescription()).build());
         player.openInventory(inventory);
     }
 
@@ -597,6 +654,7 @@ public class FactionManager {
         perms.add(FactionPerms.SETFLAG);
         perms.add(FactionPerms.SLIMEFUN);
         perms.add(FactionPerms.FACTIONFLY);
+        perms.add(FactionPerms.CHANGE_RELIGION);
         return perms;
     }
 
@@ -624,14 +682,17 @@ public class FactionManager {
     }
 
     public void setFactionFlag(FactionData fac1, ItemStack flag) {
-        if (!flag.getType().name().contains("BANNER")) return;
-        instance.flags.getConfiguration().set(fac1.getId(), flag);
-        instance.flags.save();
-        instance.flags.reload();
+        if (flag.getType() != Material.BANNER) return;
+        cfg.set("Flags." + fac1.getId(), flag);
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         updateFactionData(fac1);
     }
 
-    public Boolean checkIfClaimIsConnected(Chunk start, FactionData fac1) {
+/*    public Boolean checkIfClaimIsConnected(Chunk start, FactionData fac1) {
         Chunk north = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX(), start.getZ() + 1);
         Chunk south = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX(), start.getZ() - 1);
         Chunk west = Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(start.getX() - 1, start.getZ());
@@ -640,7 +701,7 @@ public class FactionManager {
             return true;
         }
         return (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(north)) && instance.getChunkManager().getChunkDataByChunk(north) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(south)) && instance.getChunkManager().getChunkDataByChunk(south) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(west)) && instance.getChunkManager().getChunkDataByChunk(west) != null) || (fac1.getChunks().contains(instance.getChunkManager().getChunkDataByChunk(east)) && instance.getChunkManager().getChunkDataByChunk(east) != null);
-    }
+    }*/
 
     public void banPlayerFromFac(FactionData fac1, Player player) {
         if (fac1.getBannedplayer().contains(player.getUniqueId())) return;
@@ -679,6 +740,13 @@ public class FactionManager {
         upgrades.add(FactionUpgrades.BIGGER_FCHEST);
         upgrades.add(FactionUpgrades.COMMUNISM);
         upgrades.add(FactionUpgrades.FASCISM);
+        upgrades.add(FactionUpgrades.ANARCHOCAPITALISM);
+        upgrades.add(FactionUpgrades.ENVIRONMENTALISM);
+        upgrades.add(FactionUpgrades.FEMINISM);
+        upgrades.add(FactionUpgrades.PROGRESSIVISM);
+        upgrades.add(FactionUpgrades.CONSERVATIVISM);
+        upgrades.add(FactionUpgrades.SOCIALISM);
+        upgrades.add(FactionUpgrades.OLIGARCHY);
         return upgrades;
     }
 
@@ -698,9 +766,9 @@ public class FactionManager {
 
     public List<FactionFlag> listFlags() {
         List<FactionFlag> flags = new ArrayList<FactionFlag>();
-        flags.add(FactionFlag.PVP);
+        //flags.add(FactionFlag.PVP);
         flags.add(FactionFlag.MONSTER);
-        flags.add(FactionFlag.FRIENDLYFIRE);
+        //flags.add(FactionFlag.FRIENDLYFIRE);
         flags.add(FactionFlag.EXPLOSIONS);
         flags.add(FactionFlag.OPEN);
         flags.add(FactionFlag.ANIMALS);
@@ -879,14 +947,6 @@ public class FactionManager {
         }
     }
 
-    public void claimFill(Set<ChunkData> toClaim, Player player, FactionData faction) {
-            for (ChunkData chunks : toClaim) {
-                claimChunk(player, chunks.getMinecraftX(), chunks.getMinecraftZ(), faction.getId(), true);
-            }
-            player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
-            Bukkit.getLogger().info(player.getName() + " claim filled " + toClaim.size() + " chunks.");
-    }
-
     public Boolean warpWithNameAlreadyExists(FactionData data, String name) {
         for (WarpData warp : data.getWarps())
             if (warp.getName().equalsIgnoreCase(name))
@@ -910,16 +970,17 @@ public class FactionManager {
             OfflinePlayer member = Bukkit.getOfflinePlayer(uuid);
             sj1.add(instance.getChunkPlayer(uuid).getRankPrefix() + member.getName());
         }
-        player.sendMessage("§8-§b+§8---------------------------------------------§b+§8-");
+        player.sendMessage("§8§m-§b§m+§8§m---------------------------------------------§b§m+§8§m-");
         player.sendMessage("§7Faction: §b" + faction.getName());
         player.sendMessage("§7Land: §b" + chunks + "§7/§b" + faction.getPower());
         player.sendMessage("§7Factionbank: §2§l$§a" + faction.getMoney());
         player.sendMessage("§7Age (Days): §a" + faction.getAgeInDays());
-        player.sendMessage("§7Polity: " + faction.getIdeology());
+        player.sendMessage("§7Ideology: " + faction.getIdeology());
+        player.sendMessage("§7§oReligion: " + faction.getReligion());
         player.sendMessage("§7Total landcost: §2§l$§a" + chunks * 5);
         player.sendMessage("§7Online members: " + sj.toString());
         player.sendMessage("§7All-members: " + sj1.toString());
-        player.sendMessage("§8-§b+§8---------------------------------------------§b+§8-");
+        player.sendMessage("§8§m-§b§m+§8§m---------------------------------------------§b§m+§8§m-");
     }
 
     public void addForeignPermission(FactionData hostfaction, ForeignFactionData foreignFactionData) {
@@ -951,31 +1012,25 @@ public class FactionManager {
 
 
     // THIS IS A 8-Neighbour FLOODFILL ALGORYTHM THAT SEARCHES FOR WHAT CHUNKS TO CLAIM.
-    public void floodSearch(int x, int z, Set<ChunkData> toClaim, Set<Chunk> alreadyChecked) throws ExecutionException, InterruptedException {
+    public void floodSearch(int x, int z, Set<Chunk> toClaim, FactionData data, boolean ignorePower) {
 
-                ChunkData chunk = new ChunkData(null, null, x, z);
+        // CHECK IF WE ALREADY HAVE IT IN THE LIST
+        if (toClaim.contains(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z))) return;
 
-                if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
+        // MAX REACHED?
+        if (toClaim.size() >= (int) Config.MAX_FILL_SIZE.getData()) return;
 
-                // ALREADY CONTAINS CHUNK?
-                if (toClaim.contains(chunk))
-                    return;
+        // ALREADY CLAIMED?
+        if (instance.getChunkManager().getFactionDataByChunk(x, z) != null) return;
 
-                // ALREADY CLAIMED?
-                if (!(instance.getChunkManager().getFactionDataByChunk(x, z) == null))
-                    return;
+        // ADD TO TOCLAIM
+        toClaim.add(Bukkit.getWorld(Config.FACTION_WORLD.getData().toString()).getChunkAt(x, z));
 
-                toClaim.add(chunk);
-
-                // RECOURSE
-                floodSearch(x, z + 1, toClaim, alreadyChecked); // north
-                floodSearch(x, z - 1, toClaim, alreadyChecked); // south
-                floodSearch(x - 1, z, toClaim, alreadyChecked); // west
-                floodSearch(x + 1, z, toClaim, alreadyChecked); // east
-                floodSearch(x + 1, z + 1, toClaim, alreadyChecked); // north-east
-                floodSearch(x - 1, z - 1, toClaim, alreadyChecked); // south-west
-                floodSearch(x - 1, z + 1, toClaim, alreadyChecked); // north-west
-                floodSearch(x + 1, z - 1, toClaim, alreadyChecked); // south-east
+        // RECOURSE
+        floodSearch(x, z + 1, toClaim, data, ignorePower); // north
+        floodSearch(x, z - 1, toClaim, data, ignorePower); // south
+        floodSearch(x - 1, z, toClaim, data, ignorePower); // west
+        floodSearch(x + 1, z, toClaim, data, ignorePower); // east
 
     }
 
@@ -994,6 +1049,16 @@ public class FactionManager {
                 player.sendMessage("§7" + ten.size() + "§8. §b" + s + "§7: §6" + map.get(s) + " score");
             }
         }
+    }
+
+    public void claimFill(Set<Chunk> toClaim, Player player, FactionData faction) {
+        Set<Chunk> cache = new HashSet<>();
+        for (Chunk chunks : toClaim) {
+            claimChunk(player, chunks.getX(), chunks.getZ(), faction.getId(), true);
+            cache.add(chunks);
+        }
+        player.sendMessage(Message.CLAIM_FILLED_X_CHUNKS.getMessage().replace("%x%", Integer.toString(toClaim.size())));
+        Bukkit.getLogger().info(player.getName() + " claim filled " + toClaim.size() + " chunks.");
     }
 
     class ValueComparator implements Comparator<String> {
